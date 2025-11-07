@@ -40,6 +40,23 @@
       <button id="btnClear">Clear</button>
     </div>
 
+  <div class="chart-controls">
+    <button id="toggleDark">Dark Mode</button>
+    <!-- CSV Export (hidden for paywall) -->
+    <!-- <button id="exportCsv" style="display:none">Export CSV (Premium)</button> -->
+  </div>
+
+<div class="charts-grid">
+  <div class="chart-container">
+    <canvas id="chartByCountry"></canvas>
+  </div>
+  <div class="chart-container">
+    <canvas id="chartByLevel"></canvas>
+  </div>
+  <div class="chart-container">
+    <canvas id="chartSalaryDist"></canvas>
+  </div>
+</div>
     <div id="results">
       <p><em>Loading salaries...</em></p>
     </div>
@@ -53,5 +70,6 @@
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/main.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
