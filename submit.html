@@ -48,22 +48,30 @@
         <option value="">Select Country...</option>
       </select>
 
+      <!-- UK FIELDS -->
       <div id="ukFields" style="display:none;">
         <label>County *</label>
         <select name="county" id="county">
           <option value="">Select County...</option>
         </select>
         <label>City *</label>
-        <input type="text" name="city" placeholder="e.g. Norwich" />
+        <input type="text" name="city" id="ukCity" placeholder="e.g. Norwich" />
       </div>
 
+      <!-- USA FIELDS -->
       <div id="usaFields" style="display:none;">
         <label>State *</label>
         <select name="state" id="state">
           <option value="">Select State...</option>
         </select>
         <label>City *</label>
-        <input type="text" name="city" placeholder="e.g. Austin" />
+        <input type="text" name="city" id="usaCity" placeholder="e.g. Austin" />
+      </div>
+
+      <!-- NON-UK/USA: Generic City -->
+      <div id="otherCity" style="display:none;">
+        <label>City *</label>
+        <input type="text" name="city" id="otherCityInput" placeholder="e.g. Sydney" />
       </div>
 
       <label>Salary Range (GBP) *</label>
@@ -129,7 +137,6 @@
 
       <button type="submit">Submit for Approval</button>
       
-      <!-- Auto-email button -->
       <button type="button" id="emailPending" style="margin-top:1rem; background:#2563eb; display:none;">
         Email pending.json to Admin
       </button>
@@ -141,7 +148,7 @@
 
   <footer>
     <div class="container">
-      <p>© 2025 The QS Collection | <a href, target="_blank">theqscollection.com</a></p>
+      <p>© 2025 The QS Collection | <a href="https://www.theqscollection.com" target="_blank">theqscollection.com</a></p>
     </div>
   </footer>
 
