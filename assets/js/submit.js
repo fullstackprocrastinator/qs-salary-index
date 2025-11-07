@@ -5,10 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const cityInputs = document.querySelectorAll('input[name="city"]');
 
   // Populate countries
-  CONFIG.COUNTRIES.forEach(c => {
-    const opt = new Option(c, c);
-    countrySel.appendChild(opt);
-  });
+  CONFIG.COUNTRIES.forEach(c => countrySel.appendChild(new Option(c, c)));
 
   // On country change
   countrySel.onchange = () => {
@@ -24,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cityInputs.forEach(inp => inp.required = false);
 
     if (uk) {
-      populateSelect('county', CONFIG.UK_COUNTIES);  // ← FIXED: CONFIG.UK_COUNTIES
+      populateSelect('county', CONFIG.UK_COUNTIES);
       countySel.required = true;
       cityInputs[0].required = true;
     }
@@ -51,17 +48,19 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
   let region = '';
   const city = form.city.value.trim();
 
+  // Validate location
   if (country === 'United Kingdom') {
     region = form.county.value;
-    if (!region || !city) return showError('Select county and enter city.');
+    if (!region || !city) return showError('Please select county and enter city.');
   } else if (country === 'United States') {
     region = form.state.value;
-    if (!region || !city) return showError('Select state and enter city.');
+    if (!region || !city) return showError('Please select state and enter city.');
   }
 
   const data = {
     id: Date.now().toString(),
     title: form.title.value,
+    qsType: form.qsType.value,  // ← NEW FIELD
     country: country,
     region: region,
     city: city,
@@ -84,7 +83,7 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           ...data,
-          _subject: `New QS Salary: ${data.title} – ${data.city}, ${data.country}`
+          _subject: `New QS Salary: ${data.title} (${data.qsType}) – ${data.city}, ${data.country}`
         }).toString()
       });
     } catch (err) {
@@ -134,5 +133,5 @@ function showSuccess() {
 }
 
 function showError(msg) {
-  document.getElementById('submitMsg').innerHTML = `<p style="color:red;">${msg}</p>`;
+  document.getElementById('submitMsg').innerHTML = `<p style="color:red; font-weight:bold;">${msg}</p>`;
 }
