@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Submit Salary – The QS Salary Index</title>
   <link rel="stylesheet" href="assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
@@ -31,7 +32,6 @@
         <option>Other</option>
       </select>
 
-      <!-- NEW: QS TYPE -->
       <label>QS Type *</label>
       <select name="qsType" required>
         <option value="">Select Type...</option>
@@ -128,12 +128,22 @@
       <textarea name="benefits" rows="2" placeholder="e.g. car allowance, pension"></textarea>
 
       <button type="submit">Submit for Approval</button>
-      <button type="button" id="emailPending" style="margin-top:1rem; background:#2563eb;">
-  Email pending.json to Admin
-</button>
+      
+      <!-- Auto-email button -->
+      <button type="button" id="emailPending" style="margin-top:1rem; background:#2563eb; display:none;">
+        Email pending.json to Admin
+      </button>
     </form>
+
     <p id="submitMsg"></p>
+    <p id="emailStatus"></p>
   </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2025 The QS Collection | <a href, target="_blank">theqscollection.com</a></p>
+    </div>
+  </footer>
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/submit.js"></script>
