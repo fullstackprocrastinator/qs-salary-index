@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const countySel = document.getElementById('county');
   const stateSel = document.getElementById('state');
 
-  // Hide all city fields initially
+  // Hide all location fields initially
   ['ukFields', 'usaFields', 'otherCity'].forEach(id => {
     document.getElementById(id).style.display = 'none';
   });
@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // Email button
   document.getElementById('emailPending').onclick = () => {
     if (!lastPendingData) {
       showEmailStatus('Submit first.', 'red');
@@ -60,6 +61,7 @@ function populateSelect(id, items) {
   items.forEach(item => sel.appendChild(new Option(item, item)));
 }
 
+// --- FORM SUBMIT ---
 document.getElementById('salaryForm').onsubmit = async (e) => {
   e.preventDefault();
   const form = e.target;
@@ -68,6 +70,7 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
   let region = '';
   let city = '';
 
+  // Get city from the correct input
   if (country === 'United Kingdom') {
     region = form.county.value;
     city = document.getElementById('ukCity').value.trim();
@@ -99,6 +102,7 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
     submittedAt: new Date().toISOString()
   };
 
+  // Save + download
   const pending = await fetchPending();
   pending.push(data);
   const jsonStr = JSON.stringify(pending, null, 2);
@@ -108,6 +112,7 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
   showSuccess();
   document.getElementById('emailPending').style.display = 'inline-block';
 
+  // Reset
   form.reset();
   ['ukFields', 'usaFields', 'otherCity'].forEach(id => {
     document.getElementById(id).style.display = 'none';
@@ -142,6 +147,7 @@ function showError(msg) {
   document.getElementById('submitMsg').innerHTML = `<p style="color:red; font-weight:bold;">${msg}</p>`;
 }
 
+// --- AUTO-EMAIL ---
 function emailPendingFile(jsonStr) {
   const blob = new Blob([jsonStr], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
