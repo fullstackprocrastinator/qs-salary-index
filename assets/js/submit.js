@@ -1,3 +1,5 @@
+let lastPendingData = null; // Store JSON string for email
+
 document.addEventListener('DOMContentLoaded', () => {
   const countrySel = document.getElementById('country');
   const countySel = document.getElementById('county');
@@ -5,7 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const cityInputs = document.querySelectorAll('input[name="city"]');
 
   // Populate countries
-  CONFIG.COUNTRIES.forEach(c => countrySel.appendChild(new Option(c, c)));
+  CONFIG.COUNTRIES.forEach(c => {
+    countrySel.appendChild(new Option(c, c));
+  });
 
   // On country change
   countrySel.onchange = () => {
@@ -30,6 +34,15 @@ document.addEventListener('DOMContentLoaded', () => {
       stateSel.required = true;
       cityInputs[1].required = true;
     }
+  };
+
+  // Email pending.json button
+  document.getElementById('emailPending').onclick = () => {
+    if (!lastPendingData) {
+      showEmailStatus('No submission to send. Please submit first.', 'red');
+      return;
+    }
+    emailPendingFile(lastPendingData);
   };
 });
 
@@ -60,7 +73,7 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
   const data = {
     id: Date.now().toString(),
     title: form.title.value,
-    qsType: form.qsType.value,  // ← NEW FIELD
+    qsType: form.qsType.value,
     country: country,
     region: region,
     city: city,
@@ -75,28 +88,20 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
     submittedAt: new Date().toISOString()
   };
 
-  // Try Formspree
-  if (CONFIG.FORMSPREE_ENDPOINT && !CONFIG.FORMSPREE_ENDPOINT.includes('xnnlaqka')) {
-    try {
-      await fetch(CONFIG.FORMSPREE_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-          ...data,
-          _subject: `New QS Salary: ${data.title} (${data.qsType}) – ${data.city}, ${data.country}`
-        }).toString()
-      });
-    } catch (err) {
-      console.warn('Formspree failed:', err);
-    }
-  }
-
-  // Always download
+  // Fetch current pending + add new
   const pending = await fetchPending();
   pending.push(data);
-  forceDownload(JSON.stringify(pending, null, 2), 'pending.json', 'application/json');
-  showSuccess();
+  const jsonStr = JSON.stringify(pending, null, 2);
+  lastPendingData = jsonStr; // Save for email
 
+  // Download file
+  forceDownload(jsonStr, 'pending.json', 'application/json');
+
+  // Show success + enable email button
+  showSuccess();
+  document.getElementById('emailPending').style.display = 'inline-block';
+
+  // Reset form
   form.reset();
   document.getElementById('ukFields').style.display = 'none';
   document.getElementById('usaFields').style.display = 'none';
@@ -115,7 +120,9 @@ function forceDownload(content, filename, type) {
   const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = filename; a.style.display = 'none';
+  a.href = url;
+  a.download = filename;
+  a.style.display = 'none';
   document.body.appendChild(a);
   a.click();
   setTimeout(() => {
@@ -128,10 +135,39 @@ function showSuccess() {
   document.getElementById('submitMsg').innerHTML = `
     <p style="color:green; font-weight:bold;">
       Submitted! "pending.json" downloaded.<br>
-      <small>Upload to GitHub → assets/data/pending.json</small>
+      <small>Click below to email it to admin.</small>
     </p>`;
 }
 
 function showError(msg) {
-  document.getElementById('submitMsg').innerHTML = `<p style="color:red; font-weight:bold;">${msg}</p>`;
+  document.getElementById('submitMsg').innerHTML = `
+    <p style="color:red; font-weight:bold;">${msg}</p>`;
+}
+
+// --- AUTO-EMAIL PENDING.JSON ---
+function emailPendingFile(jsonStr) {
+  const blob = new Blob([jsonStr], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+
+  // Create mailto link
+  const mailto = `mailto:theqssalaryindex@outlook.com?subject=New%20QS%20Salary%20Submission&body=${encodeURIComponent(
+    'Please find the submission attached.\n\n' +
+    'Download pending.json here: ' + url + '\n\n' +
+    'Or attach the file manually if needed.'
+  )}`;
+
+  // Open email client
+  const a = document.createElement('a');
+  a.href = mailto;
+  a.click();
+
+  showEmailStatus('Email opened! Attach pending.json manually.', 'green');
+
+  // Clean up
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function showEmailStatus(msg, color) {
+  document.getElementById('emailStatus').innerHTML = `
+    <p style="color:${color}; font-size:0.9em;">${msg}</p>`;
 }
