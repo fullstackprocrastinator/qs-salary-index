@@ -29,3 +29,54 @@ form button:hover { background: #0f2a44; }
 .pending-item button { margin-left: .5rem; padding: .4rem .8rem; font-size: .9rem; }
 
 footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; border-top: 1px solid #eee; margin-top: 3rem; }
+
+/* === EXCEL-LIKE TABLE === */
+.table-container {
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+#salariesTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  background: white;
+}
+
+#salariesTable th,
+#salariesTable td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+#salariesTable th {
+  background: #f8fafc;
+  font-weight: 600;
+  color: #1e293b;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+#salariesTable tr:hover {
+  background: #f1f5f9;
+}
+
+#salariesTable td {
+  color: #475569;
+}
+
+/* Mobile: smaller font */
+@media (max-width: 768px) {
+  #salariesTable {
+    font-size: 0.8rem;
+  }
+  #salariesTable th,
+  #salariesTable td {
+    padding: 0.4rem 0.5rem;
+  }
+}
