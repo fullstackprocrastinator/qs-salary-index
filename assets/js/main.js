@@ -72,27 +72,31 @@ function filterResults() {
 }
 
 function displayResults(data) {
-  const container = document.getElementById('results');
+  const tbody = document.querySelector('#salariesTable tbody');
   if (data.length === 0) {
-    container.innerHTML = '<p>No results found.</p>';
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#94a3b8;">No results found.</td></tr>';
     return;
   }
 
-  const html = data.map(s => `
-    <div class="result-card">
-      <h3>${s.title} (${s.country})</h3>
-      <p><strong>Type:</strong> ${s.qsType || '—'}</p>
-      <p><strong>Location:</strong> ${s.city ? s.city + ', ' : ''}${s.region || ''}</p>
-      <p><strong>Salary:</strong> ${s.salary}</p>
-      <p><strong>Time in Role:</strong> ${s.timeInRole} years</p>
-      <p><strong>Education:</strong> ${s.education}</p>
-      ${s.sector ? `<p><strong>Sector:</strong> ${s.sector}</p>` : ''}
-      ${s.certification ? `<p><strong>Cert:</strong> ${s.certification}</p>` : ''}
-    </div>
-  `).join('');
-  container.innerHTML = html;
+  const rows = data.map(s => {
+    const location = [s.city, s.region].filter(Boolean).join(', ') || '—';
+    return `
+      <tr>
+        <td><strong>${s.title}</strong></td>
+        <td>${s.qsType || '—'}</td>
+        <td>${location}</td>
+        <td><strong>${s.salary}</strong></td>
+        <td>${s.timeInRole}</td>
+        <td>${s.education}</td>
+        <td>${s.sector || '—'}</td>
+        <td>${s.certification || '—'}</td>
+      </tr>
+    `;
+  }).join('');
 
-  // Re-init charts after filtering
+  tbody.innerHTML = rows;
+
+  // Re-draw charts
   destroyCharts();
   setTimeout(initCharts, 100);
 }
