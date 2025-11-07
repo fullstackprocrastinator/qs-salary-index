@@ -34,27 +34,24 @@
       <label>Country *</label>
       <select name="country" id="country" required>
         <option value="">Select Country...</option>
-        <!-- Populated by JS -->
       </select>
 
       <div id="ukFields" style="display:none;">
-        <label>County</label>
-        <select name="county" id="county">
+        <label>County *</label>
+        <select name="county" id="county" required>
           <option value="">Select County...</option>
-          <!-- Populated by JS -->
         </select>
-        <label>City</label>
-        <input type="text" name="city" placeholder="e.g. London" />
+        <label>City *</label>
+        <input type="text" name="city" placeholder="e.g. Norwich" required />
       </div>
 
       <div id="usaFields" style="display:none;">
-        <label>State</label>
-        <select name="state" id="state">
+        <label>State *</label>
+        <select name="state" id="state" required>
           <option value="">Select State...</option>
-          <!-- Populated by JS -->
         </select>
-        <label>City</label>
-        <input type="text" name="city" placeholder="e.g. New York" />
+        <label>City *</label>
+        <input type="text" name="city" placeholder="e.g. Austin" required />
       </div>
 
       <label>Salary Range (GBP) *</label>
@@ -69,7 +66,8 @@
         <option>£80,000 - £90,000</option>
         <option>£90,000 - £100,000</option>
         <option>£100,000 - £120,000</option>
-        <option>£120,000+</option>
+        <option>£120,000 - £150,000</option>
+        <option>£150,000+</option>
       </select>
 
       <label>Time in Role (years) *</label>
