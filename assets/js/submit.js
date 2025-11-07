@@ -1,12 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Populate Country
+  // --- Populate Country Dropdown ---
   const countrySel = document.getElementById('country');
   CONFIG.COUNTRIES.forEach(c => {
     const opt = new Option(c, c);
     countrySel.appendChild(opt);
   });
 
-  // Country change → show UK/USA fields
+  // --- Show UK / USA fields on country change ---
   countrySel.onchange = () => {
     const uk = countrySel.value === 'United Kingdom';
     const usa = countrySel.value === 'United States';
@@ -22,30 +22,30 @@ document.addEventListener('DOMContentLoaded', () => {
 function populateSelect(id, items) {
   const sel = document.getElementById(id);
   sel.innerHTML = '<option value="">Select...</option>';
-  items.forEach(item => {
-    const opt = new Option(item, item);
-    sel.appendChild(opt);
-  });
+  items.forEach(item => sel.appendChild(new Option(item, item)));
 }
 
-// Form Submit
+// --- FORM SUBMIT ---
 document.getElementById('salaryForm').onsubmit = async (e) => {
   e.preventDefault();
   const form = e.target;
 
-  // Validate location
+  // --- Validate required fields ---
   const country = form.country.value;
   let region = '';
-  let city = form.city.value.trim();
+  const city = form.city.value.trim();
 
   if (country === 'United Kingdom') {
     region = form.county.value;
-    if (!region || !city) return alert('Please select county and enter city.');
+    if (!region || !city) return showError('Select county and enter city.');
   } else if (country === 'United States') {
     region = form.state.value;
-    if (!region || !city) return alert('Please select state and enter city.');
+    if (!region || !city) return showError('Select state and enter city.');
+  } else if (!city && (country !== 'Other')) {
+    return showError('City is required.');
   }
 
+  // --- Build submission object ---
   const data = {
     id: Date.now().toString(),
     title: form.title.value,
@@ -55,78 +55,86 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
     salary: form.salary.value,
     timeInRole: form.timeInRole.value,
     education: form.education.value,
-    sector: form.sector.value,
-    companySize: form.companySize.value,
-    workArrangement: form.workArrangement.value,
+    sector: form.sector.value || '',
+    companySize: form.companySize.value || '',
+    workArrangement: form.workArrangement.value || '',
     certification: form.certification.value.trim(),
     benefits: form.benefits.value.trim(),
     submittedAt: new Date().toISOString()
   };
 
-  // Send email (if Formspree configured)
-  if (CONFIG.FORMSPREE_ENDPOINT && CONFIG.FORMSPREE_ENDPOINT !== 'https://formspree.io/f/YOUR_FORM_ID') {
+  // --- 1. Try Formspree (optional) ---
+  if (CONFIG.FORMSPREE_ENDPOINT && !CONFIG.FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
     try {
-      const response = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
+      const resp = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/x-www-form-urlencoded',  // Fixed: Formspree expects this, not JSON
-        },
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
           ...data,
-          _subject: `New QS Salary: ${data.title} in ${data.city}, ${data.country}`,
-          _email: 'no-reply@qssalaryindex.com'  // Optional: your reply-to email
-        }).toString()  // Convert to form-encoded
+          _subject: `New QS Salary: ${data.title} – ${data.city}, ${data.country}`
+        }).toString()
       });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      console.log('Email sent via Formspree');
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      console.log('Formspree: Email sent');
     } catch (err) {
-      console.error('Formspree failed (check endpoint):', err);
-      // Don't block submission – continue to download
+      console.warn('Formspree failed (continuing anyway):', err);
     }
-  } else {
-    console.warn('Formspree not configured – skipping email. Update CONFIG.FORMSPREE_ENDPOINT.');
   }
 
-  // Always save to pending.json (core workflow)
+  // --- 2. ALWAYS DOWNLOAD pending.json ---
   try {
     const pending = await fetchPending();
     pending.push(data);
-    downloadJson(pending, 'pending.json');
-    console.log('pending.json downloaded successfully');
+    forceDownload(JSON.stringify(pending, null, 2), 'pending.json', 'application/json');
+    showSuccess();
   } catch (err) {
     console.error('Download failed:', err);
-    alert('Submission saved locally, but download error. Check console.');
+    showError('Could not save data. Check browser console.');
   }
 
-  // Show success + reset
-  document.getElementById('submitMsg').innerHTML = `
-    <p style="color:green">
-      ✅ Submitted! Download "pending.json" above.<br>
-      <small>Upload to GitHub /assets/data/pending.json for approval. (Email skipped if not configured)</small>
-    </p>`;
+  // --- Reset form ---
   form.reset();
   document.getElementById('ukFields').style.display = 'none';
   document.getElementById('usaFields').style.display = 'none';
 };
 
+// --- Helper: Force file download (works in all browsers) ---
+function forceDownload(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.style.display = 'none';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => {
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }, 100);
+}
+
+// --- Fetch existing pending.json ---
 async function fetchPending() {
   try {
     const res = await fetch(CONFIG.PENDING_URL + '?t=' + Date.now());
     if (!res.ok) return [];
     return await res.json();
   } catch {
-    return [];  // Empty if file missing (normal at start)
+    return [];
   }
 }
 
-function downloadJson(data, filename) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);  // Fix: Append to body for click
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+// --- UI Feedback ---
+function showSuccess() {
+  document.getElementById('submitMsg').innerHTML = `
+    <p style="color:green; font-weight:bold;">
+      Submitted! "pending.json" has been downloaded.<br>
+      <small>Upload it to GitHub → <code>assets/data/pending.json</code></small>
+    </p>`;
+}
+
+function showError(msg) {
+  document.getElementById('submitMsg').innerHTML = `
+    <p style="color:red; font-weight:bold;">Error: ${msg}</p>`;
 }
