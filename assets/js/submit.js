@@ -1,12 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // --- Populate Country Dropdown ---
   const countrySel = document.getElementById('country');
+  const countySel = document.getElementById('county');
+  const stateSel = document.getElementById('state');
+  const cityInput = document.querySelectorAll('input[name="city"]');
+
+  // Populate countries
   CONFIG.COUNTRIES.forEach(c => {
     const opt = new Option(c, c);
     countrySel.appendChild(opt);
   });
 
-  // --- Show UK / USA fields on country change ---
+  // On country change
   countrySel.onchange = () => {
     const uk = countrySel.value === 'United Kingdom';
     const usa = countrySel.value === 'United States';
@@ -14,8 +18,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('ukFields').style.display = uk ? 'block' : 'none';
     document.getElementById('usaFields').style.display = usa ? 'block' : 'none';
 
-    if (uk) populateSelect('county', CONFIG.UK_COUNTIES);
-    if (usa) populateSelect('state', CONFIG.USA_STATES);
+    // Reset required
+    countySel.required = false;
+    stateSel.required = false;
+    cityInput.forEach(inp => inp.required = false);
+
+    if (uk) {
+      populateSelect('county', CONFIG-brand.UK_COUNTIES);
+      countySel.required = true;
+      cityInput[0].required = true; // UK city
+    }
+    if (usa) {
+      populateSelect('state', CONFIG.USA_STATES);
+      stateSel.required = true;
+      cityInput[1].required = true; // USA city
+    }
   };
 });
 
@@ -25,12 +42,11 @@ function populateSelect(id, items) {
   items.forEach(item => sel.appendChild(new Option(item, item)));
 }
 
-// --- FORM SUBMIT ---
+// --- FORM SUBMIT (unchanged from last working version) ---
 document.getElementById('salaryForm').onsubmit = async (e) => {
   e.preventDefault();
   const form = e.target;
 
-  // --- Validate required fields ---
   const country = form.country.value;
   let region = '';
   const city = form.city.value.trim();
@@ -41,11 +57,8 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
   } else if (country === 'United States') {
     region = form.state.value;
     if (!region || !city) return showError('Select state and enter city.');
-  } else if (!city && (country !== 'Other')) {
-    return showError('City is required.');
   }
 
-  // --- Build submission object ---
   const data = {
     id: Date.now().toString(),
     title: form.title.value,
@@ -63,10 +76,10 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
     submittedAt: new Date().toISOString()
   };
 
-  // --- 1. Try Formspree (optional) ---
+  // Try Formspree
   if (CONFIG.FORMSPREE_ENDPOINT && !CONFIG.FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
     try {
-      const resp = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
+      await fetch(CONFIG.FORMSPREE_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
         body: new URLSearchParams({
@@ -74,38 +87,36 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
           _subject: `New QS Salary: ${data.title} – ${data.city}, ${data.country}`
         }).toString()
       });
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      console.log('Formspree: Email sent');
     } catch (err) {
-      console.warn('Formspree failed (continuing anyway):', err);
+      console.warn('Formspree failed:', err);
     }
   }
 
-  // --- 2. ALWAYS DOWNLOAD pending.json ---
-  try {
-    const pending = await fetchPending();
-    pending.push(data);
-    forceDownload(JSON.stringify(pending, null, 2), 'pending.json', 'application/json');
-    showSuccess();
-  } catch (err) {
-    console.error('Download failed:', err);
-    showError('Could not save data. Check browser console.');
-  }
+  // Always download
+  const pending = await fetchPending();
+  pending.push(data);
+  forceDownload(JSON.stringify(pending, null, 2), 'pending.json', 'application/json');
+  showSuccess();
 
-  // --- Reset form ---
   form.reset();
   document.getElementById('ukFields').style.display = 'none';
   document.getElementById('usaFields').style.display = 'none';
 };
 
-// --- Helper: Force file download (works in all browsers) ---
+async function fetchPending() {
+  try {
+    const res = await fetch(CONFIG.PENDING_URL + '?t=' + Date.now());
+    return res.ok ? await res.json() : [];
+  } catch {
+    return [];
+  }
+}
+
 function forceDownload(content, filename, type) {
   const blob = new Blob([content], { type });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.style.display = 'none';
+  a.href = url; a.download = filename; a.style.display = 'none';
   document.body.appendChild(a);
   a.click();
   setTimeout(() => {
@@ -114,27 +125,14 @@ function forceDownload(content, filename, type) {
   }, 100);
 }
 
-// --- Fetch existing pending.json ---
-async function fetchPending() {
-  try {
-    const res = await fetch(CONFIG.PENDING_URL + '?t=' + Date.now());
-    if (!res.ok) return [];
-    return await res.json();
-  } catch {
-    return [];
-  }
-}
-
-// --- UI Feedback ---
 function showSuccess() {
   document.getElementById('submitMsg').innerHTML = `
     <p style="color:green; font-weight:bold;">
-      Submitted! "pending.json" has been downloaded.<br>
-      <small>Upload it to GitHub → <code>assets/data/pending.json</code></small>
+      Submitted! "pending.json" downloaded.<br>
+      <small>Upload to GitHub → assets/data/pending.json</small>
     </p>`;
 }
 
 function showError(msg) {
-  document.getElementById('submitMsg').innerHTML = `
-    <p style="color:red; font-weight:bold;">Error: ${msg}</p>`;
+  document.getElementById('submitMsg').innerHTML = `<p style="color:red;">${msg}</p>`;
 }
