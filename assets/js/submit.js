@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const countySel = document.getElementById('county');
   const stateSel = document.getElementById('state');
 
-  // Hide all location fields initially
+  // Hide all location fields
   ['ukFields', 'usaFields', 'otherCity'].forEach(id => {
     document.getElementById(id).style.display = 'none';
   });
@@ -13,18 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // Populate countries
   CONFIG.COUNTRIES.forEach(c => countrySel.appendChild(new Option(c, c)));
 
-  // On country change
+  // Country change
   countrySel.onchange = () => {
     const uk = countrySel.value === 'United Kingdom';
     const usa = countrySel.value === 'United States';
     const other = !uk && !usa && countrySel.value;
 
-    // Hide all
     document.getElementById('ukFields').style.display = 'none';
     document.getElementById('usaFields').style.display = 'none';
     document.getElementById('otherCity').style.display = 'none';
 
-    // Reset required
     document.querySelectorAll('input[name="city"]').forEach(inp => inp.required = false);
     countySel.required = false;
     stateSel.required = false;
@@ -44,15 +42,6 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('otherCityInput').required = true;
     }
   };
-
-  // Email button
-  document.getElementById('emailPending').onclick = () => {
-    if (!lastPendingData) {
-      showEmailStatus('Submit first.', 'red');
-      return;
-    }
-    emailPendingFile(lastPendingData);
-  };
 });
 
 function populateSelect(id, items) {
@@ -61,7 +50,7 @@ function populateSelect(id, items) {
   items.forEach(item => sel.appendChild(new Option(item, item)));
 }
 
-// --- FORM SUBMIT ---
+// --- SUBMIT: Auto-Send via Formspree ---
 document.getElementById('salaryForm').onsubmit = async (e) => {
   e.preventDefault();
   const form = e.target;
@@ -70,7 +59,6 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
   let region = '';
   let city = '';
 
-  // Get city from the correct input
   if (country === 'United Kingdom') {
     region = form.county.value;
     city = document.getElementById('ukCity').value.trim();
@@ -102,17 +90,35 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
     submittedAt: new Date().toISOString()
   };
 
-  // Save + download
+  // Load existing + append
   const pending = await fetchPending();
   pending.push(data);
   const jsonStr = JSON.stringify(pending, null, 2);
-  lastPendingData = jsonStr;
 
-  forceDownload(jsonStr, 'pending.json', 'application/json');
-  showSuccess();
-  document.getElementById('emailPending').style.display = 'inline-block';
+  // AUTO-SEND TO FORMSPREE (email + attachment)
+  if (CONFIG.FORMSPREE_ENDPOINT && !CONFIG.FORMSPREE_ENDPOINT.includes('xnnlaqka')) {
+    try {
+      const response = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          _subject: `New QS Salary Submission – ${data.title} in ${data.city}`,
+          message: `A new salary has been submitted.\n\nAttached: pending.json`,
+          'pending.json': jsonStr  // Formspree auto-attaches this
+        })
+      });
 
-  // Reset
+      if (!response.ok) throw new Error('Formspree failed');
+      showSuccess('Submitted! You’ll receive an email with the data.');
+    } catch (err) {
+      console.error(err);
+      showError('Submission failed. Try again.');
+    }
+  } else {
+    showError('Formspree not configured. Contact admin.');
+  }
+
+  // Reset form
   form.reset();
   ['ukFields', 'usaFields', 'otherCity'].forEach(id => {
     document.getElementById(id).style.display = 'none';
@@ -126,39 +132,12 @@ async function fetchPending() {
   } catch { return []; }
 }
 
-function forceDownload(content, filename, type) {
-  const blob = new Blob([content], { type });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename; a.style.display = 'none';
-  document.body.appendChild(a); a.click();
-  setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
-}
-
-function showSuccess() {
+function showSuccess(msg) {
   document.getElementById('submitMsg').innerHTML = `
-    <p style="color:green; font-weight:bold;">
-      Submitted! "pending.json" downloaded.<br>
-      <small>Click below to email it to admin.</small>
-    </p>`;
+    <p style="color:green; font-weight:bold;">${msg}</p>`;
 }
 
 function showError(msg) {
-  document.getElementById('submitMsg').innerHTML = `<p style="color:red; font-weight:bold;">${msg}</p>`;
-}
-
-// --- AUTO-EMAIL ---
-function emailPendingFile(jsonStr) {
-  const blob = new Blob([jsonStr], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const mailto = `mailto:YOUR_EMAIL@example.com?subject=New%20QS%20Salary&body=${encodeURIComponent(
-    'Attached: pending.json\nDownload: ' + url
-  )}`;
-  window.location.href = mailto;
-  showEmailStatus('Email opened! Attach file manually.', 'green');
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-function showEmailStatus(msg, color) {
-  document.getElementById('emailStatus').innerHTML = `<p style="color:${color};">${msg}</p>`;
+  document.getElementById('submitMsg').innerHTML = `
+    <p style="color:red; font-weight:bold;">${msg}</p>`;
 }
