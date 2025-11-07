@@ -31,6 +31,18 @@
         <option>Other</option>
       </select>
 
+      <!-- NEW: QS TYPE -->
+      <label>QS Type *</label>
+      <select name="qsType" required>
+        <option value="">Select Type...</option>
+        <option>Subcontractor</option>
+        <option>Main Contractor</option>
+        <option>Consultant</option>
+        <option>Client / Developer</option>
+        <option>Public Sector</option>
+        <option>Other</option>
+      </select>
+
       <label>Country *</label>
       <select name="country" id="country" required>
         <option value="">Select Country...</option>
@@ -38,20 +50,20 @@
 
       <div id="ukFields" style="display:none;">
         <label>County *</label>
-        <select name="county" id="county" required>
+        <select name="county" id="county">
           <option value="">Select County...</option>
         </select>
         <label>City *</label>
-        <input type="text" name="city" placeholder="e.g. Norwich" required />
+        <input type="text" name="city" placeholder="e.g. Norwich" />
       </div>
 
       <div id="usaFields" style="display:none;">
         <label>State *</label>
-        <select name="state" id="state" required>
+        <select name="state" id="state">
           <option value="">Select State...</option>
         </select>
         <label>City *</label>
-        <input type="text" name="city" placeholder="e.g. Austin" required />
+        <input type="text" name="city" placeholder="e.g. Austin" />
       </div>
 
       <label>Salary Range (GBP) *</label>
