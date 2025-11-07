@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const countrySel = document.getElementById('country');
   const countySel = document.getElementById('county');
   const stateSel = document.getElementById('state');
-  const cityInput = document.querySelectorAll('input[name="city"]');
+  const cityInputs = document.querySelectorAll('input[name="city"]');
 
   // Populate countries
   CONFIG.COUNTRIES.forEach(c => {
@@ -21,17 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Reset required
     countySel.required = false;
     stateSel.required = false;
-    cityInput.forEach(inp => inp.required = false);
+    cityInputs.forEach(inp => inp.required = false);
 
     if (uk) {
-      populateSelect('county', CONFIG-brand.UK_COUNTIES);
+      populateSelect('county', CONFIG.UK_COUNTIES);  // ← FIXED: CONFIG.UK_COUNTIES
       countySel.required = true;
-      cityInput[0].required = true; // UK city
+      cityInputs[0].required = true;
     }
     if (usa) {
       populateSelect('state', CONFIG.USA_STATES);
       stateSel.required = true;
-      cityInput[1].required = true; // USA city
+      cityInputs[1].required = true;
     }
   };
 });
@@ -42,7 +42,7 @@ function populateSelect(id, items) {
   items.forEach(item => sel.appendChild(new Option(item, item)));
 }
 
-// --- FORM SUBMIT (unchanged from last working version) ---
+// --- FORM SUBMIT ---
 document.getElementById('salaryForm').onsubmit = async (e) => {
   e.preventDefault();
   const form = e.target;
@@ -77,7 +77,7 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
   };
 
   // Try Formspree
-  if (CONFIG.FORMSPREE_ENDPOINT && !CONFIG.FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
+  if (CONFIG.FORMSPREE_ENDPOINT && !CONFIG.FORMSPREE_ENDPOINT.includes('xnnlaqka')) {
     try {
       await fetch(CONFIG.FORMSPREE_ENDPOINT, {
         method: 'POST',
