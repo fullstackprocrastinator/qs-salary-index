@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The QS Salary Index</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>The QS Salary Index</h1>
+      <p>Live global salary data for Quantity Surveyors</p>
+      <nav>
+        <a href="#search">Search</a> |
+        <a href="submit.html">Submit Salary</a> |
+        <a href="admin.html" class="admin-link">Admin</a>
+      </nav>
+    </div>
+  </header>
+
+  <section id="search" class="container">
+    <h2>Search Salaries</h2>
+    <div class="filters">
+      <input type="text" id="searchTitle" placeholder="Title (e.g. Assistant QS)" />
+      <select id="filterCountry"></select>
+      <select id="filterRegion" disabled></select>
+      <select id="filterCity" disabled></select>
+      <select id="filterLevel">
+        <option value="">All Levels</option>
+        <option>Trainee QS</option>
+        <option>Assistant QS</option>
+        <option>QS</option>
+        <option>Senior QS</option>
+        <option>Cost Manager</option>
+        <option>Commercial Manager</option>
+      </select>
+      <button id="btnSearch">Search</button>
+      <button id="btnClear">Clear</button>
+    </div>
+
+    <div id="results">
+      <p><em>Loading salaries...</em></p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 The QS Collection | <a href="https://www.theqscollection.com">theqscollection.com</a></p>
+    </div>
+  </footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
