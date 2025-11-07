@@ -3,19 +3,6 @@ document.addEventListener('DOMContentLoaded', () => {
   populateFilters();
   document.getElementById('btnSearch').onclick = filterResults;
   document.getElementById('btnClear').onclick = () => location.reload();
-
-  // === DARK MODE ===
-  const toggleDark = document.getElementById('toggleDark');
-  const isDark = localStorage.getItem('darkMode') === 'true';
-  if (isDark) document.body.classList.add('dark');
-  toggleDark.textContent = isDark ? 'Light Mode' : 'Dark Mode';
-
-  toggleDark.onclick = () => {
-    document.body.classList.toggle('dark');
-    const nowDark = document.body.classList.contains('dark');
-    toggleDark.textContent = nowDark ? 'Light Mode' : 'Dark Mode';
-    localStorage.setItem('darkMode', nowDark);
-  };
 });
 
 let allSalaries = [];
@@ -27,7 +14,7 @@ async function loadData() {
     allSalaries = await res.json();
     displayResults(allSalaries);
     updateCounts();
-    initCharts(); // Initialize charts after data loads
+    initCharts();
   } catch (e) {
     document.getElementById('results').innerHTML = '<p>Error loading data.</p>';
   }
@@ -94,8 +81,9 @@ function displayResults(data) {
   const html = data.map(s => `
     <div class="result-card">
       <h3>${s.title} (${s.country})</h3>
+      <p><strong>Type:</strong> ${s.qsType || '—'}</p>
       <p><strong>Location:</strong> ${s.city ? s.city + ', ' : ''}${s.region || ''}</p>
-      <p><strong>Salary:</strong> £${s.salary}</p>
+      <p><strong>Salary:</strong> ${s.salary}</p>
       <p><strong>Time in Role:</strong> ${s.timeInRole} years</p>
       <p><strong>Education:</strong> ${s.education}</p>
       ${s.sector ? `<p><strong>Sector:</strong> ${s.sector}</p>` : ''}
@@ -119,8 +107,7 @@ function updateCounts() {
 function initCharts() {
   if (allSalaries.length === 0) return;
 
-  const isDark = document.body.classList.contains('dark');
-  const colors = CONFIG.CHART_COLORS[isDark ? 'dark' : 'light'];
+  const colors = CONFIG.CHART_COLORS.light;
 
   // Helper: parse salary midpoint
   const parseSalaryMid = (str) => {
