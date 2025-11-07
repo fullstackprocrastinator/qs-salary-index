@@ -1,7 +1,7 @@
 const CONFIG = {
   DATA_URL: 'assets/data/salaries.json',
   PENDING_URL: 'assets/data/pending.json',
-  FORMSPREE_ENDPOINT: 'https://formspree.io/f/YOUR_FORM_ID', // CHANGE THIS
+  FORMSPREE_ENDPOINT: 'https://formspree.io/f/xnnlaqka',
   COUNTRIES: [
     'United Kingdom', 'United States', 'Australia', 'Canada', 'Ireland',
     'UAE', 'Singapore', 'Germany', 'France', 'South Africa', 'Other'
