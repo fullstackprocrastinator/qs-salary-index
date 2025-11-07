@@ -1,15 +1,16 @@
-// Populate country dropdown
 document.addEventListener('DOMContentLoaded', () => {
+  // Populate Country
   const countrySel = document.getElementById('country');
   CONFIG.COUNTRIES.forEach(c => {
     const opt = new Option(c, c);
     countrySel.appendChild(opt);
   });
 
-  // UK / USA location logic
+  // Country change → show UK/USA fields
   countrySel.onchange = () => {
     const uk = countrySel.value === 'United Kingdom';
     const usa = countrySel.value === 'United States';
+
     document.getElementById('ukFields').style.display = uk ? 'block' : 'none';
     document.getElementById('usaFields').style.display = usa ? 'block' : 'none';
 
@@ -27,16 +28,30 @@ function populateSelect(id, items) {
   });
 }
 
-// Submit form
+// Form Submit
 document.getElementById('salaryForm').onsubmit = async (e) => {
   e.preventDefault();
   const form = e.target;
+
+  // Validate location
+  const country = form.country.value;
+  let region = '';
+  let city = form.city.value.trim();
+
+  if (country === 'United Kingdom') {
+    region = form.county.value;
+    if (!region || !city) return alert('Please select county and enter city.');
+  } else if (country === 'United States') {
+    region = form.state.value;
+    if (!region || !city) return alert('Please select state and enter city.');
+  }
+
   const data = {
     id: Date.now().toString(),
     title: form.title.value,
-    country: form.country.value,
-    region: form.county?.value || form.state?.value || '',
-    city: form.city.value.trim(),
+    country: country,
+    region: region,
+    city: city,
     salary: form.salary.value,
     timeInRole: form.timeInRole.value,
     education: form.education.value,
@@ -48,7 +63,7 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
     submittedAt: new Date().toISOString()
   };
 
-  // Send email via Formspree
+  // Send email
   try {
     await fetch(CONFIG.FORMSPREE_ENDPOINT, {
       method: 'POST',
@@ -60,20 +75,22 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
       })
     });
   } catch (err) {
-    console.warn('Formspree failed:',88 err);
+    console.warn('Email failed:', err);
   }
 
-  // Save to pending.json (download)
+  // Save pending
   const pending = await fetchPending();
   pending.push(data);
   downloadJson(pending, 'pending.json');
 
   document.getElementById('submitMsg').innerHTML = `
     <p style="color:green">
-      Submitted! Awaiting approval.<br>
-      <small>You'll get an email. Admin will review.</small>
+      Submitted! Awaiting admin approval.<br>
+      <small>Check your email. Admin has been notified.</small>
     </p>`;
   form.reset();
+  document.getElementById('ukFields').style.display = 'none';
+  document.getElementById('usaFields').style.display = 'none';
 };
 
 async function fetchPending() {
