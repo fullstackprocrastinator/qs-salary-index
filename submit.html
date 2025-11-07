@@ -17,32 +17,63 @@
   <section class="container">
     <form id="salaryForm">
       <label>Title/Role *</label>
-      <input type="text" name="title" required placeholder="e.g. Senior QS" />
+      <select name="title" required>
+        <option value="">Select Role...</option>
+        <option>Trainee QS</option>
+        <option>Assistant QS</option>
+        <option>QS</option>
+        <option>Senior QS</option>
+        <option>Principal QS</option>
+        <option>Cost Manager</option>
+        <option>Commercial Manager</option>
+        <option>Head of Cost Management</option>
+        <option>Director</option>
+        <option>Other</option>
+      </select>
 
       <label>Country *</label>
       <select name="country" id="country" required>
-        <option value="">Select...</option>
+        <option value="">Select Country...</option>
+        <!-- Populated by JS -->
       </select>
 
       <div id="ukFields" style="display:none;">
         <label>County</label>
-        <select name="county" id="county"></select>
+        <select name="county" id="county">
+          <option value="">Select County...</option>
+          <!-- Populated by JS -->
+        </select>
         <label>City</label>
-        <input type="text" name="city" />
+        <input type="text" name="city" placeholder="e.g. London" />
       </div>
 
       <div id="usaFields" style="display:none;">
         <label>State</label>
-        <select name="state" id="state"></select>
+        <select name="state" id="state">
+          <option value="">Select State...</option>
+          <!-- Populated by JS -->
+        </select>
         <label>City</label>
-        <input type="text" name="city" />
+        <input type="text" name="city" placeholder="e.g. New York" />
       </div>
 
       <label>Salary Range (GBP) *</label>
-      <input type="text" name="salary" required placeholder="e.g. 45,000 - 55,000" />
+      <select name="salary" required>
+        <option value="">Select Range...</option>
+        <option>£20,000 - £30,000</option>
+        <option>£30,000 - £40,000</option>
+        <option>£40,000 - £50,000</option>
+        <option>£50,000 - £60,000</option>
+        <option>£60,000 - £70,000</option>
+        <option>£70,000 - £80,000</option>
+        <option>£80,000 - £90,000</option>
+        <option>£90,000 - £100,000</option>
+        <option>£100,000 - £120,000</option>
+        <option>£120,000+</option>
+      </select>
 
       <label>Time in Role (years) *</label>
-      <input type="number" name="timeInRole" min="0" step="0.5" required />
+      <input type="number" name="timeInRole" min="0" max="50" step="0.5" required />
 
       <label>QS Education</label>
       <select name="education">
@@ -60,6 +91,8 @@
         <option>Infrastructure</option>
         <option>Oil & Gas</option>
         <option>Renewables</option>
+        <option>Property Development</option>
+        <option>Consultancy</option>
         <option>Other</option>
       </select>
 
@@ -79,10 +112,10 @@
       </select>
 
       <label>Certification (optional)</label>
-      <input type="text" name="certification" placeholder="e.g. MRICS" />
+      <input type="text" name="certification" placeholder="e.g. MRICS, CIOB" />
 
       <label>Bonus / Benefits (optional)</label>
-      <textarea name="benefits" rows="2"></textarea>
+      <textarea name="benefits" rows="2" placeholder="e.g. car allowance, pension"></textarea>
 
       <button type="submit">Submit for Approval</button>
     </form>
