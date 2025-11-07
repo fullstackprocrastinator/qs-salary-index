@@ -63,30 +63,46 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
     submittedAt: new Date().toISOString()
   };
 
-  // Send email
-  try {
-    await fetch(CONFIG.FORMSPREE_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...data,
-        _subject: `New QS Salary: ${data.title} in ${data.city}, ${data.country}`,
-        _email: 'no-reply@qssalaryindex.com'
-      })
-    });
-  } catch (err) {
-    console.warn('Email failed:', err);
+  // Send email (if Formspree configured)
+  if (CONFIG.FORMSPREE_ENDPOINT && CONFIG.FORMSPREE_ENDPOINT !== 'https://formspree.io/f/YOUR_FORM_ID') {
+    try {
+      const response = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/x-www-form-urlencoded',  // Fixed: Formspree expects this, not JSON
+        },
+        body: new URLSearchParams({
+          ...data,
+          _subject: `New QS Salary: ${data.title} in ${data.city}, ${data.country}`,
+          _email: 'no-reply@qssalaryindex.com'  // Optional: your reply-to email
+        }).toString()  // Convert to form-encoded
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      console.log('Email sent via Formspree');
+    } catch (err) {
+      console.error('Formspree failed (check endpoint):', err);
+      // Don't block submission – continue to download
+    }
+  } else {
+    console.warn('Formspree not configured – skipping email. Update CONFIG.FORMSPREE_ENDPOINT.');
   }
 
-  // Save pending
-  const pending = await fetchPending();
-  pending.push(data);
-  downloadJson(pending, 'pending.json');
+  // Always save to pending.json (core workflow)
+  try {
+    const pending = await fetchPending();
+    pending.push(data);
+    downloadJson(pending, 'pending.json');
+    console.log('pending.json downloaded successfully');
+  } catch (err) {
+    console.error('Download failed:', err);
+    alert('Submission saved locally, but download error. Check console.');
+  }
 
+  // Show success + reset
   document.getElementById('submitMsg').innerHTML = `
     <p style="color:green">
-      Submitted! Awaiting admin approval.<br>
-      <small>Check your email. Admin has been notified.</small>
+      ✅ Submitted! Download "pending.json" above.<br>
+      <small>Upload to GitHub /assets/data/pending.json for approval. (Email skipped if not configured)</small>
     </p>`;
   form.reset();
   document.getElementById('ukFields').style.display = 'none';
@@ -96,9 +112,10 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
 async function fetchPending() {
   try {
     const res = await fetch(CONFIG.PENDING_URL + '?t=' + Date.now());
+    if (!res.ok) return [];
     return await res.json();
   } catch {
-    return [];
+    return [];  // Empty if file missing (normal at start)
   }
 }
 
@@ -106,6 +123,10 @@ function downloadJson(data, filename) {
   const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = filename; a.click();
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);  // Fix: Append to body for click
+  a.click();
+  document.body.removeChild(a);
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
