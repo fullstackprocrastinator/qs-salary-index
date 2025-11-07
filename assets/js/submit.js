@@ -50,7 +50,9 @@ function populateSelect(id, items) {
   items.forEach(item => sel.appendChild(new Option(item, item)));
 }
 
-// --- SUBMIT: Auto-Send via Formspree ---
+/* --------------------------------------------------------------
+   FORM SUBMIT – NO DOWNLOAD, ONLY FORMSPREE EMAIL
+   -------------------------------------------------------------- */
 document.getElementById('salaryForm').onsubmit = async (e) => {
   e.preventDefault();
   const form = e.target;
@@ -90,32 +92,32 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
     submittedAt: new Date().toISOString()
   };
 
-  // Load existing + append
+  // Load existing pending + add new entry
   const pending = await fetchPending();
   pending.push(data);
   const jsonStr = JSON.stringify(pending, null, 2);
 
-  // AUTO-SEND TO FORMSPREE (email + attachment)
-  if (CONFIG.FORMSPREE_ENDPOINT && !CONFIG.FORMSPREE_ENDPOINT.includes('xnnlaqka')) {
+  /* ---- SEND VIA FORMSPREE (email + attached JSON) ---- */
+  if (CONFIG.FORMSPREE_ENDPOINT && !CONFIG.FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
     try {
-      const response = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
+      const resp = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          _subject: `New QS Salary Submission – ${data.title} in ${data.city}`,
-          message: `A new salary has been submitted.\n\nAttached: pending.json`,
-          'pending.json': jsonStr  // Formspree auto-attaches this
+          _subject: `New QS Salary – ${data.title} in ${data.city}`,
+          message: `A new salary entry has been submitted.\n\nAttached: pending.json`,
+          'pending.json': jsonStr          // Formspree attaches this field as a file
         })
       });
 
-      if (!response.ok) throw new Error('Formspree failed');
+      if (!resp.ok) throw new Error('Formspree error');
       showSuccess('Submitted! You’ll receive an email with the data.');
     } catch (err) {
       console.error(err);
-      showError('Submission failed. Try again.');
+      showError('Submission failed. Please try again.');
     }
   } else {
-    showError('Formspree not configured. Contact admin.');
+    showError('Formspree not configured. Contact the admin.');
   }
 
   // Reset form
@@ -132,6 +134,7 @@ async function fetchPending() {
   } catch { return []; }
 }
 
+/* ---- UI FEEDBACK ---- */
 function showSuccess(msg) {
   document.getElementById('submitMsg').innerHTML = `
     <p style="color:green; font-weight:bold;">${msg}</p>`;
