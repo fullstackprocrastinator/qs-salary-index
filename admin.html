@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin – The QS Salary Index</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Admin Panel</h1>
+    <input type="password" id="adminPass" placeholder="Password" />
+    <button id="loginBtn">Login</button>
+    <div id="adminArea" style="display:none;">
+      <h2>Pending Submissions (<span id="pendingCount">0</span>)</h2>
+      <div id="pendingList"></div>
+      <hr>
+      <h2>Live Data (<span id="liveCount">0</span>)</h2>
+      <button id="downloadLive">Download JSON</button>
+    </div>
+  </div>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>
