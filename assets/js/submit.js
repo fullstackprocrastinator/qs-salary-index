@@ -18,12 +18,31 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
     submittedAt: new Date().toISOString()
   };
 
-  // Save to pending.json
+  // 1. Send email via Formspree
+  try {
+    await fetch(CONFIG.FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...data,
+        _subject: `New QS Salary Submission: ${data.title} in ${data.city}, ${data.country}`,
+        _email: 'no-reply@qssalaryindex.com'
+      })
+    });
+  } catch (err) {
+    console.warn('Email failed (Formspree down)', err);
+  }
+
+  // 2. Save to pending.json (download)
   const pending = await fetchPending();
   pending.push(data);
-  await savePending(pending);
+  downloadJson(pending, 'pending.json');
 
-  document.getElementById('submitMsg').innerHTML = '<p style="color:green">Submitted! Awaiting admin approval.</p>';
+  document.getElementById('submitMsg').innerHTML = `
+    <p style="color:green">
+      Submitted! Awaiting admin approval.<br>
+      <small>Check your email – you’ve been notified.</small>
+    </p>`;
   form.reset();
 };
 
@@ -36,15 +55,10 @@ async function fetchPending() {
   }
 }
 
-async function savePending(data) {
-  // GitHub Pages can't write — so we use a trick: open edit link
+function downloadJson(data, filename) {
   const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = 'pending.json';
-  a.click();
+  a.href = url; a.download = filename; a.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
-
-  alert('Download pending.json and upload it to /assets/data/pending.json via GitHub (replace file).');
 }
