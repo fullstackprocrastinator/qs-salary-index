@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Submit Salary – The QS Salary Index</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1><a href="index.html">The QS Salary Index</a></h1>
+      <p>Submit Your Salary (Admin Approved)</p>
+    </div>
+  </header>
+
+  <section class="container">
+    <form id="salaryForm">
+      <label>Title/Role *</label>
+      <input type="text" name="title" required placeholder="e.g. Senior QS" />
+
+      <label>Country *</label>
+      <select name="country" id="country" required>
+        <option value="">Select...</option>
+      </select>
+
+      <div id="ukFields" style="display:none;">
+        <label>County</label>
+        <select name="county" id="county"></select>
+        <label>City</label>
+        <input type="text" name="city" />
+      </div>
+
+      <div id="usaFields" style="display:none;">
+        <label>State</label>
+        <select name="state" id="state"></select>
+        <label>City</label>
+        <input type="text" name="city" />
+      </div>
+
+      <label>Salary Range (GBP) *</label>
+      <input type="text" name="salary" required placeholder="e.g. 45,000 - 55,000" />
+
+      <label>Time in Role (years) *</label>
+      <input type="number" name="timeInRole" min="0" step="0.5" required />
+
+      <label>QS Education</label>
+      <select name="education">
+        <option value="None">None</option>
+        <option>HNC</option>
+        <option>BSc</option>
+        <option>MSc</option>
+        <option>PhD</option>
+        <option>Other</option>
+      </select>
+
+      <label>Sector (optional)</label>
+      <select name="sector">
+        <option>Construction</option>
+        <option>Infrastructure</option>
+        <option>Oil & Gas</option>
+        <option>Renewables</option>
+        <option>Other</option>
+      </select>
+
+      <label>Company Size (optional)</label>
+      <select name="companySize">
+        <option>1-10</option>
+        <option>11-50</option>
+        <option>51-250</option>
+        <option>250+</option>
+      </select>
+
+      <label>Work Arrangement (optional)</label>
+      <select name="workArrangement">
+        <option>On-site</option>
+        <option>Hybrid</option>
+        <option>Remote</option>
+      </select>
+
+      <label>Certification (optional)</label>
+      <input type="text" name="certification" placeholder="e.g. MRICS" />
+
+      <label>Bonus / Benefits (optional)</label>
+      <textarea name="benefits" rows="2"></textarea>
+
+      <button type="submit">Submit for Approval</button>
+    </form>
+    <p id="submitMsg"></p>
+  </section>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/submit.js"></script>
+</body>
+</html>
