@@ -3,72 +3,126 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The QS Salary Index</title>
+  <title>Submit Salary – The QS Salary Index</title>
   <link rel="stylesheet" href="assets/css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
     <div class="container">
-      <h1>The QS Salary Index</h1>
-      <p>Live global salary data for Quantity Surveyors</p>
-      <nav>
-        <a href="#search">Search</a> |
-        <a href="submit.html">Submit Salary</a>
-        <!-- Admin link hidden – access via direct URL: /admin.html -->
-      </nav>
+      <h1><a href="index.html">The QS Salary Index</a></h1>
+      <p>Submit Your Salary (Admin Approved)</p>
     </div>
   </header>
 
-  <section id="search" class="container">
-    <h2>Search Salaries</h2>
-    <div class="filters">
-      <input type="text" id="searchTitle" placeholder="Title (e.g. Assistant QS)" />
-      <select id="filterCountry"></select>
-      <select id="filterRegion" disabled></select>
-      <select id="filterCity" disabled></select>
-      <select id="filterLevel">
-        <option value="">All Levels</option>
+  <section class="container">
+    <form id="salaryForm">
+      <label>Title/Role *</label>
+      <select name="title" required>
+        <option value="">Select Role...</option>
         <option>Trainee QS</option>
         <option>Assistant QS</option>
         <option>QS</option>
         <option>Senior QS</option>
+        <option>Principal QS</option>
         <option>Cost Manager</option>
         <option>Commercial Manager</option>
+        <option>Head of Cost Management</option>
+        <option>Director</option>
+        <option>Other</option>
       </select>
-      <button id="btnSearch">Search</button>
-      <button id="btnClear">Clear</button>
-    </div>
 
-    <!-- Results -->
-    <div id="results">
-      <p><em>Loading salaries...</em></p>
-    </div>
+      <label>Country *</label>
+      <select name="country" id="country" required>
+        <option value="">Select Country...</option>
+      </select>
 
-    <!-- Charts -->
-    <div class="charts-grid">
-      <div class="chart-container">
-        <canvas id="chartByCountry"></canvas>
+      <!-- UK FIELDS – NO required IN HTML -->
+      <div id="ukFields" style="display:none;">
+        <label>County *</label>
+        <select name="county" id="county">
+          <option value="">Select County...</option>
+        </select>
+        <label>City *</label>
+        <input type="text" name="city" placeholder="e.g. Norwich" />
       </div>
-      <div class="chart-container">
-        <canvas id="chartByLevel"></canvas>
+
+      <!-- USA FIELDS – NO required IN HTML -->
+      <div id="usaFields" style="display:none;">
+        <label>State *</label>
+        <select name="state" id="state">
+          <option value="">Select State...</option>
+        </select>
+        <label>City *</label>
+        <input type="text" name="city" placeholder="e.g. Austin" />
       </div>
-      <div class="chart-container">
-        <canvas id="chartSalaryDist"></canvas>
-      </div>
-    </div>
+
+      <label>Salary Range (GBP) *</label>
+      <select name="salary" required>
+        <option value="">Select Range...</option>
+        <option>£20,000 - £30,000</option>
+        <option>£30,000 - £40,000</option>
+        <option>£40,000 - £50,000</option>
+        <option>£50,000 - £60,000</option>
+        <option>£60,000 - £70,000</option>
+        <option>£70,000 - £80,000</option>
+        <option>£80,000 - £90,000</option>
+        <option>£90,000 - £100,000</option>
+        <option>£100,000 - £120,000</option>
+        <option>£120,000 - £150,000</option>
+        <option>£150,000+</option>
+      </select>
+
+      <label>Time in Role (years) *</label>
+      <input type="number" name="timeInRole" min="0" max="50" step="0.5" required />
+
+      <label>QS Education</label>
+      <select name="education">
+        <option value="None">None</option>
+        <option>HNC</option>
+        <option>BSc</option>
+        <option>MSc</option>
+        <option>PhD</option>
+        <option>Other</option>
+      </select>
+
+      <label>Sector (optional)</label>
+      <select name="sector">
+        <option>Construction</option>
+        <option>Infrastructure</option>
+        <option>Oil & Gas</option>
+        <option>Renewables</option>
+        <option>Property Development</option>
+        <option>Consultancy</option>
+        <option>Other</option>
+      </select>
+
+      <label>Company Size (optional)</label>
+      <select name="companySize">
+        <option>1-10</option>
+        <option>11-50</option>
+        <option>51-250</option>
+        <option>250+</option>
+      </select>
+
+      <label>Work Arrangement (optional)</label>
+      <select name="workArrangement">
+        <option>On-site</option>
+        <option>Hybrid</option>
+        <option>Remote</option>
+      </select>
+
+      <label>Certification (optional)</label>
+      <input type="text" name="certification" placeholder="e.g. MRICS, CIOB" />
+
+      <label>Bonus / Benefits (optional)</label>
+      <textarea name="benefits" rows="2" placeholder="e.g. car allowance, pension"></textarea>
+
+      <button type="submit">Submit for Approval</button>
+    </form>
+    <p id="submitMsg"></p>
   </section>
 
-  <footer>
-    <div class="container">
-      <p>© 2025 The QS Collection | <a href="https://www.theqscollection.com">theqscollection.com</a></p>
-    </div>
-  </footer>
-
-  <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Config & Logic -->
   <script src="assets/js/config.js"></script>
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/submit.js"></script>
 </body>
 </html>
