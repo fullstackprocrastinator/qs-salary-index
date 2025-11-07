@@ -14,8 +14,8 @@
       <p>Live global salary data for Quantity Surveyors</p>
       <nav>
         <a href="#search">Search</a> |
-        <a href="submit.html">Submit Salary</a> |
-        <a href="admin.html" class="admin-link">Admin</a>
+        <a href="submit.html">Submit Salary</a>
+        <!-- Admin link hidden – access via direct URL: /admin.html -->
       </nav>
     </div>
   </header>
@@ -38,11 +38,6 @@
       </select>
       <button id="btnSearch">Search</button>
       <button id="btnClear">Clear</button>
-    </div>
-
-    <!-- Dark Mode + Charts Controls -->
-    <div class="chart-controls">
-      <button id="toggleDark">Dark Mode</button>
     </div>
 
     <!-- Results -->
@@ -72,7 +67,7 @@
 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- Config & Main Logic -->
+  <!-- Config & Logic -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
