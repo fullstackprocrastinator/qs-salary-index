@@ -40,36 +40,40 @@
       <button id="btnClear">Clear</button>
     </div>
 
-  <div class="chart-controls">
-    <button id="toggleDark">Dark Mode</button>
-    <!-- CSV Export (hidden for paywall) -->
-    <!-- <button id="exportCsv" style="display:none">Export CSV (Premium)</button> -->
-  </div>
+    <!-- Dark Mode + Charts Controls -->
+    <div class="chart-controls">
+      <button id="toggleDark">Dark Mode</button>
+    </div>
 
-<div class="charts-grid">
-  <div class="chart-container">
-    <canvas id="chartByCountry"></canvas>
-  </div>
-  <div class="chart-container">
-    <canvas id="chartByLevel"></canvas>
-  </div>
-  <div class="chart-container">
-    <canvas id="chartSalaryDist"></canvas>
-  </div>
-</div>
+    <!-- Results -->
     <div id="results">
       <p><em>Loading salaries...</em></p>
+    </div>
+
+    <!-- Charts -->
+    <div class="charts-grid">
+      <div class="chart-container">
+        <canvas id="chartByCountry"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="chartByLevel"></canvas>
+      </div>
+      <div class="chart-container">
+        <canvas id="chartSalaryDist"></canvas>
+      </div>
     </div>
   </section>
 
   <footer>
     <div class="container">
-      <p>&copy; 2025 The QS Collection | <a href="https://www.theqscollection.com">theqscollection.com</a></p>
+      <p>© 2025 The QS Collection | <a href="https://www.theqscollection.com">theqscollection.com</a></p>
     </div>
   </footer>
 
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Config & Main Logic -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/main.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
