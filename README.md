@@ -13,7 +13,7 @@
 
 ## Features
 
-- **1,200+ real QS salaries** (UK, US, AU, UAE, + more)
+- **Real QS salaries** (UK, US, AU, UAE, + more)
 - **Filter** by role, location, experience, sector
 - **Sortable table** – click any column
 - **Live charts** – avg salary by country, role, distribution
@@ -44,3 +44,18 @@
 ---
 
 ## Project Structure
+qs-salary-index/
+├── index.html
+├── submit.html
+├── assets/
+│   ├── css/style.css
+│   ├── js/
+│   │   ├── config.js
+│   │   ├── main.js
+│   │   └── submit.js
+│   ├── data/
+│   │   ├── salaries.json
+│   │   └── pending.json
+│   └── images/
+├── screenshots/
+└── README.md
