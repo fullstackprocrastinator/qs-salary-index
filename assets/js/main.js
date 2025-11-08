@@ -74,12 +74,13 @@ function filterResults() {
 function displayResults(data) {
   const tbody = document.querySelector('#salariesTable tbody');
   if (data.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#94a3b8;">No results found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#94a3b8;">No results found.</td></tr>';
     return;
   }
 
   const rows = data.map(s => {
     const location = [s.city, s.region].filter(Boolean).join(', ') || '—';
+    const benefits = s.benefits ? s.benefits : '—';
     return `
       <tr>
         <td><strong>${s.title}</strong></td>
@@ -90,13 +91,14 @@ function displayResults(data) {
         <td>${s.education}</td>
         <td>${s.sector || '—'}</td>
         <td>${s.certification || '—'}</td>
+        <td class="benefits-cell">${benefits}</td>
       </tr>
     `;
   }).join('');
 
   tbody.innerHTML = rows;
 
-  // Re-draw charts
+  // Re-init charts
   destroyCharts();
   setTimeout(initCharts, 100);
 }
