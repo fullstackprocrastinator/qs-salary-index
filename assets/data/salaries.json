@@ -304,5 +304,22 @@
     "certification": "",
     "benefits": "",
     "submittedAt": "2025-11-08T06:00:53.719Z"
+},
+  {
+    "id": "1762585210282",
+    "title": "Senior QS",
+    "qsType": "Main Contractor",
+    "country": "United Kingdom",
+    "region": "Greater London",
+    "city": "London",
+    "salary": "£80,000 - £90,000",
+    "timeInRole": "11",
+    "education": "BSc",
+    "sector": "Construction",
+    "companySize": "11-50",
+    "workArrangement": "On-site",
+    "certification": "Ciob",
+    "benefits": "",
+    "submittedAt": "2025-11-08T07:00:10.282Z"
 }
 ]
