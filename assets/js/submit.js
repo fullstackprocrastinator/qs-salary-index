@@ -21,15 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
   countrySel.onchange = () => {
     const selected = countrySel.value;
 
-    // Hide all
+    // Hide all fields
     ['ukSubFields', 'englandFields', 'scotlandFields', 'walesFields', 'usaFields', 'otherFields'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
 
-    // Reset required
-    document.querySelectorAll('input[name="city"], select[name="region"]').forEach(inp => inp.required = false);
-    [countySel, scotlandRegionSel, walesRegionSel, stateSel].forEach(sel => sel.required = false);
+    // Reset all required flags
+    resetRequiredFields();
 
     if (!selected) return;
 
@@ -40,10 +39,10 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('usaFields').style.display = 'block';
       populateSelect('state', CONFIG.USA_STATES);
       stateSel.required = true;
-      document.getElementById('usaCity').required = true;
+      setCityRequired('usaCity');
     } else {
       document.getElementById('otherFields').style.display = 'block';
-      document.getElementById('otherCity').required = true;
+      setCityRequired('otherCity');
     }
   };
 
@@ -51,27 +50,50 @@ document.addEventListener('DOMContentLoaded', () => {
   ukSubSel.onchange = () => {
     const sub = ukSubSel.value;
 
-    // Hide UK-specific fields
+    // Hide all UK-specific fields
     ['englandFields', 'scotlandFields', 'walesFields'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
     });
 
+    // Reset city required
+    resetRequiredFields();
+
     if (sub === 'england') {
       document.getElementById('englandFields').style.display = 'block';
       populateSelect('county', CONFIG.UK_COUNTIES);
-      document.getElementById('englandCity').required = true;
+      setCityRequired('englandCity');
     } else if (sub === 'scotland') {
       document.getElementById('scotlandFields').style.display = 'block';
       populateSelect('scotlandRegion', CONFIG.SCOTLAND_COUNCIL_AREAS);
-      document.getElementById('scotlandCity').required = true;
+      setCityRequired('scotlandCity');
     } else if (sub === 'wales') {
       document.getElementById('walesFields').style.display = 'block';
       populateSelect('walesRegion', CONFIG.WALES_PRINCIPAL_AREAS);
-      document.getElementById('walesCity').required = true;
+      setCityRequired('walesCity');
     }
   };
 });
+
+/* --------------------------------------------------------------
+   HELPER: Set required on active city field only
+   -------------------------------------------------------------- */
+function setCityRequired(activeId) {
+  // Remove required from all city fields
+  ['englandCity', 'scotlandCity', 'walesCity', 'usaCity', 'otherCity'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.required = false;
+  });
+  // Set required on active field
+  const active = document.getElementById(activeId);
+  if (active) active.required = true;
+}
+
+function resetRequiredFields() {
+  setCityRequired(null); // removes all
+  const stateSel = document.getElementById('state');
+  if (stateSel) stateSel.required = false;
+}
 
 function populateSelect(id, items) {
   const sel = document.getElementById(id);
@@ -164,12 +186,13 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
     showError('Formspree not configured. Contact admin.');
   }
 
-  // Reset form
+  // === RESET FORM ===
   form.reset();
   ['ukSubFields', 'englandFields', 'scotlandFields', 'walesFields', 'usaFields', 'otherFields'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.style.display = 'none';
   });
+  resetRequiredFields();
 };
 
 async function fetchPending() {
@@ -182,17 +205,6 @@ async function fetchPending() {
   }
 }
 
-function setCityRequired(id) {
-  // Remove required from all city fields
-  ['englandCity', 'scotlandCity', 'walesCity', 'usaCity', 'otherCity'].forEach(cid => {
-    const el = document.getElementById(cid);
-    if (el) el.required = false;
-  });
-  // Set required on the active one
-  const active = document.getElementById(id);
-  if (active) active.required = true;
-}
-
 /* ---- UI FEEDBACK ---- */
 function showSuccess() {
   document.getElementById('submitMsg').innerHTML = `
@@ -202,7 +214,6 @@ function showSuccess() {
     ">
       <strong>Thank you! Your salary has been submitted.</strong><br>
       It will be reviewed and added to the live index within 24 hours.<br>
-      <em>You’ll receive a confirmation email shortly.</em><br>
       <small>— The QS Collection</small>
     </div>`;
 }
