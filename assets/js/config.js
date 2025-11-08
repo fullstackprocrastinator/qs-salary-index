@@ -18,6 +18,22 @@ const CONFIG = {
     'Staffordshire', 'Suffolk', 'Surrey', 'Tyne and Wear', 'Warwickshire',
     'West Midlands', 'West Sussex', 'West Yorkshire', 'Wiltshire', 'Worcestershire'
   ],
+  SCOTLAND_COUNCIL_AREAS: [
+    'Aberdeen City', 'Aberdeenshire', 'Angus', 'Argyll and Bute', 'City of Edinburgh',
+    'Clackmannanshire', 'Dumfries and Galloway', 'Dundee City', 'East Ayrshire',
+    'East Dunbartonshire', 'East Lothian', 'East Renfrewshire', 'City of Glasgow',
+    'Highland', 'Inverclyde', 'Midlothian', 'Moray', 'Na h-Eileanan Siar',
+    'North Ayrshire', 'North Lanarkshire', 'Orkney Islands', 'Perth and Kinross',
+    'Renfrewshire', 'Scottish Borders', 'Shetland Islands', 'South Ayrshire',
+    'South Lanarkshire', 'Stirling', 'West Dunbartonshire', 'West Lothian'
+  ],
+  WALES_PRINCIPAL_AREAS: [
+    'Anglesey', 'Blaenau Gwent', 'Bridgend', 'Caerphilly', 'Cardiff',
+    'Carmarthenshire', 'Ceredigion', 'Conwy', 'Denbighshire', 'Flintshire',
+    'Gwynedd', 'Merthyr Tydfil', 'Monmouthshire', 'Neath Port Talbot',
+    'Newport', 'Pembrokeshire', 'Powys', 'Rhondda Cynon Taf', 'Swansea',
+    'Torfaen', 'Vale of Glamorgan', 'Wrexham'
+  ],
   USA_STATES: [
     'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
     'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
