@@ -51,7 +51,7 @@ function populateSelect(id, items) {
 }
 
 /* --------------------------------------------------------------
-   FORM SUBMIT – NO DOWNLOAD, ONLY FORMSPREE EMAIL
+   FORM SUBMIT – SEND TO FORMSPREE + ATTACH pending.json
    -------------------------------------------------------------- */
 document.getElementById('salaryForm').onsubmit = async (e) => {
   e.preventDefault();
@@ -106,12 +106,12 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
         body: JSON.stringify({
           _subject: `New QS Salary – ${data.title} in ${data.city}`,
           message: `A new salary entry has been submitted.\n\nAttached: pending.json`,
-          'pending.json': jsonStr          // Formspree attaches this field as a file
+          'pending.json': jsonStr
         })
       });
 
       if (!resp.ok) throw new Error('Formspree error');
-      showSuccess('Submitted!');
+      showSuccess();
     } catch (err) {
       console.error(err);
       showError('Submission failed. Please try again.');
@@ -135,12 +135,37 @@ async function fetchPending() {
 }
 
 /* ---- UI FEEDBACK ---- */
-function showSuccess(msg) {
+function showSuccess() {
   document.getElementById('submitMsg').innerHTML = `
-    <p style="color:green; font-weight:bold;">${msg}</p>`;
+    <div style="
+      background: #ecfdf5;
+      color: #065f46;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #a7f3d0;
+      font-weight: 500;
+      line-height: 1.5;
+      margin-top: 1rem;
+    ">
+      <strong>Thank you! Your salary has been submitted.</strong><br>
+      It will be reviewed and added to the live index within 24 hours.<br>
+      <em>You’ll receive a confirmation email shortly.</em><br>
+      <small>— The QS Collection</small>
+    </div>`;
 }
 
 function showError(msg) {
   document.getElementById('submitMsg').innerHTML = `
-    <p style="color:red; font-weight:bold;">${msg}</p>`;
+    <div style="
+      background: #fef2f2;
+      color: #991b1b;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #fca5a5;
+      font-weight: 500;
+      margin-top: 1rem;
+    ">
+      <strong>Error:</strong> ${msg}<br>
+      <small>Please try again or contact support.</small>
+    </div>`;
 }
