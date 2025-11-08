@@ -190,3 +190,44 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
   font-size: 0.7rem;
   opacity: 0.5;
 }
+
+  /* === WIDE DESKTOP TABLE – NO HORIZONTAL SCROLL === */
+@media (min-width: 1024px) {
+  .table-container {
+    overflow-x: visible !important;
+  }
+
+  #salariesTable {
+    min-width: 1400px;     /* Forces full width */
+    table-layout: fixed;   /* Even column distribution */
+    width: 100%;
+  }
+
+  /* Equal column widths (adjust as needed) */
+  #salariesTable th,
+  #salariesTable td {
+    width: 10%;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Fine-tune specific columns */
+  #salariesTable th:nth-child(1),   /* Title */
+  #salariesTable td:nth-child(1) { width: 14%; }
+
+  #salariesTable th:nth-child(3),   /* Location */
+  #salariesTable td:nth-child(3) { width: 16%; }
+
+  #salariesTable th:nth-child(4),   /* Salary */
+  #salariesTable td:nth-child(4) { width: 11%; }
+
+  #salariesTable th:nth-child(9),   /* Benefits */
+  #salariesTable td:nth-child(9) { 
+    width: 18%; 
+    white-space: normal !important;
+    max-width: 220px;
+  }
+
+  #salariesTable th:nth-child(10),  /* Submitted */
+  #salariesTable td:nth-child(10) { width: 9%; text-align: center; }
+}
