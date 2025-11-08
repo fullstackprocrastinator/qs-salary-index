@@ -243,4 +243,35 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
     min-width: 900px;
     table-layout: auto;
   }
+
+  /* === CONTACT BUTTON === */
+.contact-btn {
+  background: #dc2626;          /* Red to stand out */
+  color: white;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
+  display: inline-block;
+}
+
+.contact-btn:hover {
+  background: #b91c1c;
+  text-decoration: none;
+}
+
+/* Mobile: Stack nav items */
+@media (max-width: 640px) {
+  nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  .contact-btn {
+    width: fit-content;
+  }
+
 }
