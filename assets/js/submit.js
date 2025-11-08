@@ -2,51 +2,80 @@ let lastPendingData = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   const countrySel = document.getElementById('country');
+  const ukSubSel = document.getElementById('ukSub');
   const countySel = document.getElementById('county');
+  const scotlandRegionSel = document.getElementById('scotlandRegion');
+  const walesRegionSel = document.getElementById('walesRegion');
   const stateSel = document.getElementById('state');
 
   // Hide all location fields
-  ['ukFields', 'usaFields', 'otherCity'].forEach(id => {
-    document.getElementById(id).style.display = 'none';
+  ['ukSubFields', 'englandFields', 'scotlandFields', 'walesFields', 'usaFields', 'otherFields'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
   });
 
   // Populate countries
   CONFIG.COUNTRIES.forEach(c => countrySel.appendChild(new Option(c, c)));
 
-  // Country change
+  // === COUNTRY CHANGE ===
   countrySel.onchange = () => {
-    const uk = countrySel.value === 'United Kingdom';
-    const usa = countrySel.value === 'United States';
-    const other = !uk && !usa && countrySel.value;
+    const selected = countrySel.value;
 
-    document.getElementById('ukFields').style.display = 'none';
-    document.getElementById('usaFields').style.display = 'none';
-    document.getElementById('otherCity').style.display = 'none';
+    // Hide all
+    ['ukSubFields', 'englandFields', 'scotlandFields', 'walesFields', 'usaFields', 'otherFields'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
 
-    document.querySelectorAll('input[name="city"]').forEach(inp => inp.required = false);
-    countySel.required = false;
-    stateSel.required = false;
+    // Reset required
+    document.querySelectorAll('input[name="city"], select[name="region"]').forEach(inp => inp.required = false);
+    [countySel, scotlandRegionSel, walesRegionSel, stateSel].forEach(sel => sel.required = false);
 
-    if (uk) {
-      document.getElementById('ukFields').style.display = 'block';
-      populateSelect('county', CONFIG.UK_COUNTIES);
-      countySel.required = true;
-      document.getElementById('ukCity').required = true;
-    } else if (usa) {
+    if (!selected) return;
+
+    if (selected === 'United Kingdom') {
+      document.getElementById('ukSubFields').style.display = 'block';
+      ukSubSel.value = '';
+    } else if (selected === 'United States') {
       document.getElementById('usaFields').style.display = 'block';
       populateSelect('state', CONFIG.USA_STATES);
       stateSel.required = true;
       document.getElementById('usaCity').required = true;
-    } else if (other) {
-      document.getElementById('otherCity').style.display = 'block';
-      document.getElementById('otherCityInput').required = true;
+    } else {
+      document.getElementById('otherFields').style.display = 'block';
+      document.getElementById('otherCity').required = true;
+    }
+  };
+
+  // === UK SUB-REGION CHANGE ===
+  ukSubSel.onchange = () => {
+    const sub = ukSubSel.value;
+
+    // Hide UK-specific fields
+    ['englandFields', 'scotlandFields', 'walesFields'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
+
+    if (sub === 'england') {
+      document.getElementById('englandFields').style.display = 'block';
+      populateSelect('county', CONFIG.UK_COUNTIES);
+      document.getElementById('englandCity').required = true;
+    } else if (sub === 'scotland') {
+      document.getElementById('scotlandFields').style.display = 'block';
+      populateSelect('scotlandRegion', CONFIG.SCOTLAND_COUNCIL_AREAS);
+      document.getElementById('scotlandCity').required = true;
+    } else if (sub === 'wales') {
+      document.getElementById('walesFields').style.display = 'block';
+      populateSelect('walesRegion', CONFIG.WALES_PRINCIPAL_AREAS);
+      document.getElementById('walesCity').required = true;
     }
   };
 });
 
 function populateSelect(id, items) {
   const sel = document.getElementById(id);
-  sel.innerHTML = '<option value="">Select...</option>';
+  sel.innerHTML = '<option value="">Select (optional)...</option>';
   items.forEach(item => sel.appendChild(new Option(item, item)));
 }
 
@@ -61,19 +90,34 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
   let region = '';
   let city = '';
 
+  // === VALIDATE & COLLECT LOCATION ===
   if (country === 'United Kingdom') {
-    region = form.county.value;
-    city = document.getElementById('ukCity').value.trim();
-    if (!region || !city) return showError('Please select county and enter city.');
+    const ukSub = form.ukSub.value;
+    if (!ukSub) return showError('Please select England, Scotland, or Wales.');
+
+    if (ukSub === 'england') {
+      region = form.county.value || '';
+      city = document.getElementById('englandCity').value.trim();
+    } else if (ukSub === 'scotland') {
+      region = form.scotlandRegion.value || '';
+      city = document.getElementById('scotlandCity').value.trim();
+    } else if (ukSub === 'wales') {
+      region = form.walesRegion.value || '';
+      city = document.getElementById('walesCity').value.trim();
+    }
+
+    if (!city) return showError('Please enter city.');
+
   } else if (country === 'United States') {
     region = form.state.value;
     city = document.getElementById('usaCity').value.trim();
     if (!region || !city) return showError('Please select state and enter city.');
   } else {
-    city = document.getElementById('otherCityInput').value.trim();
+    city = document.getElementById('otherCity').value.trim();
     if (!city) return showError('Please enter city.');
   }
 
+  // === BUILD DATA OBJECT ===
   const data = {
     id: Date.now().toString(),
     title: form.title.value,
@@ -92,12 +136,12 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
     submittedAt: new Date().toISOString()
   };
 
-  // Load existing pending + add new entry
+  // === LOAD PENDING + APPEND NEW ===
   const pending = await fetchPending();
   pending.push(data);
   const jsonStr = JSON.stringify(pending, null, 2);
 
-  /* ---- SEND VIA FORMSPREE (email + attached JSON) ---- */
+  /* ---- SEND VIA FORMSPREE ---- */
   if (CONFIG.FORMSPREE_ENDPOINT && !CONFIG.FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
     try {
       const resp = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
@@ -110,20 +154,21 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
         })
       });
 
-      if (!resp.ok) throw new Error('Formspree error');
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       showSuccess();
     } catch (err) {
-      console.error(err);
-      showError('Submission failed. Please try again.');
+      console.error('Submission failed:', err);
+      showError('Submission failed. Please try again later.');
     }
   } else {
-    showError('Formspree not configured. Contact the admin.');
+    showError('Formspree not configured. Contact admin.');
   }
 
   // Reset form
   form.reset();
-  ['ukFields', 'usaFields', 'otherCity'].forEach(id => {
-    document.getElementById(id).style.display = 'none';
+  ['ukSubFields', 'englandFields', 'scotlandFields', 'walesFields', 'usaFields', 'otherFields'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
   });
 };
 
@@ -131,24 +176,22 @@ async function fetchPending() {
   try {
     const res = await fetch(CONFIG.PENDING_URL + '?t=' + Date.now());
     return res.ok ? await res.json() : [];
-  } catch { return []; }
+  } catch (err) {
+    console.warn('Could not load pending.json:', err);
+    return [];
+  }
 }
 
 /* ---- UI FEEDBACK ---- */
 function showSuccess() {
   document.getElementById('submitMsg').innerHTML = `
     <div style="
-      background: #ecfdf5;
-      color: #065f46;
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid #a7f3d0;
-      font-weight: 500;
-      line-height: 1.5;
-      margin-top: 1rem;
+      background: #ecfdf5; color: #065f46; padding: 1rem; border-radius: 8px;
+      border: 1px solid #a7f3d0; font-weight: 500; line-height: 1.5; margin-top: 1rem;
     ">
       <strong>Thank you! Your salary has been submitted.</strong><br>
       It will be reviewed and added to the live index within 24 hours.<br>
+      <em>You’ll receive a confirmation email shortly.</em><br>
       <small>— The QS Collection</small>
     </div>`;
 }
@@ -156,13 +199,8 @@ function showSuccess() {
 function showError(msg) {
   document.getElementById('submitMsg').innerHTML = `
     <div style="
-      background: #fef2f2;
-      color: #991b1b;
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid #fca5a5;
-      font-weight: 500;
-      margin-top: 1rem;
+      background: #fef2f2; color: #991b1b; padding: 1rem; border-radius: 8px;
+      border: 1px solid #fca5a5; font-weight: 500; margin-top: 1rem;
     ">
       <strong>Error:</strong> ${msg}<br>
       <small>Please try again or contact support.</small>
