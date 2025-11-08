@@ -1,76 +1,82 @@
-document.addEventListener('DOMContentLoaded', () => {
-  loadData();
-  populateFilters();
-  document.getElementById('btnSearch').onclick = filterResults;
-  document.getElementById('btnClear').onclick = () => location.reload();
-});
-
-let allSalaries = [];
+// === CONFIG & GLOBAL STATE ===
+let currentData = [];
+let sortDirection = {};
 let charts = {};
 
+// === DATA LOADING ===
 async function loadData() {
   try {
     const res = await fetch(CONFIG.DATA_URL + '?t=' + Date.now());
-    allSalaries = await res.json();
-    displayResults(allSalaries);
-    updateCounts();
-    initCharts();
-  } catch (e) {
-    document.getElementById('results').innerHTML = '<p>Error loading data.</p>';
+    const data = res.ok ? await res.json() : [];
+    currentData = data;
+    populateFilters(data);
+    displayResults(data);
+  } catch (err) {
+    console.error('Failed to load data:', err);
+    document.querySelector('#salariesTable tbody').innerHTML =
+      '<tr><td colspan="10" style="text-align:center; color:#94a3b8;">Error loading data.</td></tr>';
   }
 }
 
-function populateFilters() {
+// === FILTERS ===
+function populateFilters(data) {
+  const countries = [...new Set(data.map(s => s.country).filter(Boolean))].sort();
   const countrySel = document.getElementById('filterCountry');
-  CONFIG.COUNTRIES.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c; opt.textContent = c;
-    countrySel.appendChild(opt);
-  });
+  countrySel.innerHTML = '<option value="">All Countries</option>';
+  countries.forEach(c => countrySel.appendChild(new Option(c, c)));
 
+  // Region & City cascade
   countrySel.onchange = () => {
-    const uk = countrySel.value === 'United Kingdom';
-    const usa = countrySel.value === 'United States';
+    const selected = countrySel.value;
+    const regions = selected
+      ? [...new Set(data.filter(s => s.country === selected).map(s => s.region).filter(Boolean))].sort()
+      : [];
     const regionSel = document.getElementById('filterRegion');
+    regionSel.innerHTML = '<option value="">All Regions</option>';
+    regions.forEach(r => regionSel.appendChild(new Option(r, r)));
+    regionSel.disabled = !selected;
+
+    const cities = selected
+      ? [...new Set(data.filter(s => s.country === selected).map(s => s.city).filter(Boolean))].sort()
+      : [];
     const citySel = document.getElementById('filterCity');
-
-    regionSel.disabled = !(uk || usa);
-    citySel.disabled = true;
-    regionSel.innerHTML = '<option value="">All</option>';
-
-    if (!uk && !usa) return;
-
-    const list = uk ? CONFIG.UK_COUNTIES : CONFIG.USA_STATES;
-    list.forEach(r => {
-      const opt = new Option(r, r);
-      regionSel.appendChild(opt);
-    });
-
-    regionSel.onchange = () => citySel.disabled = false;
+    citySel.innerHTML = '<option value="">All Cities</option>';
+    cities.forEach(c => citySel.appendChild(new Option(c, c)));
+    citySel.disabled = !selected;
   };
 }
 
-function filterResults() {
-  let filtered = allSalaries;
-
-  const title = document.getElementById('searchTitle').value.trim().toLowerCase();
-  if (title) filtered = filtered.filter(s => s.title.toLowerCase().includes(title));
-
+// === SEARCH & FILTER ===
+document.getElementById('btnSearch').onclick = () => {
+  const title = document.getElementById('searchTitle').value.toLowerCase();
   const country = document.getElementById('filterCountry').value;
-  if (country) filtered = filtered.filter(s => s.country === country);
-
   const region = document.getElementById('filterRegion').value;
-  if (region) filtered = filtered.filter(s => s.region === region);
-
-  const city = document.getElementById('filterCity').value.trim();
-  if (city) filtered = filtered.filter(s => s.city.toLowerCase().includes(city.toLowerCase()));
-
+  const city = document.getElementById('filterCity').value;
   const level = document.getElementById('filterLevel').value;
-  if (level) filtered = filtered.filter(s => s.title.includes(level));
+
+  let filtered = currentData;
+
+  if (title) filtered = filtered.filter(s => s.title?.toLowerCase().includes(title));
+  if (country) filtered = filtered.filter(s => s.country === country);
+  if (region) filtered = filtered.filter(s => s.region === region);
+  if (city) filtered = filtered.filter(s => s.city === city);
+  if (level) filtered = filtered.filter(s => s.title === level);
 
   displayResults(filtered);
-}
+};
 
+document.getElementById('btnClear').onclick = () => {
+  document.getElementById('searchTitle').value = '';
+  document.getElementById('filterCountry').value = '';
+  document.getElementById('filterRegion').value = '';
+  document.getElementById('filterRegion').disabled = true;
+  document.getElementById('filterCity').value = '';
+  document.getElementById('filterCity').disabled = true;
+  document.getElementById('filterLevel').value = '';
+  displayResults(currentData);
+};
+
+// === DISPLAY RESULTS (TABLE) ===
 function displayResults(data) {
   const tbody = document.querySelector('#salariesTable tbody');
   if (!data || data.length === 0) {
@@ -83,7 +89,7 @@ function displayResults(data) {
     const benefits = s.benefits ? s.benefits.trim() : '—';
     const cert = s.certification ? s.certification.trim() : '—';
 
-    // === FORMAT submittedAt ===
+    // Format submittedAt: "Nov 2025"
     let submitted = '—';
     if (s.submittedAt) {
       try {
@@ -92,7 +98,7 @@ function displayResults(data) {
           submitted = date.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
         }
       } catch (e) {
-        console.warn('Invalid date:', s.submittedAt);
+        console.warn('Invalid submittedAt:', s.submittedAt);
       }
     }
 
@@ -116,113 +122,137 @@ function displayResults(data) {
 
   // Re-init charts
   destroyCharts();
-  setTimeout(initCharts, 100);
+  setTimeout(() => initCharts(data), 100);
 
   // Enable sorting
   initSorting(data);
 }
 
-function updateCounts() {
-  document.querySelectorAll('.admin-link').forEach(link => {
-    link.textContent = `Admin (${allSalaries.length} live)`;
+// === SORTABLE TABLE ===
+function sortTable(column) {
+  const direction = sortDirection[column] === 'asc' ? 'desc' : 'asc';
+  sortDirection = { [column]: direction };
+
+  currentData.sort((a, b) => {
+    let aVal = a[column] || '';
+    let bVal = b[column] || '';
+
+    if (column === 'location') {
+      aVal = [a.city, a.region].filter(Boolean).join(', ');
+      bVal = [b.city, b.region].filter(Boolean).join(', ');
+    } else if (column === 'salary') {
+      aVal = parseSalary(a.salary);
+      bVal = parseSalary(b.salary);
+    } else if (column === 'submittedAt') {
+      aVal = new Date(a.submittedAt || 0);
+      bVal = new Date(b.submittedAt || 0);
+    }
+
+    if (aVal < bVal) return direction === 'asc' ? -1 : 1;
+    if (aVal > bVal) return direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  displayResults(currentData);
+
+  // Update arrow
+  document.querySelectorAll('#salariesTable th').forEach(th => {
+    th.innerHTML = th.innerHTML.replace(/ [↑↓]$/, '');
+  });
+  const header = document.querySelector(`th[data-sort="${column}"]`);
+  header.innerHTML += direction === 'asc' ? ' ↑' : ' ↓';
+}
+
+function parseSalary(salaryStr) {
+  if (!salaryStr) return 0;
+  return parseFloat(salaryStr.replace(/[^0-9.-]/g, '')) || 0;
+}
+
+function initSorting(data) {
+  currentData = [...data];
+  document.querySelectorAll('#salariesTable th[data-sort]').forEach(th => {
+    th.style.cursor = 'pointer';
+    th.onclick = () => sortTable(th.dataset.sort);
   });
 }
 
 // === CHARTS ===
-function initCharts() {
-  if (allSalaries.length === 0) return;
-
-  const colors = CONFIG.CHART_COLORS.light;
-
-  // Helper: parse salary midpoint
-  const parseSalaryMid = (str) => {
-    const nums = str.match(/\d+/g);
-    if (!nums) return 0;
-    if (nums.length === 1) return parseInt(nums[0]);
-    return (parseInt(nums[0]) + parseInt(nums[1])) / 2;
-  };
-
+function initCharts(data) {
   // Chart 1: By Country
-  const countryData = {};
-  allSalaries.forEach(s => {
-    const mid = parseSalaryMid(s.salary);
-    if (!countryData[s.country]) countryData[s.country] = [];
-    countryData[s.country].push(mid);
-  });
+  const byCountry = data.reduce((acc, s) => {
+    const country = s.country || 'Unknown';
+    acc[country] = (acc[country] || 0) + parseSalary(s.salary);
+    acc[`${country}_count`] = (acc[`${country}_count`] || 0) + 1;
+    return acc;
+  }, {});
 
-  const avg = arr => arr.length ? Math.round(arr.reduce((a,b) => a + b, 0) / arr.length) : 0;
+  const countryLabels = Object.keys(byCountry).filter(k => !k.endsWith('_count'));
+  const countryData = countryLabels.map(c => byCountry[c] / byCountry[`${c}_count`]);
 
-  charts.byCountry = new Chart(document.getElementById('chartByCountry'), {
+  charts.country = new Chart(document.getElementById('chartByCountry'), {
     type: 'bar',
     data: {
-      labels: Object.keys(countryData),
+      labels: countryLabels,
       datasets: [{
-        label: 'Avg Salary (GBP)',
-        data: Object.values(countryData).map(avg),
-        backgroundColor: colors[0]
+        label: 'Avg Salary',
+        data: countryData,
+        backgroundColor: '#1e40af'
       }]
     },
-    options: {
-      responsive: true,
-      plugins: { title: { display: true, text: 'Average Salary by Country' } }
-    }
+    options: { responsive: true, plugins: { legend: { display: false } } }
   });
 
-  // Chart 2: By Role Level
-  const levelData = {};
-  allSalaries.forEach(s => {
-    const level = s.title.split(' ')[0]; // e.g. "Senior" from "Senior QS"
-    const mid = parseSalaryMid(s.salary);
-    if (!levelData[level]) levelData[level] = [];
-    levelData[level].push(mid);
+  // Chart 2: By Level
+  const levels = ['Trainee QS', 'Assistant QS', 'QS', 'Senior QS', 'Cost Manager', 'Commercial Manager'];
+  const levelData = levels.map(l => {
+    const matches = data.filter(s => s.title === l);
+    return matches.length ? matches.reduce((sum, s) => sum + parseSalary(s.salary), 0) / matches.length : 0;
   });
 
-  charts.byLevel = new Chart(document.getElementById('chartByLevel'), {
+  charts.level = new Chart(document.getElementById('chartByLevel'), {
     type: 'doughnut',
     data: {
-      labels: Object.keys(levelData),
+      labels: levels,
       datasets: [{
-        data: Object.values(levelData).map(avg),
-        backgroundColor: colors
+        data: levelData,
+        backgroundColor: CONFIG.CHART_COLORS.light
       }]
     },
-    options: {
-      responsive: true,
-      plugins: { title: { display: true, text: 'Avg Salary by Role Level' } }
-    }
+    options: { responsive: true }
   });
 
   // Chart 3: Salary Distribution
-  const bins = { '<30k': 0, '30-50k': 0, '50-70k': 0, '70-90k': 0, '90k+': 0 };
-  allSalaries.forEach(s => {
-    const mid = parseSalaryMid(s.salary);
-    if (mid < 30000) bins['<30k']++;
-    else if (mid < 50000) bins['30-50k']++;
-    else if (mid < 70000) bins['50-70k']++;
-    else if (mid < 90000) bins['70-90k']++;
-    else bins['90k+']++;
+  const salaryRanges = ['<£40k', '£40k-£60k', '£60k-£80k', '£80k-£100k', '>£100k'];
+  const dist = salaryRanges.map(range => {
+    const [min, max] = range.includes('<') ? [0, 40000] :
+                      range.includes('>') ? [100000, Infinity] :
+                      range.split('-').map(s => parseInt(s.replace(/[^0-9]/g, '')) * 1000);
+    return data.filter(s => {
+      const sal = parseSalary(s.salary);
+      return sal >= min && sal < max;
+    }).length;
   });
 
-  charts.salaryDist = new Chart(document.getElementById('chartSalaryDist'), {
+  charts.dist = new Chart(document.getElementById('chartSalaryDist'), {
     type: 'bar',
     data: {
-      labels: Object.keys(bins),
+      labels: salaryRanges,
       datasets: [{
-        label: 'Number of QS',
-        data: Object.values(bins),
-        backgroundColor: colors[2]
+        label: 'Entries',
+        data: dist,
+        backgroundColor: '#16a34a'
       }]
     },
-    options: {
-      responsive: true,
-      plugins: { title: { display: true, text: 'Salary Distribution' } }
-    }
+    options: { responsive: true, plugins: { legend: { display: false } } }
   });
 }
 
 function destroyCharts() {
-  Object.values(charts).forEach(chart => {
-    if (chart) chart.destroy();
-  });
+  Object.values(charts).forEach(chart => chart?.destroy());
   charts = {};
 }
+
+// === INIT ===
+document.addEventListener('DOMContentLoaded', () => {
+  loadData();
+});
