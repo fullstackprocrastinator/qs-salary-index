@@ -182,6 +182,17 @@ async function fetchPending() {
   }
 }
 
+function setCityRequired(id) {
+  // Remove required from all city fields
+  ['englandCity', 'scotlandCity', 'walesCity', 'usaCity', 'otherCity'].forEach(cid => {
+    const el = document.getElementById(cid);
+    if (el) el.required = false;
+  });
+  // Set required on the active one
+  const active = document.getElementById(id);
+  if (active) active.required = true;
+}
+
 /* ---- UI FEEDBACK ---- */
 function showSuccess() {
   document.getElementById('submitMsg').innerHTML = `
