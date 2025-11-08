@@ -219,5 +219,29 @@
   <script src="assets/js/config.js"></script>
   <!-- SUBMIT LOGIC -->
   <script src="assets/js/submit.js"></script>
+  <script>
+function openEmail() {
+  const email = 'theqssalaryindex@outlook.com';
+  const subject = encodeURIComponent('QS Salary Index – Enquiry');
+  const body = encodeURIComponent(
+    'Hi,\n\nI have a question about the QS Salary Index:\n\n[Your message here]\n\nThanks!'
+  );
+  
+  const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
+  
+  // Try to open mail app
+  const link = document.createElement('a');
+  link.href = mailtoLink;
+  link.style.display = 'none';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+
+  // Fallback: open webmail if mailto fails (mobile)
+  setTimeout(() => {
+    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`, '_blank');
+  }, 500);
+}
+</script>
 </body>
 </html>
