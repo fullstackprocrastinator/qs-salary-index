@@ -406,5 +406,22 @@
     "certification": "MRICS",
     "benefits": "Including car allowance",
     "submittedAt": "2025-11-08T08:55:29.741Z"
+},
+  {
+    "id": "1762592775737",
+    "title": "Assistant QS",
+    "qsType": "Consultant",
+    "country": "United Kingdom",
+    "region": "Bristol",
+    "city": "Bristol",
+    "salary": "£30,000 - £40,000",
+    "timeInRole": "3",
+    "education": "BSc",
+    "sector": "Construction",
+    "companySize": "11-50",
+    "workArrangement": "Remote",
+    "certification": "",
+    "benefits": "Pension",
+    "submittedAt": "2025-11-08T09:06:15.737Z"
 }
 ]
