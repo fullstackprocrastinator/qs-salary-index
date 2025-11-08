@@ -100,7 +100,7 @@ function displayResults(data) {
         <td>${s.sector || '—'}</td>
         <td>${s.certification || '—'}</td>
         <td class="benefits-cell">${benefits}</td>
-        <td class="submitted-cell">${submitted}</td>
+        <td class="submitted-cell">${submittedAt}</td>
       </tr>
     `;
   }).join('');
