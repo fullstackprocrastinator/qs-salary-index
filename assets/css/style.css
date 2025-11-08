@@ -171,3 +171,22 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
 .submitted-cell {
   font-weight: 500;
 }
+
+  /* === SORTABLE HEADERS === */
+#salariesTable th[data-sort] {
+  position: relative;
+  user-select: none;
+}
+
+#salariesTable th[data-sort]:hover {
+  background: #e2e8f0 !important;
+  color: #1e293b;
+}
+
+/* Arrow indicator */
+#salariesTable th[data-sort]::after {
+  content: '';
+  margin-left: 4px;
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
