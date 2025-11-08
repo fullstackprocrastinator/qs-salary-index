@@ -1,173 +1,215 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Submit Salary – The QS Salary Index</title>
+
+  <!-- FAVICON -->
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- STYLES -->
   <link rel="stylesheet" href="assets/css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- SEO -->
+  <meta name="description" content="Submit your QS salary anonymously to The QS Salary Index. 100% private, admin-approved, live within 24h." />
+  <meta name="robots" content="index, follow" />
 </head>
 <body>
   <header>
     <div class="container">
-      <h1><a href="index.html">The QS Salary Index</a></h1>
-      <p>Submit Your Salary (Admin Approved)</p>
+      <h1><a href="/">The QS Salary Index</a></h1>
+      <p>Live global salary data for Quantity Surveyors</p>
+      <p class="brand-link">
+        Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
+      </p>
+      <nav>
+        <a href="/">Back to Index</a> |
+        <a href="mailto:theqssalaryindex@outlook.com" class="contact-btn">Contact Us</a>
+      </nav>
     </div>
   </header>
 
-  <section class="container">
-    <form id="salaryForm">
-  <label>Title/Role *</label>
-  <select name="title" required>
-    <option value="">Select Role...</option>
-    <option>Trainee QS</option>
-    <option>Assistant QS</option>
-    <option>QS</option>
-    <option>Senior QS</option>
-    <option>Principal QS</option>
-    <option>Cost Manager</option>
-    <option>Commercial Manager</option>
-    <option>Head of Cost Management</option>
-    <option>Director</option>
-    <option>Other</option>
-  </select>
+  <main class="container">
+    <section class="submit-form">
+      <h2>Submit Your Salary (100% Anonymous)</h2>
+      <p>Your data helps thousands. All entries are reviewed before going live.</p>
 
-  <label>QS Type *</label>
-  <select name="qsType" required>
-    <option value="">Select Type...</option>
-    <option>Subcontractor</option>
-    <option>Main Contractor</option>
-    <option>Consultant</option>
-    <option>Client / Developer</option>
-    <option>Public Sector</option>
-    <option>Other</option>
-  </select>
+      <form id="salaryForm">
+        <!-- TITLE -->
+        <label>Title/Role *</label>
+        <select name="title" required>
+          <option value="">Select Role...</option>
+          <option>Trainee QS</option>
+          <option>Assistant QS</option>
+          <option>QS</option>
+          <option>Senior QS</option>
+          <option>Principal QS</option>
+          <option>Cost Manager</option>
+          <option>Commercial Manager</option>
+          <option>Head of Cost Management</option>
+          <option>Director</option>
+          <option>Other</option>
+        </select>
 
-  <label>Country *</label>
-  <select name="country" id="country" required>
-    <option value="">Select Country...</option>
-  </select>
+        <!-- QS TYPE -->
+        <label>QS Type *</label>
+        <select name="qsType" required>
+          <option value="">Select Type...</option>
+          <option>Subcontractor</option>
+          <option>Main Contractor</option>
+          <option>Consultant</option>
+          <option>Client / Developer</option>
+          <option>Public Sector</option>
+          <option>Other</option>
+        </select>
 
-  <!-- ENGLAND FIELDS -->
-  <div id="englandFields" style="display:none;">
-    <label>County (optional)</label>
-    <select name="county" id="county">
-      <option value="">Select County...</option>
-    </select>
-    <label>City *</label>
-    <input type="text" name="city" id="englandCity" placeholder="e.g. Norwich" required />
-  </div>
+        <!-- COUNTRY -->
+        <label>Country *</label>
+        <select name="country" id="country" required>
+          <option value="">Select Country...</option>
+        </select>
 
-  <!-- SCOTLAND FIELDS -->
-  <div id="scotlandFields" style="display:none;">
-    <label>Council Area (optional)</label>
-    <select name="region" id="scotlandRegion">
-      <option value="">Select Council Area...</option>
-    </select>
-    <label>City *</label>
-    <input type="text" name="city" id="scotlandCity" placeholder="e.g. Edinburgh" required />
-  </div>
+        <!-- UK SUB-REGION -->
+        <div id="ukSubFields" style="display:none;">
+          <label>UK Region *</label>
+          <select id="ukSub" required>
+            <option value="">Select...</option>
+            <option value="england">England</option>
+            <option value="scotland">Scotland</option>
+            <option value="wales">Wales</option>
+          </select>
+        </div>
 
-  <!-- WALES FIELDS -->
-  <div id="walesFields" style="display:none;">
-    <label>Principal Area (optional)</label>
-    <select name="region" id="walesRegion">
-      <option value="">Select Principal Area...</option>
-    </select>
-    <label>City *</label>
-    <input type="text" name="city" id="walesCity" placeholder="e.g. Cardiff" required />
-  </div>
+        <!-- ENGLAND -->
+        <div id="englandFields" style="display:none;">
+          <label>County (optional)</label>
+          <select id="county"></select>
+          <label>City *</label>
+          <input type="text" id="englandCity" placeholder="e.g. Norwich" />
+        </div>
 
-  <!-- USA FIELDS -->
-  <div id="usaFields" style="display:none;">
-    <label>State *</label>
-    <select name="state" id="state" required>
-      <option value="">Select State...</option>
-    </select>
-    <label>City *</label>
-    <input type="text" name="city" id="usaCity" placeholder="e.g. Austin" required />
-  </div>
+        <!-- SCOTLAND -->
+        <div id="scotlandFields" style="display:none;">
+          <label>Council Area (optional)</label>
+          <select id="scotlandRegion"></select>
+          <label>City *</label>
+          <input type="text" id="scotlandCity" placeholder="e.g. Edinburgh" />
+        </div>
 
-  <!-- OTHER COUNTRIES FIELDS -->
-  <div id="otherFields" style="display:none;">
-    <label>City *</label>
-    <input type="text" name="city" id="otherCity" placeholder="e.g. Sydney" required />
-  </div>
+        <!-- WALES -->
+        <div id="walesFields" style="display:none;">
+          <label>Principal Area (optional)</label>
+          <select id="walesRegion"></select>
+          <label>City *</label>
+          <input type="text" id="walesCity" placeholder="e.g. Cardiff" />
+        </div>
 
-  <label>Salary Range (GBP) *</label>
-  <select name="salary" required>
-    <option value="">Select Range...</option>
-    <option>£20,000 - £30,000</option>
-    <option>£30,000 - £40,000</option>
-    <option>£40,000 - £50,000</option>
-    <option>£50,000 - £60,000</option>
-    <option>£60,000 - £70,000</option>
-    <option>£70,000 - £80,000</option>
-    <option>£80,000 - £90,000</option>
-    <option>£90,000 - £100,000</option>
-    <option>£100,000 - £120,000</option>
-    <option>£120,000 - £150,000</option>
-    <option>£150,000+</option>
-  </select>
+        <!-- USA -->
+        <div id="usaFields" style="display:none;">
+          <label>State *</label>
+          <select id="state" required></select>
+          <label>City *</label>
+          <input type="text" id="usaCity" placeholder="e.g. Austin" required />
+        </div>
 
-  <label>Time in Role (years) *</label>
-  <input type="number" name="timeInRole" min="0" max="50" step="0.5" required />
+        <!-- OTHER COUNTRIES -->
+        <div id="otherFields" style="display:none;">
+          <label>City *</label>
+          <input type="text" id="otherCity" placeholder="e.g. Sydney" required />
+        </div>
 
-  <label>QS Education</label>
-  <select name="education">
-    <option value="None">None</option>
-    <option>HNC</option>
-    <option>BSc</option>
-    <option>MSc</option>
-    <option>PhD</option>
-    <option>Other</option>
-  </select>
+        <!-- SALARY -->
+        <label>Salary Range (GBP) *</label>
+        <select name="salary" required>
+          <option value="">Select Range...</option>
+          <option>£20,000 - £30,000</option>
+          <option>£30,000 - £40,000</option>
+          <option>£40,000 - £50,000</option>
+          <option>£50,000 - £60,000</option>
+          <option>£60,000 - £70,000</option>
+          <option>£70,000 - £80,000</option>
+          <option>£80,000 - £90,000</option>
+          <option>£90,000 - £100,000</option>
+          <option>£100,000 - £120,000</option>
+          <option>£120,000 - £150,000</option>
+          <option>£150,000+</option>
+        </select>
 
-  <label>Sector (optional)</label>
-  <select name="sector">
-    <option>Construction</option>
-    <option>Infrastructure</option>
-    <option>Oil & Gas</option>
-    <option>Renewables</option>
-    <option>Property Development</option>
-    <option>Consultancy</option>
-    <option>Other</option>
-  </select>
+        <!-- TIME IN ROLE -->
+        <label>Time in Role (years) *</label>
+        <input type="number" name="timeInRole" min="0" max="50" step="0.5" placeholder="e.g. 3.5" required />
 
-  <label>Company Size (optional)</label>
-  <select name="companySize">
-    <option>1-10</option>
-    <option>11-50</option>
-    <option>51-250</option>
-    <option>250+</option>
-  </select>
+        <!-- EDUCATION -->
+        <label>QS Education</label>
+        <select name="education">
+          <option value="None">None</option>
+          <option>HNC</option>
+          <option>BSc</option>
+          <option>MSc</option>
+          <option>PhD</option>
+          <option>Other</option>
+        </select>
 
-  <label>Work Arrangement (optional)</label>
-  <select name="workArrangement">
-    <option>On-site</option>
-    <option>Hybrid</option>
-    <option>Remote</option>
-  </select>
+        <!-- SECTOR -->
+        <label>Sector (optional)</label>
+        <select name="sector">
+          <option>Construction</option>
+          <option>Infrastructure</option>
+          <option>Oil & Gas</option>
+          <option>Renewables</option>
+          <option>Property Development</option>
+          <option>Consultancy</option>
+          <option>Other</option>
+        </select>
 
-  <label>Certification (optional)</label>
-  <input type="text" name="certification" placeholder="e.g. MRICS, CIOB" />
+        <!-- COMPANY SIZE -->
+        <label>Company Size (optional)</label>
+        <select name="companySize">
+          <option>1-10</option>
+          <option>11-50</option>
+          <option>51-250</option>
+          <option>250+</option>
+        </select>
 
-  <label>Bonus / Benefits (optional)</label>
-  <textarea name="benefits" rows="2" placeholder="e.g. car allowance, pension"></textarea>
+        <!-- WORK ARRANGEMENT -->
+        <label>Work Arrangement (optional)</label>
+        <select name="workArrangement">
+          <option>On-site</option>
+          <option>Hybrid</option>
+          <option>Remote</option>
+        </select>
 
-  <button type="submit">Submit for Approval</button>
-</form>
+        <!-- CERTIFICATION -->
+        <label>Certification (optional)</label>
+        <input type="text" name="certification" placeholder="e.g. MRICS, CIOB" />
 
-    <p id="submitMsg"></p>
-  </section>
+        <!-- BENEFITS -->
+        <label>Bonus / Benefits (optional)</label>
+        <textarea name="benefits" rows="2" placeholder="e.g. car allowance, pension, 30 days holiday"></textarea>
+
+        <!-- SUBMIT -->
+        <button type="submit">Submit for Approval</button>
+      </form>
+
+      <div id="submitMsg"></div>
+    </section>
+  </main>
 
   <footer>
     <div class="container">
-      <p>© 2025 The QS Collection | <a href="https://www.theqscollection.com" target="_blank">theqscollection.com</a></p>
+      <p>&copy; 2025 The QS Salary Index. Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>.</p>
     </div>
   </footer>
 
+  <!-- CONFIG -->
   <script src="assets/js/config.js"></script>
+  <!-- SUBMIT LOGIC -->
   <script src="assets/js/submit.js"></script>
 </body>
 </html>
