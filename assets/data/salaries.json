@@ -1001,5 +1001,39 @@
 "certification": "",
 "benefits": "Company car, bonus, private medical, 25 days holiday",
 "submittedAt": "2025-11-08T18:13:01.627Z"
+},
+  {
+"id": "1762626328863",
+"title": "QS",
+"qsType": "Client / Developer",
+"country": "United Kingdom",
+"region": "City of Glasgow",
+"city": "Glasgow",
+"salary": "£60,000 - £70,000",
+"timeInRole": "10",
+"education": "MSc",
+"sector": "Renewables",
+"companySize": "250+",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-11-08T18:25:28.864Z"
+},
+  {
+"id": "1762626452324",
+"title": "QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Merseyside",
+"city": "Liverpool",
+"salary": "£40,000 - £50,000",
+"timeInRole": "5",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "250+",
+"workArrangement": "Remote",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-11-08T18:27:32.324Z"
 }
 ]
