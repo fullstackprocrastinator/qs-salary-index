@@ -763,5 +763,22 @@
 "certification": "",
 "benefits": "Company car, 25 days holiday",
 "submittedAt": "2025-11-08T14:14:41.495Z"
+},
+  {
+"id": "1762612019926",
+"title": "Senior QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "West Yorkshire",
+"city": "Leeds",
+"salary": "£60,000 - £70,000",
+"timeInRole": "6",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "250+",
+"workArrangement": "Hybrid",
+"certification": "McInstCES",
+"benefits": "Company car",
+"submittedAt": "2025-11-08T14:26:59.927Z"
 }
 ]
