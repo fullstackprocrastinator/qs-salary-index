@@ -231,3 +231,16 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
   #salariesTable th:nth-child(10),  /* Submitted */
   #salariesTable td:nth-child(10) { width: 9%; text-align: center; }
 }
+
+  /* === MOBILE: KEEP HORIZONTAL SCROLL === */
+@media (max-width: 1023px) {
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #salariesTable {
+    min-width: 900px;
+    table-layout: auto;
+  }
+}
