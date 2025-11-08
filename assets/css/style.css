@@ -92,4 +92,44 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
 .brand-link a:hover {
   color: #1d4ed8;
 }
+
+  /* === QS TOOLS BUTTONS === */
+.qs-tools {
+  margin: 1rem 0;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tool-btn {
+  background: #1e40af;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.2s;
+  display: inline-block;
+}
+
+.tool-btn:hover {
+  background: #1e3a8a;
+  text-decoration: none;
+}
+
+.tool-btn::before {
+  content: "→ ";
+  font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .qs-tools {
+    flex-direction: column;
+  }
+  .tool-btn {
+    text-align: center;
+  }
+}
 }
