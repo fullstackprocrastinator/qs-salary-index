@@ -1103,5 +1103,39 @@
 "certification": "",
 "benefits": "Car allowance , healthcare, pension salary sacrifice",
 "submittedAt": "2025-11-08T21:39:11.485Z"
+},
+  {
+"id": "1762611820153",
+"title": "QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "East Sussex",
+"city": "East Grinstead",
+"salary": "£40,000 - £50,000",
+"timeInRole": "1",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "11-50",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-11-08T14:23:40.153Z"
+},
+  {
+"id": "1762629646660",
+"title": "Commercial Manager",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Cambridgeshire",
+"city": "Cambridge",
+"salary": "£100,000 - £120,000",
+"timeInRole": "23",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "250+",
+"workArrangement": "Remote",
+"certification": "MRICS, MCIOB",
+"benefits": "Car allowance, BUPA, Dental, long service extra holidays, well being days, employer contribution pension, volunteer days, paternity leave",
+"submittedAt": "2025-11-08T19:20:46.660Z"
 }
 ]
