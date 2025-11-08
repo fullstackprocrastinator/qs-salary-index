@@ -74,13 +74,21 @@ function filterResults() {
 function displayResults(data) {
   const tbody = document.querySelector('#salariesTable tbody');
   if (data.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:#94a3b8;">No results found.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; color:#94a3b8;">No results found.</td></tr>';
     return;
   }
 
   const rows = data.map(s => {
     const location = [s.city, s.region].filter(Boolean).join(', ') || '—';
     const benefits = s.benefits ? s.benefits : '—';
+
+    // Format submittedAt: "Nov 2025"
+    let submitted = '—';
+    if (s.submittedAt) {
+      const date = new Date(s.submittedAt);
+      submitted = date.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+    }
+
     return `
       <tr>
         <td><strong>${s.title}</strong></td>
@@ -92,6 +100,7 @@ function displayResults(data) {
         <td>${s.sector || '—'}</td>
         <td>${s.certification || '—'}</td>
         <td class="benefits-cell">${benefits}</td>
+        <td class="submitted-cell">${submitted}</td>
       </tr>
     `;
   }).join('');
