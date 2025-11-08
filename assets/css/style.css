@@ -131,5 +131,30 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
   .tool-btn {
     text-align: center;
   }
+
+  /* === BENEFITS COLUMN === */
+#salariesTable th:nth-child(9),
+#salariesTable td:nth-child(9) {
+  font-size: 0.8rem;
+  color: #64748b;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
+
+.benefits-cell {
+  cursor: help;
+  position: relative;
+}
+
+.benefits-cell:hover {
+  white-space: normal;
+  overflow: visible;
+  background: #f8fafc;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  padding: 0.5rem;
+  border-radius: 4px;
+  max-width: 300px;
 }
