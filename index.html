@@ -1,81 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- ====== BASIC META ====== -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>The QS Salary Index</title>
+  
+  <!-- ====== SEO META ====== -->
+  <title>The QS Salary Index – Live Quantity Surveyor Salaries (UK, US, Global)</title>
+  <meta name="description" content="Real-time salary data for Quantity Surveyors. Search 1000+ verified QS salaries by role, location, experience, and sector. Updated daily.">
+  <meta name="keywords" content="quantity surveyor salary, QS salary index, UK QS pay, US QS salary, construction salary data">
+  <meta name="author" content="The QS Collection">
+  <meta name="robots" content="index, follow">
+
+  <!-- ====== CANONICAL URL ====== -->
+  <link rel="canonical" href="https://yourusername.github.io/qs-salary-index/">
+
+  <!-- ====== FAVICON ====== -->
+  <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
+
+  <!-- ====== OPEN GRAPH (Facebook, LinkedIn) ====== -->
+  <meta property="og:title" content="The QS Salary Index – Live QS Salary Data">
+  <meta property="og:description" content="Search real QS salaries by role, city, and experience. Updated daily.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourusername.github.io/qs-salary-index/">
+  <meta property="og:image" content="https://yourusername.github.io/qs-salary-index/assets/images/og-preview.jpg">
+  <meta property="og:site_name" content="The QS Salary Index">
+
+  <!-- ====== TWITTER CARD ====== -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The QS Salary Index – Live QS Salary Data">
+  <meta name="twitter:description" content="Search real QS salaries by role, city, and experience.">
+  <meta name="twitter:image" content="https://yourusername.github.io/qs-salary-index/assets/images/og-preview.jpg">
+  <meta name="twitter:site" content="@yourhandle">
+
+  <!-- ====== STRUCTURED DATA (JSON-LD) ====== -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "The QS Salary Index",
+    "url": "https://yourusername.github.io/qs-salary-index/",
+    "description": "Live salary data for Quantity Surveyors worldwide.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "The QS Collection",
+      "url": "https://www.theqscollection.com"
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://yourusername.github.io/qs-salary-index/?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+
+  <!-- ====== STYLES ====== -->
   <link rel="stylesheet" href="assets/css/style.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
   <header>
     <div class="container">
-      <h1>The QS Salary Index</h1>
+      <h1><a href="/">The QS Salary Index</a></h1>
       <p>Live global salary data for Quantity Surveyors</p>
       <nav>
         <a href="#search">Search</a> |
         <a href="submit.html">Submit Salary</a>
-        <!-- Admin hidden – use /admin.html -->
       </nav>
     </div>
   </header>
 
-  <section id="search" class="container">
-    <h2>Search Salaries</h2>
-    <div class="filters">
-      <input type="text" id="searchTitle" placeholder="Title (e.g. Assistant QS)" />
-      <select id="filterCountry"></select>
-      <select id="filterRegion" disabled></select>
-      <select id="filterCity" disabled></select>
-      <select id="filterLevel">
-        <option value="">All Levels</option>
-        <option>Trainee QS</option>
-        <option>Assistant QS</option>
-        <option>QS</option>
-        <option>Senior QS</option>
-        <option>Cost Manager</option>
-        <option>Commercial Manager</option>
-      </select>
-      <button id="btnSearch">Search</button>
-      <button id="btnClear">Clear</button>
-    </div>
+  <main>
+    <section id="search" class="container">
+      <h2>Search QS Salaries</h2>
+      <div class="filters">
+        <input type="text" id="searchTitle" placeholder="Title (e.g. Assistant QS)" aria-label="Search by job title" />
+        <select id="filterCountry" aria-label="Filter by country"></select>
+        <select id="filterRegion" disabled aria-label="Filter by region"></select>
+        <select id="filterCity" disabled aria-label="Filter by city"></select>
+        <select id="filterLevel" aria-label="Filter by role level">
+          <option value="">All Levels</option>
+          <option>Trainee QS</option>
+          <option>Assistant QS</option>
+          <option>QS</option>
+          <option>Senior QS</option>
+          <option>Cost Manager</option>
+          <option>Commercial Manager</option>
+        </select>
+        <button id="btnSearch">Search</button>
+        <button id="btnClear">Clear</button>
+      </div>
 
-    <!-- EXCEL-LIKE TABLE -->
-    <div id="results">
-      <div class="table-container">
-        <table id="salariesTable">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Type</th>
-              <th>Location</th>
-              <th>Salary</th>
-              <th>Years</th>
-              <th>Education</th>
-              <th>Sector</th>
-              <th>Cert</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- JS fills this -->
-          </tbody>
-        </table>
+      <!-- TABLE RESULTS -->
+      <div id="results">
+        <div class="table-container">
+          <table id="salariesTable" aria-label="QS Salary Data">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Location</th>
+                <th>Salary</th>
+                <th>Years</th>
+                <th>Education</th>
+                <th>Sector</th>
+                <th>Cert</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
       </div>
-    </div>
 
-    <!-- Charts -->
-    <div class="charts-grid">
-      <div class="chart-container">
-        <canvas id="chartByCountry"></canvas>
+      <!-- CHARTS -->
+      <div class="charts-grid">
+        <div class="chart-container">
+          <canvas id="chartByCountry" aria-label="Average salary by country"></canvas>
+        </div>
+        <div class="chart-container">
+          <canvas id="chartByLevel" aria-label="Average salary by role level"></canvas>
+        </div>
+        <div class="chart-container">
+          <canvas id="chartSalaryDist" aria-label="Salary distribution"></canvas>
+        </div>
       </div>
-      <div class="chart-container">
-        <canvas id="chartByLevel"></canvas>
-      </div>
-      <div class="chart-container">
-        <canvas id="chartSalaryDist"></canvas>
-      </div>
-    </div>
-  </section>
+    </section>
+  </main>
 
   <footer>
     <div class="container">
@@ -83,6 +135,7 @@
     </div>
   </footer>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="assets/js/config.js"></script>
   <script src="assets/js/main.js"></script>
