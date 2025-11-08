@@ -73,34 +73,41 @@ function filterResults() {
 
 function displayResults(data) {
   const tbody = document.querySelector('#salariesTable tbody');
-  if (data.length === 0) {
+  if (!data || data.length === 0) {
     tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; color:#94a3b8;">No results found.</td></tr>';
     return;
   }
 
   const rows = data.map(s => {
     const location = [s.city, s.region].filter(Boolean).join(', ') || '—';
-    const benefits = s.benefits ? s.benefits : '—';
+    const benefits = s.benefits ? s.benefits.trim() : '—';
+    const cert = s.certification ? s.certification.trim() : '—';
 
-    // Format submittedAt: "Nov 2025"
+    // === FORMAT submittedAt ===
     let submitted = '—';
     if (s.submittedAt) {
-      const date = new Date(s.submittedAt);
-      submitted = date.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+      try {
+        const date = new Date(s.submittedAt);
+        if (!isNaN(date)) {
+          submitted = date.toLocaleDateString('en-GB', { month: 'short', year: 'numeric' });
+        }
+      } catch (e) {
+        console.warn('Invalid date:', s.submittedAt);
+      }
     }
 
     return `
       <tr>
-        <td><strong>${s.title}</strong></td>
+        <td><strong>${s.title || '—'}</strong></td>
         <td>${s.qsType || '—'}</td>
         <td>${location}</td>
-        <td><strong>${s.salary}</strong></td>
-        <td>${s.timeInRole}</td>
-        <td>${s.education}</td>
+        <td><strong>${s.salary || '—'}</strong></td>
+        <td>${s.timeInRole || '—'}</td>
+        <td>${s.education || '—'}</td>
         <td>${s.sector || '—'}</td>
-        <td>${s.certification || '—'}</td>
+        <td>${cert}</td>
         <td class="benefits-cell">${benefits}</td>
-        <td class="submitted-cell">${submittedAt}</td>
+        <td class="submitted-cell">${submitted}</td>
       </tr>
     `;
   }).join('');
@@ -110,6 +117,9 @@ function displayResults(data) {
   // Re-init charts
   destroyCharts();
   setTimeout(initCharts, 100);
+
+  // Enable sorting
+  initSorting(data);
 }
 
 function updateCounts() {
