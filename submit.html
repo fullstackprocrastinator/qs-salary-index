@@ -17,127 +17,146 @@
 
   <section class="container">
     <form id="salaryForm">
-      <label>Title/Role *</label>
-      <select name="title" required>
-        <option value="">Select Role...</option>
-        <option>Trainee QS</option>
-        <option>Assistant QS</option>
-        <option>QS</option>
-        <option>Senior QS</option>
-        <option>Principal QS</option>
-        <option>Cost Manager</option>
-        <option>Commercial Manager</option>
-        <option>Head of Cost Management</option>
-        <option>Director</option>
-        <option>Other</option>
-      </select>
+  <label>Title/Role *</label>
+  <select name="title" required>
+    <option value="">Select Role...</option>
+    <option>Trainee QS</option>
+    <option>Assistant QS</option>
+    <option>QS</option>
+    <option>Senior QS</option>
+    <option>Principal QS</option>
+    <option>Cost Manager</option>
+    <option>Commercial Manager</option>
+    <option>Head of Cost Management</option>
+    <option>Director</option>
+    <option>Other</option>
+  </select>
 
-      <label>QS Type *</label>
-      <select name="qsType" required>
-        <option value="">Select Type...</option>
-        <option>Subcontractor</option>
-        <option>Main Contractor</option>
-        <option>Consultant</option>
-        <option>Client / Developer</option>
-        <option>Public Sector</option>
-        <option>Other</option>
-      </select>
+  <label>QS Type *</label>
+  <select name="qsType" required>
+    <option value="">Select Type...</option>
+    <option>Subcontractor</option>
+    <option>Main Contractor</option>
+    <option>Consultant</option>
+    <option>Client / Developer</option>
+    <option>Public Sector</option>
+    <option>Other</option>
+  </select>
 
-      <label>Country *</label>
-      <select name="country" id="country" required>
-        <option value="">Select Country...</option>
-      </select>
+  <label>Country *</label>
+  <select name="country" id="country" required>
+    <option value="">Select Country...</option>
+  </select>
 
-      <!-- UK FIELDS -->
-      <div id="ukFields" style="display:none;">
-        <label>County *</label>
-        <select name="county" id="county">
-          <option value="">Select County...</option>
-        </select>
-        <label>City *</label>
-        <input type="text" name="city" id="ukCity" placeholder="e.g. Norwich" />
-      </div>
+  <!-- ENGLAND FIELDS -->
+  <div id="englandFields" style="display:none;">
+    <label>County (optional)</label>
+    <select name="county" id="county">
+      <option value="">Select County...</option>
+    </select>
+    <label>City *</label>
+    <input type="text" name="city" id="englandCity" placeholder="e.g. Norwich" required />
+  </div>
 
-      <!-- USA FIELDS -->
-      <div id="usaFields" style="display:none;">
-        <label>State *</label>
-        <select name="state" id="state">
-          <option value="">Select State...</option>
-        </select>
-        <label>City *</label>
-        <input type="text" name="city" id="usaCity" placeholder="e.g. Austin" />
-      </div>
+  <!-- SCOTLAND FIELDS -->
+  <div id="scotlandFields" style="display:none;">
+    <label>Council Area (optional)</label>
+    <select name="region" id="scotlandRegion">
+      <option value="">Select Council Area...</option>
+    </select>
+    <label>City *</label>
+    <input type="text" name="city" id="scotlandCity" placeholder="e.g. Edinburgh" required />
+  </div>
 
-      <!-- NON-UK/USA: Generic City -->
-      <div id="otherCity" style="display:none;">
-        <label>City *</label>
-        <input type="text" name="city" id="otherCityInput" placeholder="e.g. Sydney" />
-      </div>
+  <!-- WALES FIELDS -->
+  <div id="walesFields" style="display:none;">
+    <label>Principal Area (optional)</label>
+    <select name="region" id="walesRegion">
+      <option value="">Select Principal Area...</option>
+    </select>
+    <label>City *</label>
+    <input type="text" name="city" id="walesCity" placeholder="e.g. Cardiff" required />
+  </div>
 
-      <label>Salary Range (GBP) *</label>
-      <select name="salary" required>
-        <option value="">Select Range...</option>
-        <option>£20,000 - £30,000</option>
-        <option>£30,000 - £40,000</option>
-        <option>£40,000 - £50,000</option>
-        <option>£50,000 - £60,000</option>
-        <option>£60,000 - £70,000</option>
-        <option>£70,000 - £80,000</option>
-        <option>£80,000 - £90,000</option>
-        <option>£90,000 - £100,000</option>
-        <option>£100,000 - £120,000</option>
-        <option>£120,000 - £150,000</option>
-        <option>£150,000+</option>
-      </select>
+  <!-- USA FIELDS -->
+  <div id="usaFields" style="display:none;">
+    <label>State *</label>
+    <select name="state" id="state" required>
+      <option value="">Select State...</option>
+    </select>
+    <label>City *</label>
+    <input type="text" name="city" id="usaCity" placeholder="e.g. Austin" required />
+  </div>
 
-      <label>Time in Role (years) *</label>
-      <input type="number" name="timeInRole" min="0" max="50" step="0.5" required />
+  <!-- OTHER COUNTRIES FIELDS -->
+  <div id="otherFields" style="display:none;">
+    <label>City *</label>
+    <input type="text" name="city" id="otherCity" placeholder="e.g. Sydney" required />
+  </div>
 
-      <label>QS Education</label>
-      <select name="education">
-        <option value="None">None</option>
-        <option>HNC</option>
-        <option>BSc</option>
-        <option>MSc</option>
-        <option>PhD</option>
-        <option>Other</option>
-      </select>
+  <label>Salary Range (GBP) *</label>
+  <select name="salary" required>
+    <option value="">Select Range...</option>
+    <option>£20,000 - £30,000</option>
+    <option>£30,000 - £40,000</option>
+    <option>£40,000 - £50,000</option>
+    <option>£50,000 - £60,000</option>
+    <option>£60,000 - £70,000</option>
+    <option>£70,000 - £80,000</option>
+    <option>£80,000 - £90,000</option>
+    <option>£90,000 - £100,000</option>
+    <option>£100,000 - £120,000</option>
+    <option>£120,000 - £150,000</option>
+    <option>£150,000+</option>
+  </select>
 
-      <label>Sector (optional)</label>
-      <select name="sector">
-        <option>Construction</option>
-        <option>Infrastructure</option>
-        <option>Oil & Gas</option>
-        <option>Renewables</option>
-        <option>Property Development</option>
-        <option>Consultancy</option>
-        <option>Other</option>
-      </select>
+  <label>Time in Role (years) *</label>
+  <input type="number" name="timeInRole" min="0" max="50" step="0.5" required />
 
-      <label>Company Size (optional)</label>
-      <select name="companySize">
-        <option>1-10</option>
-        <option>11-50</option>
-        <option>51-250</option>
-        <option>250+</option>
-      </select>
+  <label>QS Education</label>
+  <select name="education">
+    <option value="None">None</option>
+    <option>HNC</option>
+    <option>BSc</option>
+    <option>MSc</option>
+    <option>PhD</option>
+    <option>Other</option>
+  </select>
 
-      <label>Work Arrangement (optional)</label>
-      <select name="workArrangement">
-        <option>On-site</option>
-        <option>Hybrid</option>
-        <option>Remote</option>
-      </select>
+  <label>Sector (optional)</label>
+  <select name="sector">
+    <option>Construction</option>
+    <option>Infrastructure</option>
+    <option>Oil & Gas</option>
+    <option>Renewables</option>
+    <option>Property Development</option>
+    <option>Consultancy</option>
+    <option>Other</option>
+  </select>
 
-      <label>Certification (optional)</label>
-      <input type="text" name="certification" placeholder="e.g. MRICS, CIOB" />
+  <label>Company Size (optional)</label>
+  <select name="companySize">
+    <option>1-10</option>
+    <option>11-50</option>
+    <option>51-250</option>
+    <option>250+</option>
+  </select>
 
-      <label>Bonus / Benefits (optional)</label>
-      <textarea name="benefits" rows="2" placeholder="e.g. car allowance, pension"></textarea>
+  <label>Work Arrangement (optional)</label>
+  <select name="workArrangement">
+    <option>On-site</option>
+    <option>Hybrid</option>
+    <option>Remote</option>
+  </select>
 
-      <button type="submit">Submit for Approval</button>
-      
-    </form>
+  <label>Certification (optional)</label>
+  <input type="text" name="certification" placeholder="e.g. MRICS, CIOB" />
+
+  <label>Bonus / Benefits (optional)</label>
+  <textarea name="benefits" rows="2" placeholder="e.g. car allowance, pension"></textarea>
+
+  <button type="submit">Submit for Approval</button>
+</form>
 
     <p id="submitMsg"></p>
   </section>
