@@ -916,5 +916,39 @@
 "certification": "",
 "benefits": "None",
 "submittedAt": "2025-11-08T16:15:06.321Z"
+},
+  {
+"id": "1762619518655",
+"title": "QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Durham",
+"city": "Billingham",
+"salary": "£30,000 - £40,000",
+"timeInRole": "2.5",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "51-250",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "4,000 car allowance",
+"submittedAt": "2025-11-08T16:31:58.655Z"
+},
+  {
+"id": "1762619610207",
+"title": "QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Greater Manchester",
+"city": "Manchester",
+"salary": "£30,000 - £40,000",
+"timeInRole": "3",
+"education": "None",
+"sector": "Infrastructure",
+"companySize": "1-10",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-11-08T16:33:30.207Z"
 }
 ]
