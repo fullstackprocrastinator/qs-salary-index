@@ -168,5 +168,22 @@
     "certification": "MRICS",
     "benefits": "Pension, bonus",
     "submittedAt": "2025-11-07T17:00:00Z"
-  }
+  },
+  {
+    "id": "1762564415296",
+    "title": "Assistant QS",
+    "qsType": "Subcontractor",
+    "country": "United Kingdom",
+    "region": "Cambridgeshire",
+    "city": "Cambridge",
+    "salary": "£40,000 - £50,000",
+    "timeInRole": "3",
+    "education": "HNC",
+    "sector": "Construction",
+    "companySize": "1-10",
+    "workArrangement": "Hybrid",
+    "certification": "",
+    "benefits": "Car & Pension",
+    "submittedAt": "2025-11-08T01:13:35.297Z"
+    }
 ]
