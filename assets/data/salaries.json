@@ -780,5 +780,22 @@
 "certification": "McInstCES",
 "benefits": "Company car",
 "submittedAt": "2025-11-08T14:26:59.927Z"
+},
+  {
+"id": "1762614106001",
+"title": "QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Tyne and Wear",
+"city": "Durham",
+"salary": "£30,000 - £40,000",
+"timeInRole": "1",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "250+",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "£6k car allowance, fuel card, 2% bonus",
+"submittedAt": "2025-11-08T15:01:46.001Z"
 }
 ]
