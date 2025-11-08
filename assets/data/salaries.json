@@ -627,5 +627,22 @@
 "certification": "",
 "benefits": "£5k car allowance",
 "submittedAt": "2025-11-08T11:17:54.937Z"
+},
+  {
+"id": "1762601117919",
+"title": "QS",
+"qsType": "Public Sector",
+"country": "United Kingdom",
+"region": "City of Glasgow",
+"city": "Glasgow",
+"salary": "£40,000 - £50,000",
+"timeInRole": "1.5",
+"education": "BSc",
+"sector": "Infrastructure",
+"companySize": "250+",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-11-08T11:25:17.919Z"
 }
 ]
