@@ -321,5 +321,22 @@
     "certification": "Ciob",
     "benefits": "",
     "submittedAt": "2025-11-08T07:00:10.282Z"
+},
+  {
+    "id": "1762587981520",
+    "title": "QS",
+    "qsType": "Subcontractor",
+    "country": "United Kingdom",
+    "region": "Tyne and Wear",
+    "city": "Gateshead",
+    "salary": "£30,000 - £40,000",
+    "timeInRole": "2",
+    "education": "BSc",
+    "sector": "Renewables",
+    "companySize": "11-50",
+    "workArrangement": "On-site",
+    "certification": "",
+    "benefits": "7.5% salary",
+    "submittedAt": "2025-11-08T07:46:21.520Z"
 }
 ]
