@@ -111,7 +111,7 @@ document.getElementById('salaryForm').onsubmit = async (e) => {
       });
 
       if (!resp.ok) throw new Error('Formspree error');
-      showSuccess('Submitted! You’ll receive an email with the data.');
+      showSuccess('Submitted!');
     } catch (err) {
       console.error(err);
       showError('Submission failed. Please try again.');
