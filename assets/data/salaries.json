@@ -797,5 +797,22 @@
 "certification": "",
 "benefits": "£6k car allowance, fuel card, 2% bonus",
 "submittedAt": "2025-11-08T15:01:46.001Z"
+},
+  {
+"id": "1762614371874",
+"title": "Director",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "City of Glasgow",
+"city": "Glasgow",
+"salary": "£70,000 - £80,000",
+"timeInRole": "3",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "11-50",
+"workArrangement": "Hybrid",
+"certification": "MRICS",
+"benefits": "",
+"submittedAt": "2025-11-08T15:06:11.874Z"
 }
 ]
