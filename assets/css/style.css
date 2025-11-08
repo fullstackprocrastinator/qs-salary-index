@@ -158,3 +158,16 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
   border-radius: 4px;
   max-width: 300px;
 }
+
+  /* === SUBMITTED COLUMN === */
+#salariesTable th:nth-child(10),
+#salariesTable td:nth-child(10) {
+  font-size: 0.8rem;
+  color: #64748b;
+  text-align: center;
+  min-width: 80px;
+}
+
+.submitted-cell {
+  font-weight: 500;
+}
