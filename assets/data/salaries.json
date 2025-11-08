@@ -967,5 +967,22 @@
 "certification": "",
 "benefits": "Bonus",
 "submittedAt": "2025-11-08T16:55:49.536Z"
+},
+  {
+"id": "1762622590734",
+"title": "Cost Manager",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "City of Glasgow",
+"city": "Glasgow",
+"salary": "£60,000 - £70,000",
+"timeInRole": "1",
+"education": "BSc",
+"sector": "Consultancy",
+"companySize": "250+",
+"workArrangement": "Remote",
+"certification": "MRICS",
+"benefits": "",
+"submittedAt": "2025-11-08T17:23:10.734Z"
 }
 ]
