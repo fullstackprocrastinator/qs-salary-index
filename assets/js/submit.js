@@ -149,7 +149,6 @@ function showSuccess() {
     ">
       <strong>Thank you! Your salary has been submitted.</strong><br>
       It will be reviewed and added to the live index within 24 hours.<br>
-      <em>You’ll receive a confirmation email shortly.</em><br>
       <small>— The QS Collection</small>
     </div>`;
 }
