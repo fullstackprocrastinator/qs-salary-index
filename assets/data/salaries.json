@@ -185,5 +185,39 @@
     "certification": "",
     "benefits": "Car & Pension",
     "submittedAt": "2025-11-08T01:13:35.297Z"
-    }
+    },
+  {
+    "id": "1762564531763",
+    "title": "Senior QS",
+    "qsType": "Consultant",
+    "country": "United Kingdom",
+    "region": "Tyne and Wear",
+    "city": "Sunderland",
+    "salary": "£40,000 - £50,000",
+    "timeInRole": "8",
+    "education": "MSc",
+    "sector": "Infrastructure",
+    "companySize": "250+",
+    "workArrangement": "Hybrid",
+    "certification": "",
+    "benefits": "",
+    "submittedAt": "2025-11-08T01:15:31.764Z"
+},
+  {
+    "id": "1762564827499",
+    "title": "Assistant QS",
+    "qsType": "Main Contractor",
+    "country": "Other",
+    "region": "",
+    "city": "Auckland",
+    "salary": "£30,000 - £40,000",
+    "timeInRole": "2.5",
+    "education": "BSc",
+    "sector": "Construction",
+    "companySize": "11-50",
+    "workArrangement": "On-site",
+    "certification": "",
+    "benefits": "Yearly work trip if targets met + bonus",
+    "submittedAt": "2025-11-08T01:20:27.499Z"
+}
 ]
