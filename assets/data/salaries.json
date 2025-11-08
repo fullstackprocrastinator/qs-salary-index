@@ -712,5 +712,39 @@
 "certification": "",
 "benefits": "",
 "submittedAt": "2025-11-08T12:24:16.514Z"
+},
+  {
+"id": "1762605624795",
+"title": "QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Greater Manchester",
+"city": "Manchester",
+"salary": "£40,000 - £50,000",
+"timeInRole": "4",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "51-250",
+"workArrangement": "Remote",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-11-08T12:40:24.795Z"
+},
+  {
+"id": "1762606247885",
+"title": "Assistant QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "West Midlands",
+"city": "Birmingham",
+"salary": "£30,000 - £40,000",
+"timeInRole": "2.5",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "1-10",
+"workArrangement": "On-site",
+"certification": "None",
+"benefits": "",
+"submittedAt": "2025-11-08T12:50:47.885Z"
 }
 ]
