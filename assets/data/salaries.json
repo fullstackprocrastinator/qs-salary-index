@@ -423,5 +423,22 @@
     "certification": "",
     "benefits": "Pension",
     "submittedAt": "2025-11-08T09:06:15.737Z"
+},
+  {
+"id": "1762595454672",
+"title": "Cost Manager",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "City of London",
+"city": "London",
+"salary": "£40,000 - £50,000",
+"timeInRole": "1",
+"education": "BSc",
+"sector": "Infrastructure",
+"companySize": "250+",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-11-08T09:50:54.672Z"
 }
 ]
