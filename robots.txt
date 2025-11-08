@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://fullstackprocrastinator.github.io/qs-salary-index/sitemap.xml
