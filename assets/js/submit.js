@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------
-   The QS Salary Index – Submit Form (Firefox-Safe + Success Animation)
+   The QS Salary Index – Submit Form (Firefox-Safe, No Animation)
    -------------------------------------------------------------- */
 (() => {
   'use strict';
@@ -122,8 +122,8 @@
 
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         
-        // === SUCCESS ANIMATION ===
-        showSuccessAnimation();
+        // === SIMPLE SUCCESS MESSAGE (NO ANIMATION) ===
+        showSuccess();
       } catch (err) {
         console.error('Submission failed:', err);
         showError('Submission failed. Please try again later.');
@@ -141,25 +141,17 @@
     resetRequiredFields();
   }
 
-  // === SUCCESS ANIMATION ===
-  function showSuccessAnimation() {
-    const msg = document.getElementById('submitMsg');
-    msg.innerHTML = `
-      <div class="success-container">
-        <svg class="success-checkmark" viewBox="0 0 60 60">
-          <circle class="checkmark-circle" cx="30" cy="30" r="28"/>
-          <path class="checkmark-check" d="M18 30 L26 38 L42 22"/>
-        </svg>
-        <div class="success-text">
-          <strong>Thank you!</strong><br>
-          Your salary has been submitted and will be live within 24 hours.
-        </div>
+  // === SIMPLE SUCCESS MESSAGE ===
+  function showSuccess() {
+    document.getElementById('submitMsg').innerHTML = `
+      <div style="
+        background:#ecfdf5;color:#065f46;padding:1.2rem;border-radius:12px;
+        border:1px solid #a7f3d0;font-weight:500;margin-top:1rem;line-height:1.5;
+      ">
+        <strong>Thank you!</strong><br>
+        Your salary has been submitted and will be live within 24 hours.<br>
+        <small>— The QS Collection</small>
       </div>`;
-
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-      msg.innerHTML = '';
-    }, 5000);
   }
 
   // === ERROR MESSAGE ===
@@ -178,7 +170,6 @@
   function handleCountryChange() {
     const selected = this.value;
 
-    // Hide all
     ['ukSubFields', 'englandFields', 'scotlandFields', 'walesFields', 'usaFields', 'otherFields'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
@@ -206,7 +197,6 @@
   function handleUKSubChange() {
     const sub = this.value;
 
-    // Hide UK-specific fields
     ['englandFields', 'scotlandFields', 'walesFields'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.style.display = 'none';
@@ -262,5 +252,5 @@
   }
 
   // Expose for debugging
-  window.QS_SUBMIT_DEBUG = { showSuccessAnimation, showError };
+  window.QS_SUBMIT_DEBUG = { showSuccess, showError };
 })();
