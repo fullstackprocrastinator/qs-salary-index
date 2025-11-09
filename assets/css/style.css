@@ -274,4 +274,52 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
     width: fit-content;
   }
 
+  /* — SUCCESS ANIMATION — */
+.success-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #ecfdf5;
+  color: #065f46;
+  padding: 1.2rem;
+  border-radius: 12px;
+  border: 1px solid #a7f3d0;
+  margin-top: 1rem;
+  font-weight: 500;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.success-checkmark {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.checkmark-circle {
+  fill: none;
+  stroke: #16a34a;
+  stroke-width: 3;
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.checkmark-check {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.6s forwards;
+}
+
+@keyframes stroke {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
