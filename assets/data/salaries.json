@@ -1188,5 +1188,22 @@
 "certification": "",
 "benefits": "Car, pension, project bonuses",
 "submittedAt": "2025-11-09T09:51:50.213Z"
+},
+  {
+"id": "1762687872387",
+"title": "Principal QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "West Midlands",
+"city": "Birmingham",
+"salary": "£70,000 - £80,000",
+"timeInRole": "13",
+"education": "BSc",
+"sector": "Infrastructure",
+"companySize": "250+",
+"workArrangement": "Hybrid",
+"certification": "Mrics",
+"benefits": "",
+"submittedAt": "2025-11-09T11:31:12.387Z"
 }
 ]
