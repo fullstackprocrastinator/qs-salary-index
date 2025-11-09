@@ -1205,5 +1205,39 @@
 "certification": "Mrics",
 "benefits": "",
 "submittedAt": "2025-11-09T11:31:12.387Z"
+},
+  {
+"id": "1762696341988",
+"title": "Senior QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Greater Manchester",
+"city": "Manchester",
+"salary": "£80,000 - £90,000",
+"timeInRole": "15",
+"education": "MSc",
+"sector": "Consultancy",
+"companySize": "250+",
+"workArrangement": "Remote",
+"certification": "MRICS, MCICES, FCIArb",
+"benefits": "5-10% bonus",
+"submittedAt": "2025-11-09T13:52:21.988Z"
+},
+  {
+"id": "1762697550862",
+"title": "Senior QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Cardiff",
+"city": "Cardiff",
+"salary": "£60,000 - £70,000",
+"timeInRole": "6",
+"education": "BSc",
+"sector": "Infrastructure",
+"companySize": "250+",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-11-09T14:12:30.863Z"
 }
 ]
