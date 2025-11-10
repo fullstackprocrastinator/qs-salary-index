@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------
-   The QS Salary Index – Submit Form (Firefox-Safe, No Animation)
+   The QS Salary Index – Submit Form (Fixed Formspree)
    -------------------------------------------------------------- */
 (() => {
   'use strict';
@@ -107,29 +107,30 @@
     pending.push(data);
     const jsonStr = JSON.stringify(pending, null, 2);
 
-    /* ---- SEND VIA FORMSPREE ---- */
+    /* ---- SEND VIA FORMSPREE (FORM-URLENCODED) ---- */
     if (CONFIG.FORMSPREE_ENDPOINT && !CONFIG.FORMSPREE_ENDPOINT.includes('YOUR_FORM_ID')) {
       try {
+        const formData = new URLSearchParams();
+        formData.append('_subject', `New QS Salary – ${data.title} in ${data.city}`);
+        formData.append('message', 'A new salary entry has been submitted.\n\nAttached: pending.json');
+        formData.append('pending.json', jsonStr);
+        Object.keys(data).forEach(key => formData.append(key, data[key]));
+
         const resp = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            _subject: `New QS – ${data.title} in ${data.city}`,
-            message: `A new salary entry has been submitted.\n\nAttached: pending.json`,
-            'pending.json': jsonStr
-          })
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: formData.toString()
         });
 
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
         
-        // === SIMPLE SUCCESS MESSAGE (NO ANIMATION) ===
         showSuccess();
       } catch (err) {
         console.error('Submission failed:', err);
-        showError('Submission failed. Please try again later.');
+        showError(`Submission failed: ${err.message}. Please email us.`);
       }
     } else {
-      showError('Formspree not configured. Contact admin.');
+      showError('Formspree not configured. Please email theqssalaryindex@outlook.com');
     }
 
     // === RESET FORM ===
