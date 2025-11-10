@@ -285,12 +285,8 @@
   const usaField = document.getElementById('usaField');
   const cityField = document.getElementById('cityField');
   const cityInput = document.getElementById('cityInput');
-  const cityLabel = document.getElementById('cityLabel');
 
-  // --- DYNAMIC REQUIRED LOGIC ---
-  function setRequired(el, required) {
-    if (el) el.required = required;
-  }
+  function setRequired(el, req) { if (el) el.required = req; }
 
   function resetAll() {
     [ukSubField, englandField, scotlandField, walesField, usaField].forEach(el => {
@@ -299,21 +295,17 @@
     setRequired(cityInput, false);
     setRequired(ukSubSel, false);
     setRequired(document.getElementById('state'), false);
-    setRequired(document.getElementById('englandCounty'), false);
-    setRequired(document.getElementById('scotlandRegion'), false);
-    setRequired(document.getElementById('walesRegion'), false);
 
     ukSubSel.value = '';
-    document.getElementById('englandCounty').innerHTML = '<option value="">Select County...</option>';
-    document.getElementById('scotlandRegion').innerHTML = '<option value="">Select Area...</option>';
-    document.getElementById('walesRegion').innerHTML = '<option value="">Select Area...</option>';
-    document.getElementById('state').innerHTML = '<option value="">Select State...</option>';
+    ['englandCounty', 'scotlandRegion', 'walesRegion', 'state'].forEach(id => {
+      const sel = document.getElementById(id);
+      if (sel) sel.innerHTML = '<option value="">Select (optional)...</option>';
+    });
   }
 
   countrySel.addEventListener('change', () => {
     resetAll();
     const country = countrySel.value;
-
     if (!country) return;
 
     cityField.classList.add('active');
@@ -348,8 +340,9 @@
     }
   });
 
-  function populateSelect(id, items) {
+  function populateSelect(id, items = []) {
     const sel = document.getElementById(id);
+    if (!sel) return;
     sel.innerHTML = '<option value="">Select (optional)...</option>';
     items.forEach(item => sel.appendChild(new Option(item, item)));
   }
@@ -365,34 +358,23 @@
 
     const title = titleSelect.value === 'Other' ? titleOther.value.trim() : titleSelect.value;
     const country = countrySel.value;
-    let region = '', city = cityInput.value.trim();
+    const city = cityInput.value.trim();
 
     if (!title || !country || !city) {
       showError('Please fill all required fields.');
-      btn.disabled = false;
-      btn.textContent = 'Submit for Approval';
-      return;
+      btn.disabled = false; btn.textContent = 'Submit for Approval'; return;
     }
 
+    let region = '';
     if (country === 'United Kingdom') {
       const sub = ukSubSel.value;
-      if (!sub) {
-        showError('Please select England, Scotland, or Wales.');
-        btn.disabled = false;
-        btn.textContent = 'Submit for Approval';
-        return;
-      }
+      if (!sub) { showError('Select England, Scotland, or Wales.'); btn.disabled = false; btn.textContent = 'Submit for Approval'; return; }
       region = sub === 'england' ? document.getElementById('englandCounty').value :
                sub === 'scotland' ? document.getElementById('scotlandRegion').value :
                document.getElementById('walesRegion').value;
     } else if (country === 'United States') {
       region = document.getElementById('state').value;
-      if (!region) {
-        showError('Please select a state.');
-        btn.disabled = false;
-        btn.textContent = 'Submit for Approval';
-        return;
-      }
+      if (!region) { showError('Please select a state.'); btn.disabled = false; btn.textContent = 'Submit for Approval'; return; }
     }
 
     const data = {
