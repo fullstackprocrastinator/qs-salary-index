@@ -311,3 +311,86 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
     justify-content: center;
   }
 }
+
+  /* — RESTORE TABLE ROW LINES (EXCEL STYLE) — */
+.table-container table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-container th,
+.table-container td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb; /* Clean light gray line */
+  font-size: 0.95rem;
+}
+
+.table-container th {
+  background: #f9fafb;
+  font-weight: 600;
+  color: #374151;
+  text-transform: none;
+  letter-spacing: 0;
+  border-top: none;
+}
+
+.table-container tr:last-child td {
+  border-bottom: none; /* Remove last row line */
+}
+
+.table-container tr:hover {
+  background-color: #f3f4f6; /* Subtle hover */
+  transition: background 0.15s ease;
+}
+
+/* Mobile: Stack columns */
+@media (max-width: 768px) {
+  .table-container table,
+  .table-container thead,
+  .table-container tbody,
+  .table-container th,
+  .table-container td,
+  .table-container tr {
+    display: block;
+  }
+
+  .table-container thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .table-container tr {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: white;
+  }
+
+  .table-container td {
+    border: none;
+    position: relative;
+    padding-left: 50%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 1rem;
+  }
+
+  .table-container td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #6b7280;
+    width: 45%;
+    flex-shrink: 0;
+  }
+
+  .table-container td:last-child {
+    border-bottom: none;
+  }
+}
