@@ -1,280 +1,200 @@
-/* The QS Salary Index */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
-* { box-sizing: border-box; margin:0; padding:0; }
-body { font-family: 'Inter', sans-serif; background: #f8f9fa; color: #1a1a1a; line-height: 1.6; }
-.container { max-width: 1000px; margin: auto; padding: 2rem 1rem; }
-
-header { background: #1a3b5d; color: white; padding: 2rem 0; text-align: center; }
-header h1 { font-size: 2.2rem; margin-bottom: .5rem; }
-header p { opacity: 0.9; }
-nav { margin-top: 1rem; }
-nav a { color: #a8d0ff; text-decoration: none; margin: 0 .5rem; }
-nav a:hover { text-decoration: underline; }
-
-.filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: .75rem; margin: 1.5rem 0; }
-.filters input, .filters select, .filters button { padding: .6rem; border: 1px solid #ccc; border-radius: 6px; font-size: .95rem; }
-.filters button { background: #1a3b5d; color: white; cursor: pointer; }
-.filters button:hover { background: #0f2a44; }
-
-.result-card { background: white; border: 1px solid #eee; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,.05); }
-.result-card h3 { margin: 0 0 .5rem; color: #1a3b5d; }
-
-form label { display: block; margin: 1rem 0 .3rem; font-weight: 600; }
-form input, form select, form textarea { width: 100%; padding: .6rem; border: 1px solid #ccc; border-radius: 6px; }
-form button { margin-top: 1.5rem; background: #1a3b5d; color: white; padding: .8rem 1.5rem; border: none; border-radius: 6px; cursor: pointer; font-size: 1rem; }
-form button:hover { background: #0f2a44; }
-
-.pending-item { background: #fff8e1; padding: 1rem; margin: .5rem 0; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
-.pending-item button { margin-left: .5rem; padding: .4rem .8rem; font-size: .9rem; }
-
-footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; border-top: 1px solid #eee; margin-top: 3rem; }
-
-/* === EXCEL-LIKE TABLE === */
-.table-container {
-  overflow-x: auto;
-  margin: 1.5rem 0;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+/* --------------------------------------------------------------
+   The QS Salary Index – Global Styles
+   -------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-#salariesTable {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.875rem;
-  background: white;
-}
-
-#salariesTable th,
-#salariesTable td {
-  padding: 0.5rem 0.75rem;
-  text-align: left;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-#salariesTable th {
+html {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+  color: #1f2937;
   background: #f8fafc;
-  font-weight: 600;
-  color: #1e293b;
-  position: sticky;
-  top: 0;
-  z-index: 1;
+  -webkit-font-smoothing: antialiased;
 }
 
-#salariesTable tr:hover {
-  background: #f1f5f9;
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-#salariesTable td {
-  color: #475569;
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
 }
 
-/* Mobile: smaller font */
-@media (max-width: 768px) {
-  #salariesTable {
-    font-size: 0.8rem;
-  }
-  #salariesTable th,
-  #salariesTable td {
-    padding: 0.4rem 0.5rem;
-  }
-
-  .brand-link {
-  margin: 0.5rem 0;
-  font-size: 0.9rem;
-  color: #64748b;
+/* — TYPOGRAPHY — */
+h1, h2, h3, h4 {
+  color: #111827;
+  font-weight: 700;
+  line-height: 1.3;
+  margin-bottom: 0.75rem;
 }
-.brand-link a {
-  color: #2563eb;
+
+h1 { font-size: 2.25rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.375rem; }
+
+p {
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+a {
+  color: #1e40af;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #1e3a8a;
   text-decoration: underline;
 }
-.brand-link a:hover {
-  color: #1d4ed8;
+
+/* — HEADER — */
+header {
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-  /* === QS TOOLS BUTTONS === */
-.qs-tools {
-  margin: 1rem 0;
+.header-flex {
   display: flex;
+  align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
 }
 
-.tool-btn {
+.logo-link {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  width: 60px !important;
+  height: 60px !important;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.logo:hover {
+  transform: scale(1.08);
+}
+
+.header-text {
+  flex: 1;
+  min-width: 280px;
+}
+
+.header-text p {
+  margin: 0.25rem 0;
+  font-size: 0.95rem;
+  color: #4b5563;
+}
+
+.brand-link a {
+  color: #1e40af;
+  font-weight: 600;
+}
+
+nav {
+  margin-top: 0.5rem;
+}
+
+nav a {
+  color: #1e40af;
+  text-decoration: none;
+  font-weight: 500;
+  margin-right: 0.75rem;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* — HERO — */
+.hero {
+  text-align: center;
+  padding: 3rem 0 2rem;
+}
+
+.hero h1 {
+  margin-bottom: 0.5rem;
+}
+
+.hero p {
+  max-width: 700px;
+  margin: 0.75rem auto;
+  font-size: 1.1rem;
+}
+
+.btn-primary {
+  display: inline-block;
   background: #1e40af;
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
   font-weight: 600;
-  text-decoration: none;
-  transition: background 0.2s;
-  display: inline-block;
+  margin-top: 1rem;
+  box-shadow: 0 2px 6px rgba(30, 64, 175, 0.2);
+  transition: all 0.2s;
 }
 
-.tool-btn:hover {
+.btn-primary:hover {
   background: #1e3a8a;
-  text-decoration: none;
+  transform: translateY(-1px);
 }
 
-.tool-btn::before {
-  content: "→ ";
-  font-weight: bold;
+/* — FILTERS — */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 2rem 0;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
-/* Responsive */
-@media (max-width: 640px) {
-  .qs-tools {
-    flex-direction: column;
-  }
-  .tool-btn {
-    text-align: center;
-  }
-
-  /* === BENEFITS COLUMN === */
-#salariesTable th:nth-child(9),
-#salariesTable td:nth-child(9) {
-  font-size: 0.8rem;
-  color: #64748b;
-  max-width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.filter-group {
+  flex: 1;
+  min-width: 200px;
 }
 
-.benefits-cell {
-  cursor: help;
-  position: relative;
+.filter-group input,
+.filter-group select {
+  width: 100%;
+  padding: 0.65rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: white;
+  transition: border 0.2s;
 }
 
-.benefits-cell:hover {
-  white-space: normal;
-  overflow: visible;
-  background: #f8fafc;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  padding: 0.5rem;
-  border-radius: 4px;
-  max-width: 300px;
+.filter-group input:focus,
+.filter-group select:focus {
+  outline: none;
+  border-color: #1e40af;
+  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
 }
 
-  /* === SUBMITTED COLUMN === */
-#salariesTable th:nth-child(10),
-#salariesTable td:nth-child(10) {
-  font-size: 0.8rem;
-  color: #64748b;
-  text-align: center;
-  min-width: 80px;
-}
-
-.submitted-cell {
-  font-weight: 500;
-}
-
-  /* === SORTABLE HEADERS === */
-#salariesTable th[data-sort] {
-  position: relative;
-  user-select: none;
-}
-
-#salariesTable th[data-sort]:hover {
-  background: #e2e8f0 !important;
-  color: #1e293b;
-}
-
-/* Arrow indicator */
-#salariesTable th[data-sort]::after {
-  content: '';
-  margin-left: 4px;
-  font-size: 0.7rem;
-  opacity: 0.5;
-}
-
-  /* === WIDE DESKTOP TABLE – NO HORIZONTAL SCROLL === */
-@media (min-width: 1024px) {
-  .table-container {
-    overflow-x: visible !important;
-  }
-
-  #salariesTable {
-    min-width: 1400px;     /* Forces full width */
-    table-layout: fixed;   /* Even column distribution */
-    width: 100%;
-  }
-
-  /* Equal column widths (adjust as needed) */
-  #salariesTable th,
-  #salariesTable td {
-    width: 10%;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-  }
-
-  /* Fine-tune specific columns */
-  #salariesTable th:nth-child(1),   /* Title */
-  #salariesTable td:nth-child(1) { width: 14%; }
-
-  #salariesTable th:nth-child(3),   /* Location */
-  #salariesTable td:nth-child(3) { width: 16%; }
-
-  #salariesTable th:nth-child(4),   /* Salary */
-  #salariesTable td:nth-child(4) { width: 11%; }
-
-  #salariesTable th:nth-child(9),   /* Benefits */
-  #salariesTable td:nth-child(9) { 
-    width: 18%; 
-    white-space: normal !important;
-    max-width: 220px;
-  }
-
-  #salariesTable th:nth-child(10),  /* Submitted */
-  #salariesTable td:nth-child(10) { width: 9%; text-align: center; }
-}
-
-  /* === MOBILE: KEEP HORIZONTAL SCROLL === */
-@media (max-width: 1023px) {
-  .table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  #salariesTable {
-    min-width: 900px;
-    table-layout: auto;
-  }
-
-  /* === CONTACT BUTTON === */
-.contact-btn {
-  background: #dc2626;          /* Red to stand out */
-  color: white;
-  padding: 0.35rem 0.75rem;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: background 0.2s;
-  display: inline-block;
-}
-
-.contact-btn:hover {
-  background: #b91c1c;
-  text-decoration: none;
-}
-
-/* Mobile: Stack nav items */
-@media (max-width: 640px) {
-  nav {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: flex-start;
-  }
-  .contact-btn {
-    width: fit-content;
-  }
-
-  /* — VIEW INSIGHTS CTA — */
+/* — INSIGHTS CTA — */
 .insights-cta {
   text-align: center;
   margin: 1.5rem 0;
@@ -305,28 +225,37 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
   font-weight: bold;
 }
 
-@media (max-width: 640px) {
-  .btn-insights {
-    width: 100%;
-    justify-content: center;
-  }
+/* — TABLE (EXCEL STYLE) — */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
-  /* — RESTORE TABLE ROW LINES (EXCEL STYLE) — */
+.table-header h2 {
+  font-size: 1.25rem;
+  color: #374151;
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+}
+
 .table-container table {
   width: 100%;
   border-collapse: collapse;
   background: white;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  border-radius: 8px;
-  overflow: hidden;
 }
 
 .table-container th,
 .table-container td {
   padding: 0.75rem 1rem;
   text-align: left;
-  border-bottom: 1px solid #e5e7eb; /* Clean light gray line */
+  border-bottom: 1px solid #e5e7eb;
   font-size: 0.95rem;
 }
 
@@ -334,22 +263,75 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
   background: #f9fafb;
   font-weight: 600;
   color: #374151;
-  text-transform: none;
-  letter-spacing: 0;
-  border-top: none;
 }
 
 .table-container tr:last-child td {
-  border-bottom: none; /* Remove last row line */
+  border-bottom: none;
 }
 
 .table-container tr:hover {
-  background-color: #f3f4f6; /* Subtle hover */
+  background-color: #f3f4f6;
   transition: background 0.15s ease;
 }
 
-/* Mobile: Stack columns */
+/* ZEBRA ROWS */
+.table-container tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+/* — NO RESULTS / LOADING — */
+.no-results,
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* — FOOTER — */
+footer {
+  margin-top: auto;
+  background: #1f2937;
+  color: #d1d5db;
+  padding: 2rem 0;
+  font-size: 0.875rem;
+}
+
+footer a {
+  color: #93c5fd;
+}
+
+footer a:hover {
+  color: white;
+  text-decoration: underline;
+}
+
+/* — MOBILE RESPONSIVENESS — */
 @media (max-width: 768px) {
+  .header-flex {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .logo {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
+  .filter-group {
+    min-width: 100%;
+  }
+
+  .btn-insights {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Mobile table → cards */
   .table-container table,
   .table-container thead,
   .table-container tbody,
@@ -393,4 +375,22 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
   .table-container td:last-child {
     border-bottom: none;
   }
+}
+
+@media (max-width: 640px) {
+  h1 { font-size: 1.875rem; }
+  .hero { padding: 2rem 0 1.5rem; }
+}
+
+/* — SCREEN READER ONLY — */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
 }
