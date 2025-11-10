@@ -1408,5 +1408,21 @@
 "certification": "",
 "benefits": "Pension",
 "submittedAt": "2025-11-10T13:49:01.966Z"
+},
+  {
+"title": "Assistant QS",
+"qsType": "Client / Developer",
+"country": "United Kingdom",
+"region": "Bristol",
+"city": "Bristol",
+"salary": "£30,000 - £40,000",
+"timeInRole": "1",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-11-10T14:20:16.405Z"
 }
 ]
