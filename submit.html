@@ -23,7 +23,7 @@
     .submit-btn { background: #1e40af; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; font-size: 1rem; transition: background 0.2s; }
     .submit-btn:hover { background: #1e3a8a; }
     .submit-btn:disabled { background: #9ca3af; cursor: not-allowed; }
-    .success-msg, .error-msg { padding: 1rem; border-radius: 8px; margin: 1rem 0; display: none; }
+    .success-msg, .error-msg { padding: 1rem; border-radius: 8px; margin: 1rem 0; }
     .success-msg { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
     .error-msg { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
   </style>
@@ -106,10 +106,10 @@
           </select>
         </div>
 
-        <!-- UK Sub-Region -->
-        <div class="form-group nested-field" id="ukSubField">
-          <label for="ukSub">UK Region *</label>
-          <select id="ukSub">
+        <!-- UK Region -->
+        <div class="form-group nested-field" id="ukRegionField">
+          <label for="ukRegion">UK Region *</label>
+          <select id="ukRegion">
             <option value="">Select...</option>
             <option value="england">England</option>
             <option value="scotland">Scotland</option>
@@ -118,7 +118,7 @@
         </div>
 
         <!-- England County -->
-        <div class="form-group nested-field" id="englandField">
+        <div class="form-group nested-field" id="englandCountyField">
           <label for="englandCounty">County (optional)</label>
           <select id="englandCounty">
             <option value="">Select County...</option>
@@ -126,33 +126,33 @@
         </div>
 
         <!-- Scotland Council Area -->
-        <div class="form-group nested-field" id="scotlandField">
-          <label for="scotlandRegion">Council Area (optional)</label>
-          <select id="scotlandRegion">
+        <div class="form-group nested-field" id="scotlandAreaField">
+          <label for="scotlandArea">Council Area (optional)</label>
+          <select id="scotlandArea">
             <option value="">Select Area...</option>
           </select>
         </div>
 
         <!-- Wales Principal Area -->
-        <div class="form-group nested-field" id="walesField">
-          <label for="walesRegion">Principal Area (optional)</label>
-          <select id="walesRegion">
+        <div class="form-group nested-field" id="walesAreaField">
+          <label for="walesArea">Principal Area (optional)</label>
+          <select id="walesArea">
             <option value="">Select Area...</option>
           </select>
         </div>
 
         <!-- US State -->
-        <div class="form-group nested-field" id="usaField">
-          <label for="state">State *</label>
-          <select id="state">
+        <div class="form-group nested-field" id="usaStateField">
+          <label for="usaState">State *</label>
+          <select id="usaState">
             <option value="">Select State...</option>
           </select>
         </div>
 
         <!-- City -->
         <div class="form-group nested-field" id="cityField">
-          <label for="cityInput">City *</label>
-          <input type="text" id="cityInput" placeholder="e.g. London" required />
+          <label for="city">City *</label>
+          <input type="text" id="city" placeholder="e.g. London" required />
         </div>
 
         <!-- Salary Range -->
@@ -257,22 +257,21 @@
 
   <!-- LOAD CONFIG & INIT -->
   <script>
-    // === 1. LOAD config.js FIRST ===
+    // Load config.js
     const configScript = document.createElement('script');
-    configScript.src = 'assets/js/config.js?t=' + Date.now(); // cache-buster
+    configScript.src = 'assets/js/config.js?t=' + Date.now();
     configScript.onload = initForm;
     configScript.onerror = () => {
       document.getElementById('submitMsg').innerHTML = `
         <div class="error-msg">
-          <strong>Error:</strong> Failed to load config.js. Please check the file path.
+          <strong>Error:</strong> Failed to load config.js. Check the file path.
         </div>`;
     };
     document.head.appendChild(configScript);
 
-    // === 2. INIT AFTER CONFIG LOADS ===
     function initForm() {
       if (!window.CONFIG) {
-        showError('CONFIG is missing. Please ensure assets/js/config.js exists.');
+        showError('CONFIG is missing. Please upload assets/js/config.js');
         return;
       }
 
@@ -280,16 +279,16 @@
       const titleSelect = document.getElementById('title');
       const titleOther = document.getElementById('titleOther');
       const countrySel = document.getElementById('country');
-      const ukSubField = document.getElementById('ukSubField');
-      const ukSubSel = document.getElementById('ukSub');
-      const englandField = document.getElementById('englandField');
-      const scotlandField = document.getElementById('scotlandField');
-      const walesField = document.getElementById('walesField');
-      const usaField = document.getElementById('usaField');
+      const ukRegionField = document.getElementById('ukRegionField');
+      const ukRegionSel = document.getElementById('ukRegion');
+      const englandCountyField = document.getElementById('englandCountyField');
+      const scotlandAreaField = document.getElementById('scotlandAreaField');
+      const walesAreaField = document.getElementById('walesAreaField');
+      const usaStateField = document.getElementById('usaStateField');
       const cityField = document.getElementById('cityField');
-      const cityInput = document.getElementById('cityInput');
+      const cityInput = document.getElementById('city');
 
-      // Title "Other"
+      // Title Other
       titleSelect.addEventListener('change', () => {
         titleOther.style.display = titleSelect.value === 'Other' ? 'block' : 'none';
         titleOther.required = titleSelect.value === 'Other';
@@ -297,14 +296,12 @@
 
       // Reset
       function resetAll() {
-        [ukSubField, englandField, scotlandField, walesField, usaField].forEach(el => {
-          el.classList.remove('active');
-        });
+        [ukRegionField, englandCountyField, scotlandAreaField, walesAreaField, usaStateField].forEach(f => f.classList.remove('active'));
         setRequired(cityInput, false);
-        setRequired(ukSubSel, false);
-        setRequired(document.getElementById('state'), false);
-        ukSubSel.value = '';
-        ['englandCounty', 'scotlandRegion', 'walesRegion', 'state'].forEach(id => {
+        setRequired(ukRegionSel, false);
+        setRequired(document.getElementById('usaState'), false);
+        ukRegionSel.value = '';
+        ['englandCounty', 'scotlandArea', 'walesArea', 'usaState'].forEach(id => {
           const sel = document.getElementById(id);
           if (sel) sel.innerHTML = '<option value="">Select (optional)...</option>';
         });
@@ -322,32 +319,28 @@
         setRequired(cityInput, true);
 
         if (country === 'United Kingdom') {
-          ukSubField.classList.add('active');
-          setRequired(ukSubSel, true);
+          ukRegionField.classList.add('active');
+          setRequired(ukRegionSel, true);
         } else if (country === 'United States') {
-          usaField.classList.add('active');
-          populateSelect('state', CONFIG.USA_STATES);
-          setRequired(document.getElementById('state'), true);
+          usaStateField.classList.add('active');
+          populateSelect('usaState', CONFIG.USA_STATES);
+          setRequired(document.getElementById('usaState'), true);
         }
       });
 
-      // UK sub-region
-      ukSubSel.addEventListener('change', () => {
-        [englandField, scotlandField, walesField].forEach(el => el.classList.remove('active'));
-        setRequired(document.getElementById('englandCounty'), false);
-        setRequired(document.getElementById('scotlandRegion'), false);
-        setRequired(document.getElementById('walesRegion'), false);
-
-        const sub = ukSubSel.value;
-        if (sub === 'england') {
-          englandField.classList.add('active');
+      // UK Region change
+      ukRegionSel.addEventListener('change', () => {
+        [englandCountyField, scotlandAreaField, walesAreaField].forEach(f => f.classList.remove('active'));
+        const region = ukRegionSel.value;
+        if (region === 'england') {
+          englandCountyField.classList.add('active');
           populateSelect('englandCounty', CONFIG.UK_COUNTIES);
-        } else if (sub === 'scotland') {
-          scotlandField.classList.add('active');
-          populateSelect('scotlandRegion', CONFIG.SCOTLAND_COUNCIL_AREAS);
-        } else if (sub === 'wales') {
-          walesField.classList.add('active');
-          populateSelect('walesRegion', CONFIG.WALES_PRINCIPAL_AREAS);
+        } else if (region === 'scotland') {
+          scotlandAreaField.classList.add('active');
+          populateSelect('scotlandArea', CONFIG.SCOTLAND_COUNCIL_AREAS);
+        } else if (region === 'wales') {
+          walesAreaField.classList.add('active');
+          populateSelect('walesArea', CONFIG.WALES_PRINCIPAL_AREAS);
         }
       });
 
@@ -362,10 +355,9 @@
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const btn = form.querySelector('.submit-btn');
-        const msg = document.getElementById('submitMsg');
         btn.disabled = true;
         btn.textContent = 'Submitting...';
-        msg.innerHTML = '';
+        document.getElementById('submitMsg').innerHTML = '';
 
         const title = titleSelect.value === 'Other' ? titleOther.value.trim() : titleSelect.value;
         const country = countrySel.value;
@@ -378,13 +370,13 @@
 
         let region = '';
         if (country === 'United Kingdom') {
-          const sub = ukSubSel.value;
+          const sub = ukRegionSel.value;
           if (!sub) { showError('Select England, Scotland, or Wales.'); btn.disabled = false; btn.textContent = 'Submit for Approval'; return; }
           region = sub === 'england' ? document.getElementById('englandCounty').value :
-                   sub === 'scotland' ? document.getElementById('scotlandRegion').value :
-                   document.getElementById('walesRegion').value;
+                   sub === 'scotland' ? document.getElementById('scotlandArea').value :
+                   document.getElementById('walesArea').value;
         } else if (country === 'United States') {
-          region = document.getElementById('state').value;
+          region = document.getElementById('usaState').value;
           if (!region) { showError('Please select a state.'); btn.disabled = false; btn.textContent = 'Submit for Approval'; return; }
         }
 
