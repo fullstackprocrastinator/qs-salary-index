@@ -1375,5 +1375,22 @@
 "certification": "",
 "benefits": "",
 "submittedAt": "2025-11-10T12:22:49.376Z"
+},
+  {
+"id": "1762767986227",
+"title": "QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Nottinghamshire",
+"city": "Retford",
+"salary": "£60,000 - £70,000",
+"timeInRole": "5",
+"education": "BSc",
+"sector": "Other",
+"companySize": "250+",
+"workArrangement": "Hybrid",
+"certification": "AssocRICS",
+"benefits": "Car allowance",
+"submittedAt": "2025-11-10T09:46:26.227Z"
 }
 ]
