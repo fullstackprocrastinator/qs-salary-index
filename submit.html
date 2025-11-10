@@ -257,21 +257,22 @@
 
   <!-- LOAD CONFIG & INIT -->
   <script>
-    // Load config.js first
+    // === 1. LOAD config.js FIRST ===
     const configScript = document.createElement('script');
-    configScript.src = 'assets/js/config.js?t=' + Date.now();
+    configScript.src = 'assets/js/config.js?t=' + Date.now(); // cache-buster
     configScript.onload = initForm;
     configScript.onerror = () => {
       document.getElementById('submitMsg').innerHTML = `
         <div class="error-msg">
-          <strong>Error:</strong> Failed to load configuration. Please refresh.
+          <strong>Error:</strong> Failed to load config.js. Please check the file path.
         </div>`;
     };
     document.head.appendChild(configScript);
 
+    // === 2. INIT AFTER CONFIG LOADS ===
     function initForm() {
       if (!window.CONFIG) {
-        showError('Configuration missing. Please contact support.');
+        showError('CONFIG is missing. Please ensure assets/js/config.js exists.');
         return;
       }
 
@@ -294,7 +295,7 @@
         titleOther.required = titleSelect.value === 'Other';
       });
 
-      // Reset all
+      // Reset
       function resetAll() {
         [ukSubField, englandField, scotlandField, walesField, usaField].forEach(el => {
           el.classList.remove('active');
