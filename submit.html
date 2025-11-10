@@ -62,30 +62,19 @@
       font-size: 1rem;
       transition: background 0.2s;
     }
-    .submit-btn:hover {
-      background: #1e3a8a;
-    }
-    .submit-btn:disabled {
-      background: #9ca3af;
-      cursor: not-allowed;
-    }
+    .submit-btn:hover { background: #1e3a8a; }
+    .submit-btn:disabled { background: #9ca3af; cursor: not-allowed; }
     .success-msg {
-      background: #ecfdf5;
-      color: #065f46;
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid #a7f3d0;
-      margin: 1rem 0;
-      display: none;
+      background: #ecfdf5; color: #065f46; padding: 1rem; border-radius: 8px;
+      border: 1px solid #a7f3d0; margin: 1rem 0; display: none;
     }
     .error-msg {
-      background: #fef2f2;
-      color: #991b1b;
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid #fca5a5;
-      margin: 1rem 0;
+      background: #fef2f2; color: #991b1b; padding: 1rem; border-radius: 8px;
+      border: 1px solid #fca5a5; margin: 1rem 0; display: none;
+    }
+    .other-input {
       display: none;
+      margin-top: 0.5rem;
     }
   </style>
 </head>
@@ -121,10 +110,24 @@
 
     <form id="salaryForm" class="submit-form">
       <div class="form-grid">
-        <!-- Title/Role -->
+        <!-- Title/Role (Dropdown + Other) -->
         <div class="form-group">
-          <label for="title">Title/Role *</label>
-          <input type="text" id="title" placeholder="e.g. Senior QS" required />
+          <label for="titleSelect">Title/Role *</label>
+          <select id="titleSelect" required>
+            <option value="">Select Role...</option>
+            <option>Trainee QS</option>
+            <option>Assistant QS</option>
+            <option>QS</option>
+            <option>Senior QS</option>
+            <option>Principal QS</option>
+            <option>Commercial Manager</option>
+            <option>Cost Manager</option>
+            <option>Project QS</option>
+            <option>MEP QS</option>
+            <option>Claims QS</option>
+            <option>Other</option>
+          </select>
+          <input type="text" id="titleOther" class="other-input" placeholder="Enter your role..." />
         </div>
 
         <!-- QS Type -->
@@ -188,7 +191,7 @@
           </select>
         </div>
 
-        <!-- Sector (optional) -->
+        <!-- Sector -->
         <div class="form-group">
           <label for="sector">Sector (optional)</label>
           <select id="sector">
@@ -200,7 +203,7 @@
           </select>
         </div>
 
-        <!-- Company Size (optional) -->
+        <!-- Company Size -->
         <div class="form-group">
           <label for="companySize">Company Size (optional)</label>
           <select id="companySize">
@@ -212,7 +215,7 @@
           </select>
         </div>
 
-        <!-- Work Arrangement (optional) -->
+        <!-- Work Arrangement -->
         <div class="form-group">
           <label for="workArrangement">Work Arrangement (optional)</label>
           <select id="workArrangement">
@@ -222,7 +225,7 @@
           </select>
         </div>
 
-        <!-- Certification (optional) -->
+        <!-- Certification -->
         <div class="form-group">
           <label for="certification">Certification (optional)</label>
           <input type="text" id="certification" placeholder="e.g. MRICS, CIOB" />
@@ -265,6 +268,22 @@
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
 
+    // Show/hide "Other" input for Title/Role
+    const titleSelect = document.getElementById('titleSelect');
+    const titleOther = document.getElementById('titleOther');
+
+    titleSelect.addEventListener('change', () => {
+      if (titleSelect.value === 'Other') {
+        titleOther.style.display = 'block';
+        titleOther.required = true;
+      } else {
+        titleOther.style.display = 'none';
+        titleOther.required = false;
+        titleOther.value = '';
+      }
+    });
+
+    // Form submission
     document.getElementById('salaryForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = e.target.querySelector('.submit-btn');
@@ -276,8 +295,10 @@
       successMsg.style.display = 'none';
       errorMsg.style.display = 'none';
 
+      const title = titleSelect.value === 'Other' ? titleOther.value.trim() : titleSelect.value;
+
       const formData = {
-        title: document.getElementById('title').value.trim(),
+        title,
         qsType: document.getElementById('qsType').value,
         country: document.getElementById('country').value,
         salary: document.getElementById('salary').value,
@@ -292,11 +313,11 @@
       };
 
       try {
-        // In real use, send to backend (e.g., Netlify, Formspree, etc.)
-        // For now: simulate success
+        // Simulate success (replace with real backend later)
         await new Promise(r => setTimeout(r, 800));
         successMsg.style.display = 'block';
         e.target.reset();
+        titleOther.style.display = 'none';
       } catch (err) {
         errorMsg.textContent = 'Submission failed. Please try again.';
         errorMsg.style.display = 'block';
