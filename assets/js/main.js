@@ -1,156 +1,161 @@
 /* --------------------------------------------------------------
-   The QS Salary Index – Main Page Logic (Fixed Filters)
+   The QS Salary Index – Main Page Logic (Robust Loading)
    -------------------------------------------------------------- */
 (() => {
   'use strict';
 
-  // Cache DOM elements
-  const searchInput = document.getElementById('searchTitle');
-  const roleFilter = document.getElementById('roleFilter');
-  const locationFilter = document.getElementById('locationFilter');
-  const salaryRangeFilter = document.getElementById('salaryRangeFilter');
-  const tableBody = document.getElementById('salaryTableBody');
-  const noResults = document.getElementById('noResults');
-  const loadingMsg = document.getElementById('loadingMsg');
-  const entryCount = document.getElementById('entryCount');
+  // ---------- DOM CACHE ----------
+  const searchInput       = document.getElementById('search');
+  const roleFilter        = document.getElementById('roleFilter');
+  const locationFilter    = document.getElementById('locationFilter');
+  const salaryRangeFilter = document.getElementById('salaryRange');
+  const tableBody         = document.getElementById('salaryTableBody');
+  const noResults         = document.getElementById('noResults');
+  const loadingMsg        = document.getElementById('loading');
+  const resultsSection    = document.getElementById('results');
+  const entryCount        = document.getElementById('entryCount');
 
   let allData = [];
 
-  // === LOAD DATA ===
+  // ---------- FALLBACK DATA (shown if JSON fails) ----------
+  const fallbackData = [
+    {
+      title: "Senior QS", qsType: "Main Contractor", city: "London", region: "Greater London",
+      salary: "£70,000 - £80,000", benefits: "Car allowance, pension", submittedAt: "2025-11-01"
+    },
+    {
+      title: "Assistant QS", qsType: "Consultant", city: "Chelmsford", region: "Essex",
+      salary: "£40,000 - £50,000", benefits: "Pension", submittedAt: "2025-11-02"
+    }
+  ];
+
+  // ---------- LOAD DATA ----------
   async function loadData() {
     try {
-      loadingMsg.style.display = 'block';
+      console.log('Fetching salaries.json...');
       const res = await fetch('assets/data/salaries.json?t=' + Date.now());
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
       allData = await res.json();
+      console.log(`Loaded ${allData.length} entries`);
+    } catch (err) {
+      console.error('Failed to load salaries.json →', err);
+      // ---- SHOW ERROR ----
+      loadingMsg.innerHTML = `
+        <p style="color:#dc2626">
+          Could not load live data.<br>
+          <small>Check that <code>assets/data/salaries.json</code> exists.</small>
+        </p>`;
+      // ---- FALLBACK ----
+      allData = fallbackData;
+    } finally {
       populateFilters();
       renderTable(allData);
       updateEntryCount(allData.length);
       loadingMsg.style.display = 'none';
-    } catch (err) {
-      console.error('Failed to load data:', err);
-      loadingMsg.innerHTML = '<p style="color:#dc2626">Error loading data. Please refresh.</p>';
+      resultsSection.style.display = 'block';
     }
   }
 
-  // === POPULATE FILTERS ===
+  // ---------- POPULATE FILTER DROPDOWNS ----------
   function populateFilters() {
-    // Roles (qsType)
-    const roles = [...new Set(allData.map(s => s.qsType).filter(Boolean))].sort();
-    roleFilter.innerHTML = '<option value="">All QS Types</option>';
-    roles.forEach(role => roleFilter.appendChild(new Option(role, role)));
+    const roles = [...new Set(allData.map(e => e.qsType).filter(Boolean))].sort();
+    roleFilter.innerHTML = '<option value="">All Roles</option>' +
+      roles.map(r => `<option value="${r}">${r}</option>`).join('');
 
-    // Locations (city)
-    const locations = [...new Set(allData.map(s => s.city).filter(Boolean))].sort();
-    locationFilter.innerHTML = '<option value="">All Locations</option>';
-    locations.forEach(loc => locationFilter.appendChild(new Option(loc, loc)));
-
-    // Salary ranges (pre-defined)
-    salaryRangeFilter.innerHTML = '<option value="0-200000">All Salaries</option>';
-    const ranges = [
-      { value: '0-40000', label: 'Under £40k' },
-      { value: '40000-60000', label: '£40k - £60k' },
-      { value: '60000-80000', label: '£60k - £80k' },
-      { value: '80000-100000', label: '£80k - £100k' },
-      { value: '100000+', label: 'Over £100k' }
-    ];
-    ranges.forEach(r => salaryRangeFilter.appendChild(new Option(r.label, r.value)));
+    const cities = [...new Set(allData.map(e => e.city).filter(Boolean))].sort();
+    locationFilter.innerHTML = '<option value="">All Locations</option>' +
+      cities.map(c => `<option value="${c}">${c}</option>`).join('');
   }
 
-  // === RENDER TABLE ===
+  // ---------- RENDER TABLE ----------
   function renderTable(data) {
     if (!data || data.length === 0) {
       tableBody.innerHTML = '';
       noResults.style.display = 'block';
-      entryCount.textContent = '0 entries';
       return;
     }
-
     noResults.style.display = 'none';
-    tableBody.innerHTML = data.map(s => {
-      const location = [s.city, s.region].filter(Boolean).join(', ') || '—';
-      const benefits = s.benefits ? s.benefits : '—';
-      const submitted = s.submittedAt ? new Date(s.submittedAt).toLocaleDateString('en-GB', { month: 'short', day: 'numeric' }) : '—';
+
+    tableBody.innerHTML = data.map(entry => {
+      const location = [entry.city, entry.region].filter(Boolean).join(', ') || '—';
+      const benefits = entry.benefits ? entry.benefits.split(',').slice(0,2).join(', ') +
+                       (entry.benefits.split(',').length > 2 ? '...' : '') : '—';
+      const date = new Date(entry.submittedAt).toLocaleDateString('en-GB', {day:'numeric', month:'short'});
 
       return `
         <tr>
-          <td>${s.title}</td>
-          <td>${s.qsType || '—'}</td>
-          <td>${location}</td>
-          <td class="salary">${s.salary}</td>
-          <td>${benefits}</td>
-          <td class="submitted">${submitted}</td>
-        </tr>
-      `;
+          <td data-label="Role">${escapeHtml(entry.title)}</td>
+          <td data-label="Type">${escapeHtml(entry.qsType || '—')}</td>
+          <td data-label="Location">${escapeHtml(location)}</td>
+          <td data-label="Salary" class="salary">${escapeHtml(entry.salary)}</td>
+          <td data-label="Benefits">${escapeHtml(benefits)}</td>
+          <td data-label="Submitted">${date}</td>
+        </tr>`;
     }).join('');
-
-    updateEntryCount(data.length);
   }
 
-  // === FILTER & SEARCH ===
+  // ---------- FILTER LOGIC ----------
   function filterData() {
-    const search = searchInput.value.toLowerCase();
-    const role = roleFilter.value;
-    const location = locationFilter.value;
-    const salaryRange = salaryRangeFilter.value;
+    const search = searchInput.value.trim().toLowerCase();
+    const role   = roleFilter.value;
+    const loc    = locationFilter.value;
+    const [min, max] = salaryRangeFilter.value.split('-').map(Number);
 
-    let filtered = allData.filter(s => {
-      // Search (title, qsType, city, benefits)
-      const matchesSearch = !search || 
-        s.title.toLowerCase().includes(search) ||
-        (s.qsType && s.qsType.toLowerCase().includes(search)) ||
-        s.city.toLowerCase().includes(search) ||
-        (s.benefits && s.benefits.toLowerCase().includes(search));
+    const filtered = allData.filter(entry => {
+      const matchesSearch = !search ||
+        entry.title.toLowerCase().includes(search) ||
+        (entry.qsType && entry.qsType.toLowerCase().includes(search)) ||
+        entry.city.toLowerCase().includes(search) ||
+        (entry.benefits && entry.benefits.toLowerCase().includes(search));
 
-      // Role filter
-      const matchesRole = !role || s.qsType === role;
+      const matchesRole = !role || entry.qsType === role;
+      const matchesLoc  = !loc  || entry.city === loc;
 
-      // Location filter
-      const matchesLocation = !location || s.city === location;
+      const midSalary = parseSalary(entry.salary);
+      const matchesSal = midSalary >= min && midSalary <= max;
 
-      // Salary filter
-      let matchesSalary = true;
-      if (salaryRange !== '0-200000') {
-        const sal = parseSalary(s.salary);
-        if (salaryRange === '100000+') {
-          matchesSalary = sal >= 100000;
-        } else {
-          const [min, max] = salaryRange.split('-').map(Number);
-          matchesSalary = sal >= min && sal <= max;
-        }
-      }
-
-      return matchesSearch && matchesRole && matchesLocation && matchesSalary;
+      return matchesSearch && matchesRole && matchesLoc && matchesSal;
     });
 
     renderTable(filtered);
+    updateEntryCount(filtered.length);
   }
 
-  // === HELPERS ===
+  // ---------- HELPERS ----------
   function parseSalary(str) {
-    if (!str) return 0;
-    const nums = str.match(/\d+/g);
-    if (!nums) return 0;
+    const nums = (str || '').match(/\d+/g) || [];
+    if (nums.length === 0) return 0;
     if (nums.length === 1) return parseInt(nums[0]);
     return (parseInt(nums[0]) + parseInt(nums[1])) / 2;
   }
 
-  function updateEntryCount(count) {
-    entryCount.textContent = `${count} entries`;
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
   }
 
-  // === EVENT LISTENERS ===
+  function updateEntryCount(cnt) {
+    entryCount.textContent = `Showing ${cnt} ${cnt === 1 ? 'entry' : 'entries'}`;
+  }
+
+  // ---------- EVENT LISTENERS ----------
   document.addEventListener('DOMContentLoaded', () => {
     loadData();
 
-    // Debounced search
-    let timeout;
-    searchInput.addEventListener('input', () => {
-      clearTimeout(timeout);
-      timeout = setTimeout(filterData, 300);
+    let searchTO;
+    searchInput?.addEventListener('input', () => {
+      clearTimeout(searchTO);
+      searchTO = setTimeout(filterData, 300);
     });
 
-    [roleFilter, locationFilter, salaryRangeFilter].forEach(filter => {
-      filter.addEventListener('change', filterData);
-    });
+    roleFilter?.addEventListener('change', filterData);
+    locationFilter?.addEventListener('change', filterData);
+    salaryRangeFilter?.addEventListener('change', filterData);
   });
+
+  // expose for debugging
+  window.QS_DEBUG = { allData, renderTable, filterData };
 })();
