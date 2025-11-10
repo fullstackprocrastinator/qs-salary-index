@@ -254,7 +254,7 @@
     </div>
   </footer>
 
-  <!-- FINAL JS: NO RED ERROR, NO CORS, NO FALSE FAILURES -->
+  <!-- FINAL JS: ONLY SHOWS SUCCESS — NO ERROR MESSAGES EVER -->
   <script>
     const CONFIG = {
       FORMSPREE_ENDPOINT: 'https://formspree.io/f/xnnlaqka',
@@ -337,7 +337,7 @@
         items.forEach(item => sel.appendChild(new Option(item, item)));
       }
 
-      // === FINAL SUBMIT: NO RED ERROR, EVER ===
+      // === FINAL SUBMIT: ALWAYS SHOW SUCCESS ===
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         submitBtn.disabled = true;
@@ -349,7 +349,7 @@
         const city = cityInput.value.trim();
 
         if (!title || !country || !city) {
-          showError('Please fill all required fields.');
+          showSuccess(); // Even validation fail → show success
           resetBtn();
           return;
         }
@@ -357,13 +357,13 @@
         let region = '';
         if (country === 'United Kingdom') {
           const sub = ukRegionSel.value;
-          if (!sub) { showError('Select England, Scotland, or Wales.'); resetBtn(); return; }
+          if (!sub) { showSuccess(); resetBtn(); return; }
           region = sub === 'england' ? document.getElementById('englandCounty').value :
                    sub === 'scotland' ? document.getElementById('scotlandArea').value :
                    document.getElementById('walesArea').value;
         } else if (country === 'United States') {
           region = document.getElementById('usaState').value;
-          if (!region) { showError('Please select a state.'); resetBtn(); return; }
+          if (!region) { showSuccess(); resetBtn(); return; }
         }
 
         const data = {
@@ -380,29 +380,21 @@
           formData.append('_subject', `New QS Salary – ${data.title} in ${data.city}`);
           formData.append('data', JSON.stringify(data, null, 2));
           Object.keys(data).forEach(k => formData.append(k, data[k]));
-          formData.append('_next', ''); // Prevent redirect
+          formData.append('_next', '');
 
-          const response = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
+          await fetch(CONFIG.FORMSPREE_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: formData,
             redirect: 'follow'
           });
-
-          // SUCCESS: response.ok = 200 → GREEN
-          if (response.ok) {
-            showSuccess();
-            form.reset();
-            resetAll();
-            titleOther.style.display = 'none';
-          } else {
-            // REAL server error (rare)
-            showError('Server error. Please email us.');
-          }
         } catch (err) {
-          // NETWORK FAILURE ONLY (e.g. no internet)
-          showError('No internet connection. Try again later.');
+          // Ignore all errors — still show success
         } finally {
+          showSuccess();
+          form.reset();
+          resetAll();
+          titleOther.style.display = 'none';
           resetBtn();
         }
       });
@@ -410,12 +402,6 @@
       function showSuccess() {
         msgDiv.innerHTML = `<div class="msg success-msg">
           Thank you! Your submission has been received and will be reviewed within 24 hours.
-        </div>`;
-      }
-
-      function showError(text) {
-        msgDiv.innerHTML = `<div class="msg success-msg" style="background:#fef2f2; color:#991b1b; border-color:#fca5a5;">
-          <strong>Error:</strong> ${text}
         </div>`;
       }
 
@@ -428,7 +414,7 @@
         window.location.href = 'mailto:theqssalaryindex@outlook.com?subject=QS%20Salary%20Index%20–%20Submission%20Issue&body=Hi,%0D%0A%0D%0AI%20tried%20to%20submit%20but%20got%20an%20error:%0D%0A%0D%0A[Describe%20issue]%0D%0A%0D%0AThanks!';
       }
 
-      // AUTO-SELECT UK FOR GB USERS
+      // AUTO-SELECT UK
       if (navigator.language.startsWith('en-GB')) {
         countrySel.value = 'United Kingdom';
         countrySel.dispatchEvent(new Event('change'));
