@@ -7,75 +7,24 @@
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
   <style>
-    .submit-form {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      margin: 2rem 0;
+    .submit-form { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 2rem 0; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .form-group { display: flex; flex-direction: column; }
+    .form-group label { margin-bottom: 0.5rem; font-weight: 600; color: #374151; }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 8px; font-size: 0.95rem; background: white;
     }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.5rem;
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none; border-color: #1e40af; box-shadow: 0 0 0 3px rgba(30,64,175,0.1);
     }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-    .form-group label {
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      color: #374151;
-    }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      padding: 0.75rem 1rem;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      background: white;
-    }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #1e40af;
-      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
-    }
-    .form-group small {
-      color: #6b7280;
-      font-size: 0.85rem;
-      margin-top: 0.25rem;
-    }
-    .submit-btn {
-      background: #1e40af;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
-      font-size: 1rem;
-      transition: background 0.2s;
-    }
+    .nested-field { margin-top: 1rem; display: none; }
+    .nested-field.active { display: block; }
+    .submit-btn { background: #1e40af; color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; font-size: 1rem; transition: background 0.2s; }
     .submit-btn:hover { background: #1e3a8a; }
     .submit-btn:disabled { background: #9ca3af; cursor: not-allowed; }
-    .success-msg {
-      background: #ecfdf5; color: #065f46; padding: 1rem; border-radius: 8px;
-      border: 1px solid #a7f3d0; margin: 1rem 0; display: none;
-    }
-    .error-msg {
-      background: #fef2f2; color: #991b1b; padding: 1rem; border-radius: 8px;
-      border: 1px solid #fca5a5; margin: 1rem 0; display: none;
-    }
-    .other-input {
-      display: none;
-      margin-top: 0.5rem;
-    }
+    .success-msg, .error-msg { padding: 1rem; border-radius: 8px; margin: 1rem 0; display: none; }
+    .success-msg { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+    .error-msg { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
   </style>
 </head>
 <body>
@@ -110,10 +59,10 @@
 
     <form id="salaryForm" class="submit-form">
       <div class="form-grid">
-        <!-- Title/Role (Dropdown + Other) -->
+        <!-- Title/Role -->
         <div class="form-group">
-          <label for="titleSelect">Title/Role *</label>
-          <select id="titleSelect" required>
+          <label for="title">Title/Role *</label>
+          <select id="title" required>
             <option value="">Select Role...</option>
             <option>Trainee QS</option>
             <option>Assistant QS</option>
@@ -127,7 +76,7 @@
             <option>Claims QS</option>
             <option>Other</option>
           </select>
-          <input type="text" id="titleOther" class="other-input" placeholder="Enter your role..." />
+          <input type="text" id="titleOther" class="other-input" placeholder="Enter your role..." style="display:none; margin-top:0.5rem;" />
         </div>
 
         <!-- QS Type -->
@@ -156,6 +105,59 @@
           </select>
         </div>
 
+        <!-- UK Sub-Region -->
+        <div class="form-group nested-field" id="ukSubField">
+          <label for="ukSub">UK Region *</label>
+          <select id="ukSub">
+            <option value="">Select...</option>
+            <option value="england">England</option>
+            <option value="scotland">Scotland</option>
+            <option value="wales">Wales</option>
+          </select>
+        </div>
+
+        <!-- England County -->
+        <div class="form-group nested-field" id="englandField">
+          <label for="englandCounty">County (optional)</label>
+          <select id="englandCounty">
+            <option value="">Select County...</option>
+            <!-- Populated by JS -->
+          </select>
+        </div>
+
+        <!-- Scotland Council Area -->
+        <div class="form-group nested-field" id="scotlandField">
+          <label for="scotlandRegion">Council Area (optional)</label>
+          <select id="scotlandRegion">
+            <option value="">Select Area...</option>
+            <!-- Populated by JS -->
+          </select>
+        </div>
+
+        <!-- Wales Principal Area -->
+        <div class="form-group nested-field" id="walesField">
+          <label for="walesRegion">Principal Area (optional)</label>
+          <select id="walesRegion">
+            <option value="">Select Area...</option>
+            <!-- Populated by JS -->
+          </select>
+        </div>
+
+        <!-- US State -->
+        <div class="form-group nested-field" id="usaField">
+          <label for="state">State *</label>
+          <select id="state" required>
+            <option value="">Select State...</option>
+            <!-- Populated by JS -->
+          </select>
+        </div>
+
+        <!-- City (All Countries) -->
+        <div class="form-group nested-field" id="cityField">
+          <label id="cityLabel">City *</label>
+          <input type="text" id="cityInput" placeholder="e.g. London" required />
+        </div>
+
         <!-- Salary Range -->
         <div class="form-group">
           <label for="salary">Salary Range (GBP) *</label>
@@ -179,7 +181,7 @@
           <input type="number" id="timeInRole" min="0" max="50" step="0.5" placeholder="e.g. 3.5" required />
         </div>
 
-        <!-- QS Education -->
+        <!-- Education -->
         <div class="form-group">
           <label for="education">QS Education</label>
           <select id="education">
@@ -232,7 +234,7 @@
         </div>
       </div>
 
-      <!-- Bonus / Benefits -->
+      <!-- Benefits -->
       <div class="form-group">
         <label for="benefits">Bonus / Benefits (optional)</label>
         <textarea id="benefits" rows="3" placeholder="e.g. car allowance, pension, 30 days"></textarea>
@@ -240,10 +242,7 @@
 
       <button type="submit" class="submit-btn">Submit for Approval</button>
 
-      <div id="successMsg" class="success-msg">
-        Thank you! Your submission has been received and will be reviewed within 24 hours.
-      </div>
-      <div id="errorMsg" class="error-msg"></div>
+      <div id="submitMsg"></div>
     </form>
   </main>
 
@@ -259,7 +258,8 @@
     </div>
   </footer>
 
-  <!-- SCRIPTS -->
+  <!-- CONFIG & JS -->
+  <script src="assets/js/config.js"></script>
   <script>
     function openEmail() {
       const email = 'theqssalaryindex@outlook.com';
@@ -268,64 +268,145 @@
       window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
     }
 
-    // Show/hide "Other" input for Title/Role
-    const titleSelect = document.getElementById('titleSelect');
+    // Title "Other" handling
+    const titleSelect = document.getElementById('title');
     const titleOther = document.getElementById('titleOther');
-
     titleSelect.addEventListener('change', () => {
-      if (titleSelect.value === 'Other') {
-        titleOther.style.display = 'block';
-        titleOther.required = true;
-      } else {
-        titleOther.style.display = 'none';
-        titleOther.required = false;
-        titleOther.value = '';
+      titleOther.style.display = titleSelect.value === 'Other' ? 'block' : 'none';
+      titleOther.required = titleSelect.value === 'Other';
+    });
+
+    // Country → Region → City Logic
+    const countrySel = document.getElementById('country');
+    const ukSubField = document.getElementById('ukSubField');
+    const ukSubSel = document.getElementById('ukSub');
+    const englandField = document.getElementById('englandField');
+    const scotlandField = document.getElementById('scotlandField');
+    const walesField = document.getElementById('walesField');
+    const usaField = document.getElementById('usaField');
+    const cityField = document.getElementById('cityField');
+    const cityInput = document.getElementById('cityInput');
+    const cityLabel = document.getElementById('cityLabel');
+
+    function resetAll() {
+      [ukSubField, englandField, scotlandField, walesField, usaField, cityField].forEach(el => {
+        el.classList.remove('active');
+      });
+      cityInput.required = false;
+      ukSubSel.value = '';
+      document.getElementById('englandCounty').innerHTML = '<option value="">Select County...</option>';
+      document.getElementById('scotlandRegion').innerHTML = '<option value="">Select Area...</option>';
+      document.getElementById('walesRegion').innerHTML = '<option value="">Select Area...</option>';
+      document.getElementById('state').innerHTML = '<option value="">Select State...</option>';
+    }
+
+    countrySel.addEventListener('change', () => {
+      resetAll();
+      const country = countrySel.value;
+
+      if (!country) return;
+
+      cityField.classList.add('active');
+      cityInput.required = true;
+
+      if (country === 'United Kingdom') {
+        ukSubField.classList.add('active');
+      } else if (country === 'United States') {
+        usaField.classList.add('active');
+        populateSelect('state', CONFIG.USA_STATES);
       }
     });
 
-    // Form submission
+    ukSubSel.addEventListener('change', () => {
+      [englandField, scotlandField, walesField].forEach(el => el.classList.remove('active'));
+      const sub = ukSubSel.value;
+      if (sub === 'england') {
+        englandField.classList.add('active');
+        populateSelect('englandCounty', CONFIG.UK_COUNTIES);
+      } else if (sub === 'scotland') {
+        scotlandField.classList.add('active');
+        populateSelect('scotlandRegion', CONFIG.SCOTLAND_COUNCIL_AREAS);
+      } else if (sub === 'wales') {
+        walesField.classList.add('active');
+        populateSelect('walesRegion', CONFIG.WALES_PRINCIPAL_AREAS);
+      }
+    });
+
+    function populateSelect(id, items) {
+      const sel = document.getElementById(id);
+      sel.innerHTML = '<option value="">Select (optional)...</option>';
+      items.forEach(item => sel.appendChild(new Option(item, item)));
+    }
+
+    // Form Submit
     document.getElementById('salaryForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const submitBtn = e.target.querySelector('.submit-btn');
-      const successMsg = document.getElementById('successMsg');
-      const errorMsg = document.getElementById('errorMsg');
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Submitting...';
-      successMsg.style.display = 'none';
-      errorMsg.style.display = 'none';
+      const btn = e.target.querySelector('.submit-btn');
+      const msg = document.getElementById('submitMsg');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+      msg.innerHTML = '';
 
       const title = titleSelect.value === 'Other' ? titleOther.value.trim() : titleSelect.value;
+      const country = countrySel.value;
+      let region = '', city = cityInput.value.trim();
 
-      const formData = {
-        title,
-        qsType: document.getElementById('qsType').value,
-        country: document.getElementById('country').value,
-        salary: document.getElementById('salary').value,
-        timeInRole: document.getElementById('timeInRole').value,
-        education: document.getElementById('education').value,
-        sector: document.getElementById('sector').value || null,
-        companySize: document.getElementById('companySize').value || null,
-        workArrangement: document.getElementById('workArrangement').value || null,
-        certification: document.getElementById('certification').value.trim() || null,
-        benefits: document.getElementById('benefits').value.trim() || null,
+      if (country === 'United Kingdom') {
+        const sub = ukSubSel.value;
+        if (!sub || !city) return showError('Please select UK region and enter city.');
+        region = sub === 'england' ? document.getElementById('englandCounty').value :
+                 sub === 'scotland' ? document.getElementById('scotlandRegion').value :
+                 document.getElementById('walesRegion').value;
+      } else if (country === 'United States') {
+        region = document.getElementById('state').value;
+        if (!region || !city) return showError('Please select state and enter city.');
+      }
+
+      const data = {
+        title, qsType: document.getElementById('qsType').value, country, region, city,
+        salary: document.getElementById('salary').value, timeInRole: document.getElementById('timeInRole').value,
+        education: document.getElementById('education').value, sector: document.getElementById('sector').value || '',
+        companySize: document.getElementById('companySize').value || '', workArrangement: document.getElementById('workArrangement').value || '',
+        certification: document.getElementById('certification').value.trim() || '', benefits: document.getElementById('benefits').value.trim() || '',
         submittedAt: new Date().toISOString()
       };
 
       try {
-        // Simulate success (replace with real backend later)
-        await new Promise(r => setTimeout(r, 800));
-        successMsg.style.display = 'block';
+        const formData = new URLSearchParams();
+        formData.append('_subject', `New QS Salary – ${data.title} in ${data.city}`);
+        formData.append('data', JSON.stringify(data, null, 2));
+        Object.keys(data).forEach(k => formData.append(k, data[k]));
+
+        const resp = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: formData
+        });
+
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        showSuccess();
         e.target.reset();
+        resetAll();
         titleOther.style.display = 'none';
       } catch (err) {
-        errorMsg.textContent = 'Submission failed. Please try again.';
-        errorMsg.style.display = 'block';
+        showError(`Submission failed: ${err.message}`);
       } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit for Approval';
+        btn.disabled = false;
+        btn.textContent = 'Submit for Approval';
       }
     });
+
+    function showSuccess() {
+      document.getElementById('submitMsg').innerHTML = `<div class="success-msg">
+        Thank you! Your submission has been received and will be reviewed within 24 hours.
+      </div>`;
+    }
+
+    function showError(text) {
+      document.getElementById('submitMsg').innerHTML = `<div class="error-msg">
+        <strong>Error:</strong> ${text}
+      </div>`;
+    }
   </script>
 </body>
 </html>
