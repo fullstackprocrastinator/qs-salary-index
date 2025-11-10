@@ -39,7 +39,7 @@
       <div class="header-text">
         <p>Live global salary data for Quantity Surveyors</p>
         <p class="brand-link">
-          Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
+          Part of <a href="https://www.theqssalaryindex.com" target="_blank" rel="noopener">The QS Collection</a>
         </p>
         <nav>
           <a href="/">Index</a> |
@@ -205,7 +205,6 @@
         <!-- Company Size -->
         <div class="form-group">
           <label for="companySize">Company Size (optional)</label>
-          <!--<select id="companySize">-->
           <select id="companySize">
             <option>1-10</option>
             <option>11-50</option>
@@ -248,7 +247,7 @@
   <footer>
     <div class="container">
       <p>
-        &copy; 2025 The QS Salary Index. 
+        © 2025 The QS Salary Index. 
         <a href="privacy.html">Privacy</a> | 
         <a href="terms.html">Terms</a> | 
         Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
@@ -258,7 +257,6 @@
 
   <!-- FINAL JS: NO CORS, NO REDIRECT, NO ERRORS -->
   <script>
-    // === CONFIG (hardcoded) ===
     const CONFIG = {
       FORMSPREE_ENDPOINT: 'https://formspree.io/f/xnnlaqka',
       UK_COUNTIES: ["Bedfordshire","Berkshire","Bristol","Buckinghamshire","Cambridgeshire","Cheshire","Cornwall","Cumbria","Derbyshire","Devon","Dorset","Durham","East Sussex","Essex","Gloucestershire","Greater London","Greater Manchester","Hampshire","Hertfordshire","Kent","Lancashire","Leicestershire","Lincolnshire","Merseyside","Norfolk","North Yorkshire","Northamptonshire","Northumberland","Nottinghamshire","Oxfordshire","Shropshire","Somerset","South Yorkshire","Staffordshire","Suffolk","Surrey","Tyne and Wear","Warwickshire","West Midlands","West Sussex","West Yorkshire","Wiltshire","Worcestershire"].sort(),
@@ -283,7 +281,6 @@
       const submitBtn = form.querySelector('.submit-btn');
       const msgDiv = document.getElementById('submitMsg');
 
-      // Title Other
       titleSelect.addEventListener('change', () => {
         titleOther.style.display = titleSelect.value === 'Other' ? 'block' : 'none';
         titleOther.required = titleSelect.value === 'Other';
@@ -307,10 +304,8 @@
         resetAll();
         const country = countrySel.value;
         if (!country) return;
-
         cityField.classList.add('active');
         setRequired(cityInput, true);
-
         if (country === 'United Kingdom') {
           ukRegionField.classList.add('active');
           setRequired(ukRegionSel, true);
@@ -343,7 +338,7 @@
         items.forEach(item => sel.appendChild(new Option(item, item)));
       }
 
-      // === FORM SUBMIT: BULLETPROOF ===
+      // === FINAL SUBMIT: IGNORE REDIRECT, NO BODY READ ===
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         submitBtn.disabled = true;
@@ -386,27 +381,29 @@
           formData.append('_subject', `New QS Salary – ${data.title} in ${data.city}`);
           formData.append('data', JSON.stringify(data, null, 2));
           Object.keys(data).forEach(k => formData.append(k, data[k]));
-
-          // CRITICAL: Prevent redirect
-          formData.append('_next', '');
+          formData.append('_next', ''); // Prevent redirect
 
           const response = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: formData,
-            redirect: 'follow'
+            redirect: 'follow',
+            // DO NOT READ BODY — AVOIDS CORS ON REDIRECT
+            // response.ok = success
           });
 
+          // SUCCESS IF 200-299 → SHOW GREEN
           if (response.ok) {
             showSuccess();
             form.reset();
             resetAll();
             titleOther.style.display = 'none';
           } else {
-            const text = await response.text();
-            throw new Error(`Formspree error ${response.status}: ${text}`);
+            // Only real error
+            throw new Error(`Server error: ${response.status}`);
           }
         } catch (err) {
+          // Network or real failure
           console.error('Submit failed:', err);
           showError('Submission failed. Please try again or email us.');
         } finally {
@@ -435,7 +432,7 @@
         window.location.href = 'mailto:theqssalaryindex@outlook.com?subject=QS%20Salary%20Index%20–%20Submission%20Issue&body=Hi,%0D%0A%0D%0AI%20tried%20to%20submit%20but%20got%20an%20error:%0D%0A%0D%0A[Describe%20issue]%0D%0A%0D%0AThanks!';
       }
 
-      // AUTO-SELECT UK FOR GB USERS
+      // AUTO-SELECT UK
       if (navigator.language.startsWith('en-GB')) {
         countrySel.value = 'United Kingdom';
         countrySel.dispatchEvent(new Event('change'));
