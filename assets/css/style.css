@@ -273,3 +273,41 @@ footer { text-align: center; padding: 2rem 0; font-size: .9rem; color: #666; bor
   .contact-btn {
     width: fit-content;
   }
+
+  /* — VIEW INSIGHTS CTA — */
+.insights-cta {
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.btn-insights {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #1e40af;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(30, 64, 175, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-insights:hover {
+  background: #1e3a8a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+.btn-insights::after {
+  content: "→";
+  font-weight: bold;
+}
+
+@media (max-width: 640px) {
+  .btn-insights {
+    width: 100%;
+    justify-content: center;
+  }
+}
