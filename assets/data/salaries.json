@@ -1392,5 +1392,21 @@
 "certification": "AssocRICS",
 "benefits": "Car allowance",
 "submittedAt": "2025-11-10T09:46:26.227Z"
+},
+  {
+"title": "Assistant QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Northamptonshire",
+"city": "Northampton",
+"salary": "£30,000 - £40,000",
+"timeInRole": "3",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "Pension",
+"submittedAt": "2025-11-10T13:49:01.966Z"
 }
 ]
