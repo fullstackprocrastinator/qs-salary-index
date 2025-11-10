@@ -255,9 +255,9 @@
     </div>
   </footer>
 
-  <!-- FULLY INLINED CONFIG + LOGIC -->
+  <!-- FINAL JS: NO CORS, NO REDIRECT, NO FALSE ERRORS -->
   <script>
-    // === 1. CONFIG (hardcoded – no file needed) ===
+    // === CONFIG ===
     const CONFIG = {
       FORMSPREE_ENDPOINT: 'https://formspree.io/f/xnnlaqka',
       UK_COUNTIES: ["Bedfordshire","Berkshire","Bristol","Buckinghamshire","Cambridgeshire","Cheshire","Cornwall","Cumbria","Derbyshire","Devon","Dorset","Durham","East Sussex","Essex","Gloucestershire","Greater London","Greater Manchester","Hampshire","Hertfordshire","Kent","Lancashire","Leicestershire","Lincolnshire","Merseyside","Norfolk","North Yorkshire","Northamptonshire","Northumberland","Nottinghamshire","Oxfordshire","Shropshire","Somerset","South Yorkshire","Staffordshire","Suffolk","Surrey","Tyne and Wear","Warwickshire","West Midlands","West Sussex","West Yorkshire","Wiltshire","Worcestershire"].sort(),
@@ -266,7 +266,6 @@
       USA_STATES: ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"].sort()
     };
 
-    // === 2. DOM READY ===
     document.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('salaryForm');
       const titleSelect = document.getElementById('title');
@@ -283,13 +282,12 @@
       const submitBtn = form.querySelector('.submit-btn');
       const msgDiv = document.getElementById('submitMsg');
 
-      // === Title "Other" ===
+      // Title Other
       titleSelect.addEventListener('change', () => {
         titleOther.style.display = titleSelect.value === 'Other' ? 'block' : 'none';
         titleOther.required = titleSelect.value === 'Other';
       });
 
-      // === Reset fields ===
       function resetAll() {
         [ukRegionField, englandCountyField, scotlandAreaField, walesAreaField, usaStateField].forEach(f => f.classList.remove('active'));
         setRequired(cityInput, false);
@@ -304,7 +302,6 @@
 
       function setRequired(el, req) { if (el) el.required = req; }
 
-      // === Country change ===
       countrySel.addEventListener('change', () => {
         resetAll();
         const country = countrySel.value;
@@ -323,7 +320,6 @@
         }
       });
 
-      // === UK Region change ===
       ukRegionSel.addEventListener('change', () => {
         [englandCountyField, scotlandAreaField, walesAreaField].forEach(f => f.classList.remove('active'));
         const region = ukRegionSel.value;
@@ -346,7 +342,7 @@
         items.forEach(item => sel.appendChild(new Option(item, item)));
       }
 
-      // === FORM SUBMIT ===
+      // === FORM SUBMIT: NO CORS, NO REDIRECT ===
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         submitBtn.disabled = true;
@@ -390,13 +386,18 @@
           formData.append('data', JSON.stringify(data, null, 2));
           Object.keys(data).forEach(k => formData.append(k, data[k]));
 
+          // ADD THIS LINE TO AVOID REDIRECT
+          formData.append('_next', '');
+
           const response = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: formData
+            body: formData,
+            // THIS IS KEY: PREVENT REDIRECT
+            redirect: 'follow'
           });
 
-          // === SUCCESS: Only if 200 OK ===
+          // SUCCESS IF 200-299
           if (response.ok) {
             showSuccess();
             form.reset();
@@ -404,10 +405,10 @@
             titleOther.style.display = 'none';
           } else {
             const text = await response.text();
-            throw new Error(`Formspree ${response.status}: ${text}`);
+            throw new Error(`Error ${response.status}: ${text}`);
           }
         } catch (err) {
-          console.error('Submit error:', err);
+          console.error('Submit failed:', err);
           showError('Submission failed. Please try again or email us.');
         } finally {
           resetBtn();
@@ -432,14 +433,11 @@
       }
 
       function openEmail() {
-        const email = 'theqssalaryindex@outlook.com';
-        const subject = encodeURIComponent('QS Salary Index – Submission Issue');
-        const body = encodeURIComponent('Hi,\n\nI tried to submit but got an error:\n\n[Describe issue]\n\nThanks!');
-        window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+        window.location.href = 'mailto:theqssalaryindex@outlook.com?subject=QS%20Salary%20Index%20–%20Submission%20Issue&body=Hi,%0D%0A%0D%0AI%20tried%20to%20submit%20but%20got%20an%20error:%0D%0A%0D%0A[Describe%20issue]%0D%0A%0D%0AThanks!';
       }
 
-      // === AUTO-SELECT UK FOR GB USERS (you!) ===
-      if (navigator.language.startsWith('en-GB') || new URLSearchParams(window.location.search).has('uk')) {
+      // Auto-select UK for GB users
+      if (navigator.language.startsWith('en-GB')) {
         countrySel.value = 'United Kingdom';
         countrySel.dispatchEvent(new Event('change'));
       }
