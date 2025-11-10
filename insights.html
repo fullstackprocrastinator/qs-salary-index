@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insights – The QS Salary Index</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    .dashboard { padding: 2rem 0; }
+    .stats-grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+      gap: 1.5rem; 
+      margin: 2rem 0; 
+    }
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border: 1px solid #e2e8f0;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e40af;
+      margin: 0.5rem 0;
+    }
+    .stat-label { color: #64748b; font-size: 0.95rem; }
+    .chart-container {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin: 2rem 0;
+    }
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: #64748b;
+      font-style: italic;
+    }
+    .refresh-btn {
+      background: #1e40af;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .refresh-btn:hover { background: #1e3a8a; }
+    @media (max-width: 640px) {
+      .stat-value { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER (same as index.html) -->
+  <header>
+    <div class="container header-flex">
+      <a href="/" class="logo-link">
+        <img src="assets/img/qs-salary-index-logo.png" alt="The QS Salary Index Logo" class="logo">
+        <span class="sr-only">The QS Salary Index</span>
+      </a>
+      <div class="header-text">
+        <p>Live global salary data for Quantity Surveyors</p>
+        <p class="brand-link">
+          Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
+        </p>
+        <nav>
+          <a href="/">Index</a> |
+          <a href="submit.html">Submit</a> |
+          <a href="insights.html">Insights</a> |
+          <a href="#" onclick="openEmail()">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div class="container dashboard">
+    <h1>QS Salary Insights Dashboard</h1>
+    <p>Real-time analysis of all verified submissions. Updated instantly.</p>
+
+    <div id="loading" class="loading">Loading live data...</div>
+    <div id="dashboard" style="display:none;"></div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>
+        &copy; 2025 The QS Salary Index. 
+        <a href="privacy.html">Privacy</a> | 
+        <a href="terms.html">Terms</a> | 
+        Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // === REUSE openEmail() FROM index/submit ===
+    function openEmail() {
+      const email = 'theqssalaryindex@outlook.com';
+      const subject = encodeURIComponent('QS Salary Index – Insights Feedback');
+      const body = encodeURIComponent('Hi,\n\nI have feedback on the Insights Dashboard:\n\n[Your message]\n\nThanks!');
+      const mailto = `mailto:${email}?subject=${subject}&body=${body}`;
+      const a = document.createElement('a');
+      a.href = mailto; a.style.display = 'none';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`, '_blank'), 500);
+    }
+
+    // === DASHBOARD LOGIC ===
+    async function loadInsights() {
+      const loading = document.getElementById('loading');
+      const dashboard = document.getElementById('dashboard');
+      try {
+        const res = await fetch('assets/data/salaries.json?t=' + Date.now());
+        const data = await res.json();
+        if (!data || data.length === 0) throw new Error('No data');
+
+        const insights = analyzeData(data);
+        renderDashboard(insights, data);
+        loading.style.display = 'none';
+        dashboard.style.display = 'block';
+      } catch (err) {
+        loading.innerHTML = `<p style="color:#dc2626">Error loading data. <a href="/">Back to Index</a></p>`;
+      }
+    }
+
+    function analyzeData(data) {
+      const total = data.length;
+      const salaries = data.map(s => parseSalary(s.salary));
+      const avgSalary = salaries.reduce((a,b) => a+b, 0) / total;
+      const countries = countBy(data, 'country');
+      const roles = countBy(data, 'qsType');
+      const benefits = data.flatMap(s => s.benefits.split(',').map(b => b.trim()).filter(b => b)).reduce((acc, b) => {
+        acc[b] = (acc[b] || 0) + 1; return acc;
+      }, {});
+      const topBenefit = Object.entries(benefits).sort((a,b) => b[1]-a[1])[0];
+
+      return {
+        total,
+        avgSalary: Math.round(avgSalary),
+        medianSalary: median(salaries),
+        topCountry: Object.entries(countries).sort((a,b) => b[1]-a[1])[0],
+        topRole: Object.entries(roles).sort((a,b) => b[1]-a[1])[0],
+        topBenefit: topBenefit ? { name: topBenefit[0], count: topBenefit[1] } : null,
+        londonCount: data.filter(s => s.city.toLowerCase().includes('london')).length,
+        londonAvg: avg(data.filter(s => s.city.toLowerCase().includes('london')).map(s => parseSalary(s.salary))),
+        regionalAvg: avg(data.filter(s => !s.city.toLowerCase().includes('london') && s.country === 'United Kingdom').map(s => parseSalary(s.salary))),
+        data
+      };
+    }
+
+    function renderDashboard(insights, rawData) {
+      const { total, avgSalary, medianSalary, topCountry, topRole, topBenefit, londonCount, londonAvg, regionalAvg } = insights;
+      const londonPremium = londonAvg && regionalAvg ? Math.round((londonAvg - regionalAvg) / regionalAvg * 100) : 0;
+
+      document.getElementById('dashboard').innerHTML = `
+        <button class="refresh-btn" onclick="loadInsights()">Refresh Data</button>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Submissions</div>
+            <div class="stat-value">${total.toLocaleString()}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Average Salary</div>
+            <div class="stat-value">£${avgSalary.toLocaleString()}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Median Salary</div>
+            <div class="stat-value">£${medianSalary.toLocaleString()}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">London Premium</div>
+            <div class="stat-value">+${londonPremium}%</div>
+            <p style="margin:0;font-size:0.9rem;color:#64748b">${londonCount} London entries</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Top Country</div>
+            <div class="stat-value">${topCountry[0]}</div>
+            <p style="margin:0;font-size:0.9rem;color:#64748b">${topCountry[1]} entries</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Top QS Type</div>
+            <div class="stat-value">${topRole[0]}</div>
+            <p style="margin:0;font-size:0.9rem;color:#64748b">${topRole[1]} entries</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Top Benefit</div>
+            <div class="stat-value">${topBenefit?.name || 'N/A'}</div>
+            <p style="margin:0;font-size:0.9rem;color:#64748b">${topBenefit?.count || 0} mentions</p>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Last Updated</div>
+            <div class="stat-value">${new Date().toLocaleString('en-GB')}</div>
+          </div>
+        </div>
+
+        <div class="chart-container">
+          <canvas id="roleChart"></canvas>
+        </div>
+        <div class="chart-container">
+          <canvas id="countryChart"></canvas>
+        </div>
+      `;
+
+      // Charts
+      new Chart(document.getElementById('roleChart'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(countBy(rawData, 'qsType')),
+          datasets: [{
+            data: Object.values(countBy(rawData, 'qsType')),
+            backgroundColor: ['#1e40af', '#16a34a', '#ea580c', '#7c3aed', '#0891b2']
+          }]
+        },
+        options: { plugins: { title: { display: true, text: 'QS Roles Distribution' } } }
+      });
+
+      new Chart(document.getElementById('countryChart'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(countBy(rawData, 'country')),
+          datasets: [{
+            label: 'Entries',
+            data: Object.values(countBy(rawData, 'country')),
+            backgroundColor: '#1e40af'
+          }]
+        },
+        options: { plugins: { title: { display: true, text: 'Submissions by Country' } }, scales: { y: { beginAtZero: true } } }
+      });
+    }
+
+    // === HELPERS ===
+    function parseSalary(range) {
+      const nums = range.replace(/[^0-9-]/g, '').split('-').map(Number);
+      return nums.length === 2 ? (nums[0] + nums[1]) / 2 : nums[0] || 0;
+    }
+    function countBy(arr, key) {
+      return arr.reduce((acc, obj) => { acc[obj[key]] = (acc[obj[key]] || 0) + 1; return acc; }, {});
+    }
+    function avg(arr) {
+      return arr.length ? Math.round(arr.reduce((a,b) => a+b, 0) / arr.length) : 0;
+    }
+    function median(arr) {
+      const sorted = arr.slice().sort((a,b) => a-b);
+      const mid = Math.floor(sorted.length / 2);
+      return sorted.length % 2 ? sorted[mid] : (sorted[mid-1] + sorted[mid]) / 2;
+    }
+
+    // Load on start
+    document.addEventListener('DOMContentLoaded', loadInsights);
+  </script>
+</body>
+</html>
