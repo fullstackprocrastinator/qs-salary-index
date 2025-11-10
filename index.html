@@ -1,178 +1,144 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
-  <!-- ====== BASIC META ====== -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  
-  <!-- ====== SEO META ====== -->
-  <title>The QS Salary Index – Live Quantity Surveyor Salaries (UK, US, Global)</title>
-  <meta name="description" content="Real-time salary data for Quantity Surveyors. Search 1000+ verified QS salaries by role, location, experience, and sector. Updated daily.">
-  <meta name="keywords" content="quantity surveyor salary, QS salary index, UK QS pay, US QS salary, construction salary data">
-  <meta name="author" content="The QS Collection">
-  <meta name="robots" content="index, follow">
-
-  <!-- ====== CANONICAL URL ====== -->
-  <link rel="canonical" href="https://yourusername.github.io/qs-salary-index/">
-
-  <!-- ====== FAVICON ====== -->
-  <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" href="assets/images/apple-touch-icon.png">
-
-  <!-- ====== OPEN GRAPH (Facebook, LinkedIn) ====== -->
-  <meta property="og:title" content="The QS Salary Index – Live QS Salary Data">
-  <meta property="og:description" content="Search real QS salaries by role, city, and experience. Updated daily.">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://yourusername.github.io/qs-salary-index/">
-  <meta property="og:image" content="https://yourusername.github.io/qs-salary-index/assets/images/og-preview.jpg">
-  <meta property="og:site_name" content="The QS Salary Index">
-
-  <!-- ====== TWITTER CARD ====== -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="The QS Salary Index – Live QS Salary Data">
-  <meta name="twitter:description" content="Search real QS salaries by role, city, and experience.">
-  <meta name="twitter:image" content="https://yourusername.github.io/qs-salary-index/assets/images/og-preview.jpg">
-  <meta name="twitter:site" content="@yourhandle">
-
-  <!-- ====== STRUCTURED DATA (JSON-LD) ====== -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "The QS Salary Index",
-    "url": "https://yourusername.github.io/qs-salary-index/",
-    "description": "Live salary data for Quantity Surveyors worldwide.",
-    "publisher": {
-      "@type": "Organization",
-      "name": "The QS Collection",
-      "url": "https://www.theqscollection.com"
-    },
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://yourusername.github.io/qs-salary-index/?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  }
-  </script>
-
-  <!-- ====== STYLES ====== -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Live, anonymous QS salary data. Submit yours and explore real-time insights." />
+  <title>The QS Salary Index</title>
   <link rel="stylesheet" href="assets/css/style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="assets/img/qs-salary-index-logo.png" type="image/png" />
+  <style>
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0,0,0,0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
 </head>
 <body>
-
+  <!-- HEADER -->
   <header>
-  <div class="container">
-    <h1><a href="/">The QS Salary Index</a></h1>
-    <p>Live global salary data for Quantity Surveyors</p>
-    
-    <!-- NEW: QS Collection Links -->
-    <div class="qs-tools">
-      <a href="https://www.theqsdictionary.com/" target="_blank" rel="noopener" class="tool-btn">
-        QS Dictionary
+    <div class="container header-flex">
+      <a href="/" class="logo-link">
+        <img src="assets/img/qs-salary-index-logo.png" alt="The QS Salary Index Logo" class="logo">
+        <span class="sr-only">The QS Salary Index</span>
       </a>
-      <a href="https://www.theqscalculators.com/" target="_blank" rel="noopener" class="tool-btn">
-        QS Calculators
+      <div class="header-text">
+        <p>Live global salary data for Quantity Surveyors</p>
+        <p class="brand-link">
+          Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
+        </p>
+        <nav>
+          <a href="/">Index</a> |
+          <a href="submit.html">Submit</a> |
+          <a href="insights.html">Insights</a> |
+          <a href="#" onclick="openEmail()">Contact</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="container">
+    <section class="hero">
+      <h1>The QS Salary Index</h1>
+      <p>Anonymous, verified salary data from Quantity Surveyors worldwide.</p>
+      <p><strong>All entries are admin-reviewed and live within 24 hours.</strong></p>
+      <a href="submit.html" class="btn-primary">Submit Your Salary (60s)</a>
+    </section>
+
+    <!-- FILTERS -->
+    <section class="filters">
+      <div class="filter-group">
+        <input type="text" id="search" placeholder="Search role, city, benefits..." aria-label="Search" />
+      </div>
+      <div class="filter-group">
+        <select id="roleFilter" aria-label="Filter by QS Type">
+          <option value="">All Roles</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <select id="locationFilter" aria-label="Filter by Location">
+          <option value="">All Locations</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <select id="salaryRange" aria-label="Filter by Salary Range">
+          <option value="0-200000">All Salaries</option>
+          <option value="0-40000">£0 – £40k</option>
+          <option value="40000-60000">£40k – £60k</option>
+          <option value="60000-80000">£60k – £80k</option>
+          <option value="80000-100000">£80k – £100k</option>
+          <option value="100000-200000">£100k+</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- INSIGHTS CTA -->
+    <div class="insights-cta">
+      <a href="insights.html" class="btn-insights">
+        View Live Insights Dashboard
       </a>
     </div>
 
-    <p class="brand-link">
-      Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The Quantity Surveying Collection</a>
-    </p>
-
-    <nav>
-      <a href="#search">Search</a> |
-      <a href="submit.html">Submit Salary</a> |
-      <a href="insights.html">Insights</a> |
-      <a href="#" class="contact-btn" onclick="openEmail()">Contact Us</a>
-    </nav>
-  </div>
-</header>
-
-  <main>
-    <section id="search" class="container">
-      <h2>Search QS Salaries</h2>
-      <div class="filters">
-        <input type="text" id="searchTitle" placeholder="Title (e.g. Assistant QS)" aria-label="Search by job title" />
-        <select id="filterCountry" aria-label="Filter by country"></select>
-        <select id="filterRegion" disabled aria-label="Filter by region"></select>
-        <select id="filterCity" disabled aria-label="Filter by city"></select>
-        <select id="filterLevel" aria-label="Filter by role level">
-          <option value="">All Levels</option>
-          <option>Trainee QS</option>
-          <option>Assistant QS</option>
-          <option>QS</option>
-          <option>Senior QS</option>
-          <option>Cost Manager</option>
-          <option>Commercial Manager</option>
-        </select>
-        <button id="btnSearch">Search</button>
-        <button id="btnClear">Clear</button>
+    <!-- RESULTS -->
+    <section id="results" style="display:none;">
+      <div class="table-header">
+        <h2 id="entryCount">Loading entries...</h2>
       </div>
-
-      <!-- TABLE RESULTS -->
-      <div id="results">
-        <div class="table-container">
-          <table id="salariesTable" aria-label="QS Salary Data">
-            <thead>
-              <tr>
-                <th data-sort="title">Title</th>
-                <th data-sort="qsType">Type</th>
-                <th data-sort="location">Location</th>
-                <th data-sort="salary">Salary</th>
-                <th data-sort="timeInRole">Years in Role</th>
-                <th data-sort="education">Education</th>
-                <th data-sort="sector">Sector</th>
-                <th data-sort="certification">Cert</th>
-                <th data-sort="benefits">Benefits</th>
-                <th data-sort="submittedAt">Submitted</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Role</th>
+              <th>Type</th>
+              <th>Location</th>
+              <th>Salary</th>
+              <th>Benefits</th>
+              <th>Submitted</th>
+            </tr>
+          </thead>
+          <tbody id="salaryTableBody"></tbody>
+        </table>
       </div>
+      <p id="noResults" class="no-results" style="display:none;">No entries match your filters.</p>
+    </section>
+
+    <p id="loading" class="loading">Loading live data...</p>
   </main>
 
+  <!-- FOOTER -->
   <footer>
-  <div class="container">
-    <p>
-      &copy; 2025 The QS Salary Index. 
-      <a href="privacy.html">Privacy</a> | 
-      <a href="terms.html">Terms</a> | 
-      Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
-    </p>
-  </div>
-</footer>
+    <div class="container">
+      <p>
+        &copy; 2025 The QS Salary Index. 
+        <a href="privacy.html">Privacy</a> | 
+        <a href="terms.html">Terms</a> | 
+        Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
+      </p>
+    </div>
+  </footer>
 
-  <!-- Scripts -->
-  <script src="assets/js/config.js"></script>
+  <!-- SCRIPTS -->
   <script src="assets/js/main.js"></script>
-  <script data-goatcounter="https://theqssalaryindex.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
   <script>
-function openEmail() {
-  const email = 'theqssalaryindex@outlook.com';
-  const subject = encodeURIComponent('QS Salary Index – Enquiry');
-  const body = encodeURIComponent(
-    'Hi,\n\nI have a question about the QS Salary Index:\n\n[Your message here]\n\nThanks!'
-  );
-  
-  const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
-  
-  // Try to open default mail app
-  const link = document.createElement('a');
-  link.href = mailtoLink;
-  link.style.display = 'none';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-
-  // Fallback: open Gmail in new tab (mobile/web)
-  setTimeout(() => {
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`, '_blank');
-  }, 500);
-}
-</script>
+    // Open email client
+    function openEmail() {
+      const email = 'theqssalaryindex@outlook.com';
+      const subject = encodeURIComponent('QS Salary Index – Feedback');
+      const body = encodeURIComponent('Hi,\n\nI have a question/feedback:\n\n[Your message]\n\nThanks!');
+      const mailto = `mailto:${email}?subject=${subject}&body=${body}`;
+      const a = document.createElement('a');
+      a.href = mailto; a.style.display = 'none';
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`, '_blank'), 500);
+    }
+  </script>
 </body>
 </html>
