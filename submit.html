@@ -205,6 +205,7 @@
         <!-- Company Size -->
         <div class="form-group">
           <label for="companySize">Company Size (optional)</label>
+          <!--<select id="companySize">-->
           <select id="companySize">
             <option>1-10</option>
             <option>11-50</option>
@@ -255,9 +256,9 @@
     </div>
   </footer>
 
-  <!-- FINAL JS: NO CORS, NO REDIRECT, NO FALSE ERRORS -->
+  <!-- FINAL JS: NO CORS, NO REDIRECT, NO ERRORS -->
   <script>
-    // === CONFIG ===
+    // === CONFIG (hardcoded) ===
     const CONFIG = {
       FORMSPREE_ENDPOINT: 'https://formspree.io/f/xnnlaqka',
       UK_COUNTIES: ["Bedfordshire","Berkshire","Bristol","Buckinghamshire","Cambridgeshire","Cheshire","Cornwall","Cumbria","Derbyshire","Devon","Dorset","Durham","East Sussex","Essex","Gloucestershire","Greater London","Greater Manchester","Hampshire","Hertfordshire","Kent","Lancashire","Leicestershire","Lincolnshire","Merseyside","Norfolk","North Yorkshire","Northamptonshire","Northumberland","Nottinghamshire","Oxfordshire","Shropshire","Somerset","South Yorkshire","Staffordshire","Suffolk","Surrey","Tyne and Wear","Warwickshire","West Midlands","West Sussex","West Yorkshire","Wiltshire","Worcestershire"].sort(),
@@ -342,7 +343,7 @@
         items.forEach(item => sel.appendChild(new Option(item, item)));
       }
 
-      // === FORM SUBMIT: NO CORS, NO REDIRECT ===
+      // === FORM SUBMIT: BULLETPROOF ===
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         submitBtn.disabled = true;
@@ -386,18 +387,16 @@
           formData.append('data', JSON.stringify(data, null, 2));
           Object.keys(data).forEach(k => formData.append(k, data[k]));
 
-          // ADD THIS LINE TO AVOID REDIRECT
+          // CRITICAL: Prevent redirect
           formData.append('_next', '');
 
           const response = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             body: formData,
-            // THIS IS KEY: PREVENT REDIRECT
             redirect: 'follow'
           });
 
-          // SUCCESS IF 200-299
           if (response.ok) {
             showSuccess();
             form.reset();
@@ -405,7 +404,7 @@
             titleOther.style.display = 'none';
           } else {
             const text = await response.text();
-            throw new Error(`Error ${response.status}: ${text}`);
+            throw new Error(`Formspree error ${response.status}: ${text}`);
           }
         } catch (err) {
           console.error('Submit failed:', err);
@@ -436,7 +435,7 @@
         window.location.href = 'mailto:theqssalaryindex@outlook.com?subject=QS%20Salary%20Index%20–%20Submission%20Issue&body=Hi,%0D%0A%0D%0AI%20tried%20to%20submit%20but%20got%20an%20error:%0D%0A%0D%0A[Describe%20issue]%0D%0A%0D%0AThanks!';
       }
 
-      // Auto-select UK for GB users
+      // AUTO-SELECT UK FOR GB USERS
       if (navigator.language.startsWith('en-GB')) {
         countrySel.value = 'United Kingdom';
         countrySel.dispatchEvent(new Event('change'));
