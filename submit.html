@@ -259,154 +259,187 @@
   </footer>
 
   <!-- CONFIG & JS -->
-  <script src="assets/js/config.js"></script>
   <script>
-    function openEmail() {
-      const email = 'theqssalaryindex@outlook.com';
-      const subject = encodeURIComponent('QS Salary Index – Submission Query');
-      const body = encodeURIComponent('Hi,\n\nI have a question about my submission:\n\n[Your message]\n\nThanks!');
-      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+  function openEmail() {
+    const email = 'theqssalaryindex@outlook.com';
+    const subject = encodeURIComponent('QS Salary Index – Submission Query');
+    const body = encodeURIComponent('Hi,\n\nI have a question about my submission:\n\n[Your message]\n\nThanks!');
+    window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+  }
+
+  // Title "Other" handling
+  const titleSelect = document.getElementById('title');
+  const titleOther = document.getElementById('titleOther');
+  titleSelect.addEventListener('change', () => {
+    titleOther.style.display = titleSelect.value === 'Other' ? 'block' : 'none';
+    titleOther.required = titleSelect.value === 'Other';
+  });
+
+  // Country → Region → City Logic
+  const countrySel = document.getElementById('country');
+  const ukSubField = document.getElementById('ukSubField');
+  const ukSubSel = document.getElementById('ukSub');
+  const englandField = document.getElementById('englandField');
+  const scotlandField = document.getElementById('scotlandField');
+  const walesField = document.getElementById('walesField');
+  const usaField = document.getElementById('usaField');
+  const cityField = document.getElementById('cityField');
+  const cityInput = document.getElementById('cityInput');
+  const cityLabel = document.getElementById('cityLabel');
+
+  // --- DYNAMIC REQUIRED LOGIC ---
+  function setRequired(el, required) {
+    if (el) el.required = required;
+  }
+
+  function resetAll() {
+    [ukSubField, englandField, scotlandField, walesField, usaField].forEach(el => {
+      el.classList.remove('active');
+    });
+    setRequired(cityInput, false);
+    setRequired(ukSubSel, false);
+    setRequired(document.getElementById('state'), false);
+    setRequired(document.getElementById('englandCounty'), false);
+    setRequired(document.getElementById('scotlandRegion'), false);
+    setRequired(document.getElementById('walesRegion'), false);
+
+    ukSubSel.value = '';
+    document.getElementById('englandCounty').innerHTML = '<option value="">Select County...</option>';
+    document.getElementById('scotlandRegion').innerHTML = '<option value="">Select Area...</option>';
+    document.getElementById('walesRegion').innerHTML = '<option value="">Select Area...</option>';
+    document.getElementById('state').innerHTML = '<option value="">Select State...</option>';
+  }
+
+  countrySel.addEventListener('change', () => {
+    resetAll();
+    const country = countrySel.value;
+
+    if (!country) return;
+
+    cityField.classList.add('active');
+    setRequired(cityInput, true);
+
+    if (country === 'United Kingdom') {
+      ukSubField.classList.add('active');
+      setRequired(ukSubSel, true);
+    } else if (country === 'United States') {
+      usaField.classList.add('active');
+      populateSelect('state', CONFIG.USA_STATES);
+      setRequired(document.getElementById('state'), true);
+    }
+  });
+
+  ukSubSel.addEventListener('change', () => {
+    [englandField, scotlandField, walesField].forEach(el => el.classList.remove('active'));
+    setRequired(document.getElementById('englandCounty'), false);
+    setRequired(document.getElementById('scotlandRegion'), false);
+    setRequired(document.getElementById('walesRegion'), false);
+
+    const sub = ukSubSel.value;
+    if (sub === 'england') {
+      englandField.classList.add('active');
+      populateSelect('englandCounty', CONFIG.UK_COUNTIES);
+    } else if (sub === 'scotland') {
+      scotlandField.classList.add('active');
+      populateSelect('scotlandRegion', CONFIG.SCOTLAND_COUNCIL_AREAS);
+    } else if (sub === 'wales') {
+      walesField.classList.add('active');
+      populateSelect('walesRegion', CONFIG.WALES_PRINCIPAL_AREAS);
+    }
+  });
+
+  function populateSelect(id, items) {
+    const sel = document.getElementById(id);
+    sel.innerHTML = '<option value="">Select (optional)...</option>';
+    items.forEach(item => sel.appendChild(new Option(item, item)));
+  }
+
+  // Form Submit
+  document.getElementById('salaryForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector('.submit-btn');
+    const msg = document.getElementById('submitMsg');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+    msg.innerHTML = '';
+
+    const title = titleSelect.value === 'Other' ? titleOther.value.trim() : titleSelect.value;
+    const country = countrySel.value;
+    let region = '', city = cityInput.value.trim();
+
+    if (!title || !country || !city) {
+      showError('Please fill all required fields.');
+      btn.disabled = false;
+      btn.textContent = 'Submit for Approval';
+      return;
     }
 
-    // Title "Other" handling
-    const titleSelect = document.getElementById('title');
-    const titleOther = document.getElementById('titleOther');
-    titleSelect.addEventListener('change', () => {
-      titleOther.style.display = titleSelect.value === 'Other' ? 'block' : 'none';
-      titleOther.required = titleSelect.value === 'Other';
-    });
-
-    // Country → Region → City Logic
-    const countrySel = document.getElementById('country');
-    const ukSubField = document.getElementById('ukSubField');
-    const ukSubSel = document.getElementById('ukSub');
-    const englandField = document.getElementById('englandField');
-    const scotlandField = document.getElementById('scotlandField');
-    const walesField = document.getElementById('walesField');
-    const usaField = document.getElementById('usaField');
-    const cityField = document.getElementById('cityField');
-    const cityInput = document.getElementById('cityInput');
-    const cityLabel = document.getElementById('cityLabel');
-
-    function resetAll() {
-      [ukSubField, englandField, scotlandField, walesField, usaField, cityField].forEach(el => {
-        el.classList.remove('active');
-      });
-      cityInput.required = false;
-      ukSubSel.value = '';
-      document.getElementById('englandCounty').innerHTML = '<option value="">Select County...</option>';
-      document.getElementById('scotlandRegion').innerHTML = '<option value="">Select Area...</option>';
-      document.getElementById('walesRegion').innerHTML = '<option value="">Select Area...</option>';
-      document.getElementById('state').innerHTML = '<option value="">Select State...</option>';
-    }
-
-    countrySel.addEventListener('change', () => {
-      resetAll();
-      const country = countrySel.value;
-
-      if (!country) return;
-
-      cityField.classList.add('active');
-      cityInput.required = true;
-
-      if (country === 'United Kingdom') {
-        ukSubField.classList.add('active');
-      } else if (country === 'United States') {
-        usaField.classList.add('active');
-        populateSelect('state', CONFIG.USA_STATES);
-      }
-    });
-
-    ukSubSel.addEventListener('change', () => {
-      [englandField, scotlandField, walesField].forEach(el => el.classList.remove('active'));
+    if (country === 'United Kingdom') {
       const sub = ukSubSel.value;
-      if (sub === 'england') {
-        englandField.classList.add('active');
-        populateSelect('englandCounty', CONFIG.UK_COUNTIES);
-      } else if (sub === 'scotland') {
-        scotlandField.classList.add('active');
-        populateSelect('scotlandRegion', CONFIG.SCOTLAND_COUNCIL_AREAS);
-      } else if (sub === 'wales') {
-        walesField.classList.add('active');
-        populateSelect('walesRegion', CONFIG.WALES_PRINCIPAL_AREAS);
-      }
-    });
-
-    function populateSelect(id, items) {
-      const sel = document.getElementById(id);
-      sel.innerHTML = '<option value="">Select (optional)...</option>';
-      items.forEach(item => sel.appendChild(new Option(item, item)));
-    }
-
-    // Form Submit
-    document.getElementById('salaryForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = e.target.querySelector('.submit-btn');
-      const msg = document.getElementById('submitMsg');
-      btn.disabled = true;
-      btn.textContent = 'Submitting...';
-      msg.innerHTML = '';
-
-      const title = titleSelect.value === 'Other' ? titleOther.value.trim() : titleSelect.value;
-      const country = countrySel.value;
-      let region = '', city = cityInput.value.trim();
-
-      if (country === 'United Kingdom') {
-        const sub = ukSubSel.value;
-        if (!sub || !city) return showError('Please select UK region and enter city.');
-        region = sub === 'england' ? document.getElementById('englandCounty').value :
-                 sub === 'scotland' ? document.getElementById('scotlandRegion').value :
-                 document.getElementById('walesRegion').value;
-      } else if (country === 'United States') {
-        region = document.getElementById('state').value;
-        if (!region || !city) return showError('Please select state and enter city.');
-      }
-
-      const data = {
-        title, qsType: document.getElementById('qsType').value, country, region, city,
-        salary: document.getElementById('salary').value, timeInRole: document.getElementById('timeInRole').value,
-        education: document.getElementById('education').value, sector: document.getElementById('sector').value || '',
-        companySize: document.getElementById('companySize').value || '', workArrangement: document.getElementById('workArrangement').value || '',
-        certification: document.getElementById('certification').value.trim() || '', benefits: document.getElementById('benefits').value.trim() || '',
-        submittedAt: new Date().toISOString()
-      };
-
-      try {
-        const formData = new URLSearchParams();
-        formData.append('_subject', `New QS Salary – ${data.title} in ${data.city}`);
-        formData.append('data', JSON.stringify(data, null, 2));
-        Object.keys(data).forEach(k => formData.append(k, data[k]));
-
-        const resp = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: formData
-        });
-
-        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        showSuccess();
-        e.target.reset();
-        resetAll();
-        titleOther.style.display = 'none';
-      } catch (err) {
-        showError(`Submission failed: ${err.message}`);
-      } finally {
+      if (!sub) {
+        showError('Please select England, Scotland, or Wales.');
         btn.disabled = false;
         btn.textContent = 'Submit for Approval';
+        return;
       }
-    });
-
-    function showSuccess() {
-      document.getElementById('submitMsg').innerHTML = `<div class="success-msg">
-        Thank you! Your submission has been received and will be reviewed within 24 hours.
-      </div>`;
+      region = sub === 'england' ? document.getElementById('englandCounty').value :
+               sub === 'scotland' ? document.getElementById('scotlandRegion').value :
+               document.getElementById('walesRegion').value;
+    } else if (country === 'United States') {
+      region = document.getElementById('state').value;
+      if (!region) {
+        showError('Please select a state.');
+        btn.disabled = false;
+        btn.textContent = 'Submit for Approval';
+        return;
+      }
     }
 
-    function showError(text) {
-      document.getElementById('submitMsg').innerHTML = `<div class="error-msg">
-        <strong>Error:</strong> ${text}
-      </div>`;
+    const data = {
+      title, qsType: document.getElementById('qsType').value, country, region, city,
+      salary: document.getElementById('salary').value, timeInRole: document.getElementById('timeInRole').value,
+      education: document.getElementById('education').value, sector: document.getElementById('sector').value || '',
+      companySize: document.getElementById('companySize').value || '', workArrangement: document.getElementById('workArrangement').value || '',
+      certification: document.getElementById('certification').value.trim() || '', benefits: document.getElementById('benefits').value.trim() || '',
+      submittedAt: new Date().toISOString()
+    };
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append('_subject', `New QS Salary – ${data.title} in ${data.city}`);
+      formData.append('data', JSON.stringify(data, null, 2));
+      Object.keys(data).forEach(k => formData.append(k, data[k]));
+
+      const resp = await fetch(CONFIG.FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: formData
+      });
+
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      showSuccess();
+      e.target.reset();
+      resetAll();
+      titleOther.style.display = 'none';
+    } catch (err) {
+      showError(`Submission failed: ${err.message}`);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Submit for Approval';
     }
-  </script>
+  });
+
+  function showSuccess() {
+    document.getElementById('submitMsg').innerHTML = `<div class="success-msg">
+      Thank you! Your submission has been received and will be reviewed within 24 hours.
+    </div>`;
+  }
+
+  function showError(text) {
+    document.getElementById('submitMsg').innerHTML = `<div class="error-msg">
+      <strong>Error:</strong> ${text}
+    </div>`;
+  }
+</script>
 </body>
 </html>
