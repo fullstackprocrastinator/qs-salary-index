@@ -1424,5 +1424,37 @@
 "certification": "",
 "benefits": "",
 "submittedAt": "2025-11-10T14:20:16.405Z"
+},
+  {
+"title": "Associate QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Greater London",
+"city": "London",
+"salary": "£70,000 - £80,000",
+"timeInRole": "8",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "MRICS",
+"benefits": "",
+"submittedAt": "2025-11-10T15:36:04.459Z"
+},
+  {
+"title": "Project QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Greater London",
+"city": "London",
+"salary": "£60,000 - £70,000",
+"timeInRole": "7",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "51-200",
+"workArrangement": "Hybrid",
+"certification": "N/A",
+"benefits": "All in 69000",
+"submittedAt": "2025-11-10T15:36:28.508Z"
 }
 ]
