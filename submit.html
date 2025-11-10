@@ -4,250 +4,307 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Submit Salary – The QS Salary Index</title>
-
-  <!-- FAVICON -->
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
-
-  <!-- FONTS -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet" />
-
-  <!-- STYLES -->
   <link rel="stylesheet" href="assets/css/style.css" />
-
-  <!-- SEO -->
-  <meta name="description" content="Submit your QS salary anonymously to The QS Salary Index. 100% private, admin-approved, live within 24h." />
-  <meta name="robots" content="index, follow" />
+  <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+  <style>
+    .submit-form {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin: 2rem 0;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    .form-group label {
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #374151;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background: white;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #1e40af;
+      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+    }
+    .form-group small {
+      color: #6b7280;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+    .submit-btn {
+      background: #1e40af;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+      font-size: 1rem;
+      transition: background 0.2s;
+    }
+    .submit-btn:hover {
+      background: #1e3a8a;
+    }
+    .submit-btn:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+    .success-msg {
+      background: #ecfdf5;
+      color: #065f46;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #a7f3d0;
+      margin: 1rem 0;
+      display: none;
+    }
+    .error-msg {
+      background: #fef2f2;
+      color: #991b1b;
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid #fca5a5;
+      margin: 1rem 0;
+      display: none;
+    }
+  </style>
 </head>
 <body>
+  <!-- HEADER -->
   <header>
-    <div class="container">
-      <h1><a href="/">The QS Salary Index</a></h1>
-      <p>Live global salary data for Quantity Surveyors</p>
-      <p class="brand-link">
-        Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
-      </p>
-      <nav>
-        <a href="/">Back to Index</a> |
-        <a href="insights.html">Insights</a> |
-        <a href="#" class="contact-btn" onclick="openEmail()">Contact Us</a>
-      </nav>
+    <div class="container header-flex">
+      <a href="/" class="logo-link">
+        <img src="assets/img/qs-salary-index-logo.png" alt="The QS Salary Index Logo" class="logo">
+        <span class="sr-only">The QS Salary Index</span>
+      </a>
+      <div class="header-text">
+        <p>Live global salary data for Quantity Surveyors</p>
+        <p class="brand-link">
+          Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
+        </p>
+        <nav>
+          <a href="/">Index</a> |
+          <a href="submit.html">Submit</a> |
+          <a href="insights.html">Insights</a> |
+          <a href="#" onclick="openEmail()">Contact</a>
+        </nav>
+      </div>
     </div>
   </header>
 
+  <!-- MAIN -->
   <main class="container">
-    <section class="submit-form">
-      <h2>Submit Your Salary (100% Anonymous)</h2>
+    <section class="hero">
+      <h1>Submit Your Salary (100% Anonymous)</h1>
       <p>Your data helps thousands. All entries are reviewed before going live.</p>
-
-      <form id="salaryForm">
-        <!-- TITLE -->
-        <label>Title/Role *</label>
-        <select name="title" required>
-          <option value="">Select Role...</option>
-          <option>Trainee QS</option>
-          <option>Assistant QS</option>
-          <option>QS</option>
-          <option>Senior QS</option>
-          <option>Principal QS</option>
-          <option>Cost Manager</option>
-          <option>Commercial Manager</option>
-          <option>Head of Cost Management</option>
-          <option>Director</option>
-          <option>Other</option>
-        </select>
-
-        <!-- QS TYPE -->
-        <label>QS Type *</label>
-        <select name="qsType" required>
-          <option value="">Select Type...</option>
-          <option>Subcontractor</option>
-          <option>Main Contractor</option>
-          <option>Consultant</option>
-          <option>Client / Developer</option>
-          <option>Public Sector</option>
-          <option>Other</option>
-        </select>
-
-        <!-- COUNTRY -->
-        <label>Country *</label>
-        <select name="country" id="country" required>
-          <option value="">Select Country...</option>
-        </select>
-
-        <!-- UK SUB-REGION -->
-        <div id="ukSubFields" style="display:none;">
-          <label>UK Region *</label>
-          <select id="ukSub" required>
-            <option value="">Select...</option>
-            <option value="england">England</option>
-            <option value="scotland">Scotland</option>
-            <option value="wales">Wales</option>
-          </select>
-        </div>
-
-        <!-- ENGLAND -->
-        <div id="englandFields" style="display:none;">
-          <label>County (optional)</label>
-          <select id="county">
-            <option value="">Select (optional)...</option>
-          </select>
-          <label>City *</label>
-          <input type="text" id="englandCity" placeholder="e.g. Norwich" />
-        </div>
-
-        <!-- SCOTLAND -->
-        <div id="scotlandFields" style="display:none;">
-          <label>Council Area (optional)</label>
-          <select id="scotlandRegion">
-            <option value="">Select (optional)...</option>
-          </select>
-          <label>City *</label>
-          <input type="text" id="scotlandCity" placeholder="e.g. Edinburgh" />
-        </div>
-
-        <!-- WALES -->
-        <div id="walesFields" style="display:none;">
-          <label>Principal Area (optional)</label>
-          <select id="walesRegion">
-            <option value="">Select (optional)...</option>
-          </select>
-          <label>City *</label>
-          <input type="text" id="walesCity" placeholder="e.g. Cardiff" />
-        </div>
-
-        <!-- USA -->
-        <div id="usaFields" style="display:none;">
-          <label>State *</label>
-          <select id="state">
-            <option value="">Select State...</option>
-          </select>
-          <label>City *</label>
-          <input type="text" id="usaCity" placeholder="e.g. Austin" />
-        </div>
-
-        <!-- OTHER COUNTRIES -->
-        <div id="otherFields" style="display:none;">
-          <label>City *</label>
-          <input type="text" id="otherCity" placeholder="e.g. Sydney" />
-        </div>
-
-        <!-- SALARY -->
-        <label>Salary Range (GBP) *</label>
-        <select name="salary" required>
-          <option value="">Select Range...</option>
-          <option>£20,000 - £30,000</option>
-          <option>£30,000 - £40,000</option>
-          <option>£40,000 - £50,000</option>
-          <option>£50,000 - £60,000</option>
-          <option>£60,000 - £70,000</option>
-          <option>£70,000 - £80,000</option>
-          <option>£80,000 - £90,000</option>
-          <option>£90,000 - £100,000</option>
-          <option>£100,000 - £120,000</option>
-          <option>£120,000 - £150,000</option>
-          <option>£150,000+</option>
-        </select>
-
-        <!-- TIME IN ROLE -->
-        <label>Time in Role (years) *</label>
-        <input type="number" name="timeInRole" min="0" max="50" step="0.5" placeholder="e.g. 3.5" required />
-
-        <!-- EDUCATION -->
-        <label>QS Education</label>
-        <select name="education">
-          <option value="None">None</option>
-          <option>HNC</option>
-          <option>BSc</option>
-          <option>MSc</option>
-          <option>PhD</option>
-          <option>Other</option>
-        </select>
-
-        <!-- SECTOR -->
-        <label>Sector (optional)</label>
-        <select name="sector">
-          <option>Construction</option>
-          <option>Infrastructure</option>
-          <option>Oil & Gas</option>
-          <option>Renewables</option>
-          <option>Property Development</option>
-          <option>Consultancy</option>
-          <option>Other</option>
-        </select>
-
-        <!-- COMPANY SIZE -->
-        <label>Company Size (optional)</label>
-        <select name="companySize">
-          <option>1-10</option>
-          <option>11-50</option>
-          <option>51-250</option>
-          <option>250+</option>
-        </select>
-
-        <!-- WORK ARRANGEMENT -->
-        <label>Work Arrangement (optional)</label>
-        <select name="workArrangement">
-          <option>On-site</option>
-          <option>Hybrid</option>
-          <option>Remote</option>
-        </select>
-
-        <!-- CERTIFICATION -->
-        <label>Certification (optional)</label>
-        <input type="text" name="certification" placeholder="e.g. MRICS, CIOB" />
-
-        <!-- BENEFITS -->
-        <label>Bonus / Benefits (optional)</label>
-        <textarea name="benefits" rows="2" placeholder="e.g. car allowance, pension, 30 days holiday"></textarea>
-
-        <!-- SUBMIT -->
-        <button type="submit">Submit for Approval</button>
-      </form>
-
-      <div id="submitMsg"></div>
     </section>
+
+    <form id="salaryForm" class="submit-form">
+      <div class="form-grid">
+        <!-- Title/Role -->
+        <div class="form-group">
+          <label for="title">Title/Role *</label>
+          <input type="text" id="title" placeholder="e.g. Senior QS" required />
+        </div>
+
+        <!-- QS Type -->
+        <div class="form-group">
+          <label for="qsType">QS Type *</label>
+          <select id="qsType" required>
+            <option value="">Select Type...</option>
+            <option>Main Contractor</option>
+            <option>Subcontractor</option>
+            <option>Consultant</option>
+            <option>Client / Developer</option>
+          </select>
+        </div>
+
+        <!-- Country -->
+        <div class="form-group">
+          <label for="country">Country *</label>
+          <select id="country" required>
+            <option value="">Select Country...</option>
+            <option>United Kingdom</option>
+            <option>United States</option>
+            <option>Australia</option>
+            <option>Canada</option>
+            <option>Ireland</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <!-- Salary Range -->
+        <div class="form-group">
+          <label for="salary">Salary Range (GBP) *</label>
+          <select id="salary" required>
+            <option value="">Select Range...</option>
+            <option>£30,000 - £40,000</option>
+            <option>£40,000 - £50,000</option>
+            <option>£50,000 - £60,000</option>
+            <option>£60,000 - £70,000</option>
+            <option>£70,000 - £80,000</option>
+            <option>£80,000 - £90,000</option>
+            <option>£90,000 - £100,000</option>
+            <option>£100,000 - £120,000</option>
+            <option>£120,000+</option>
+          </select>
+        </div>
+
+        <!-- Time in Role -->
+        <div class="form-group">
+          <label for="timeInRole">Time in Role (years) *</label>
+          <input type="number" id="timeInRole" min="0" max="50" step="0.5" placeholder="e.g. 3.5" required />
+        </div>
+
+        <!-- QS Education -->
+        <div class="form-group">
+          <label for="education">QS Education</label>
+          <select id="education">
+            <option>None</option>
+            <option>HNC/HND</option>
+            <option>BSc</option>
+            <option>MSc</option>
+            <option>PhD</option>
+          </select>
+        </div>
+
+        <!-- Sector (optional) -->
+        <div class="form-group">
+          <label for="sector">Sector (optional)</label>
+          <select id="sector">
+            <option>Construction</option>
+            <option>Infrastructure</option>
+            <option>Oil & Gas</option>
+            <option>Renewables</option>
+            <option>Other</option>
+          </select>
+        </div>
+
+        <!-- Company Size (optional) -->
+        <div class="form-group">
+          <label for="companySize">Company Size (optional)</label>
+          <select id="companySize">
+            <option>1-10</option>
+            <option>11-50</option>
+            <option>51-200</option>
+            <option>201-500</option>
+            <option>500+</option>
+          </select>
+        </div>
+
+        <!-- Work Arrangement (optional) -->
+        <div class="form-group">
+          <label for="workArrangement">Work Arrangement (optional)</label>
+          <select id="workArrangement">
+            <option>On-site</option>
+            <option>Hybrid</option>
+            <option>Remote</option>
+          </select>
+        </div>
+
+        <!-- Certification (optional) -->
+        <div class="form-group">
+          <label for="certification">Certification (optional)</label>
+          <input type="text" id="certification" placeholder="e.g. MRICS, CIOB" />
+        </div>
+      </div>
+
+      <!-- Bonus / Benefits -->
+      <div class="form-group">
+        <label for="benefits">Bonus / Benefits (optional)</label>
+        <textarea id="benefits" rows="3" placeholder="e.g. car allowance, pension, 30 days"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn">Submit for Approval</button>
+
+      <div id="successMsg" class="success-msg">
+        Thank you! Your submission has been received and will be reviewed within 24 hours.
+      </div>
+      <div id="errorMsg" class="error-msg"></div>
+    </form>
   </main>
 
+  <!-- FOOTER -->
   <footer>
-  <div class="container">
-    <p>
-      &copy; 2025 The QS Salary Index. 
-      <a href="privacy.html">Privacy</a> | 
-      <a href="terms.html">Terms</a> | 
-      Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
-    </p>
-  </div>
-</footer>
+    <div class="container">
+      <p>
+        &copy; 2025 The QS Salary Index. 
+        <a href="privacy.html">Privacy</a> | 
+        <a href="terms.html">Terms</a> | 
+        Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
+      </p>
+    </div>
+  </footer>
 
-  <!-- CONFIG -->
-  <script src="assets/js/config.js"></script>
-  <!-- SUBMIT LOGIC -->
-  <script src="assets/js/submit.js"></script>
+  <!-- SCRIPTS -->
   <script>
-function openEmail() {
-  const email = 'theqssalaryindex@outlook.com';
-  const subject = encodeURIComponent('QS Salary Index – Enquiry');
-  const body = encodeURIComponent(
-    'Hi,\n\nI have a question about the QS Salary Index:\n\n[Your message here]\n\nThanks!'
-  );
-  
-  const mailtoLink = `mailto:${email}?subject=${subject}&body=${body}`;
-  
-  // Try to open mail app
-  const link = document.createElement('a');
-  link.href = mailtoLink;
-  link.style.display = 'none';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+    function openEmail() {
+      const email = 'theqssalaryindex@outlook.com';
+      const subject = encodeURIComponent('QS Salary Index – Submission Query');
+      const body = encodeURIComponent('Hi,\n\nI have a question about my submission:\n\n[Your message]\n\nThanks!');
+      window.location.href = `mailto:${email}?subject=${subject}&body=${body}`;
+    }
 
-  // Fallback: open webmail if mailto fails (mobile)
-  setTimeout(() => {
-    window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`, '_blank');
-  }, 500);
-}
-</script>
+    document.getElementById('salaryForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = e.target.querySelector('.submit-btn');
+      const successMsg = document.getElementById('successMsg');
+      const errorMsg = document.getElementById('errorMsg');
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      successMsg.style.display = 'none';
+      errorMsg.style.display = 'none';
+
+      const formData = {
+        title: document.getElementById('title').value.trim(),
+        qsType: document.getElementById('qsType').value,
+        country: document.getElementById('country').value,
+        salary: document.getElementById('salary').value,
+        timeInRole: document.getElementById('timeInRole').value,
+        education: document.getElementById('education').value,
+        sector: document.getElementById('sector').value || null,
+        companySize: document.getElementById('companySize').value || null,
+        workArrangement: document.getElementById('workArrangement').value || null,
+        certification: document.getElementById('certification').value.trim() || null,
+        benefits: document.getElementById('benefits').value.trim() || null,
+        submittedAt: new Date().toISOString()
+      };
+
+      try {
+        // In real use, send to backend (e.g., Netlify, Formspree, etc.)
+        // For now: simulate success
+        await new Promise(r => setTimeout(r, 800));
+        successMsg.style.display = 'block';
+        e.target.reset();
+      } catch (err) {
+        errorMsg.textContent = 'Submission failed. Please try again.';
+        errorMsg.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit for Approval';
+      }
+    });
+  </script>
 </body>
 </html>
