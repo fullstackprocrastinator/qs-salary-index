@@ -76,7 +76,7 @@
     </div>
   </footer>
 
-  <!-- CHART.JS + BOXPLOT (FIXED) -->
+  <!-- CHART.JS + BOXPLOT -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@3.0.0/build/chartjs-chart-box-and-violin-plot.min.js"></script>
 
@@ -90,8 +90,12 @@
     }
 
     function enhanceInsights(rawData) {
-      // Accept array OR object with values
-      const data = Array.isArray(rawData) ? rawData : Object.values(rawData).filter(Boolean);
+      let data = [];
+      if (Array.isArray(rawData)) {
+        data = rawData;
+      } else if (rawData && typeof rawData === 'object') {
+        data = Object.values(rawData).filter(Boolean);
+      }
       if (data.length === 0) return null;
 
       const salaries = data.map(s => parseSalary(s.salary)).filter(n => n > 0);
@@ -152,12 +156,15 @@
     }
 
     function renderBoxPlot(insights) {
-      const ctx = document.getElementById('salaryChart').getContext('2d');
-      if (window.salaryChart && typeof window.salaryChart.destroy === 'function') {
-        window.salaryChart.destroy();
+      const canvas = document.getElementById('salaryChart');
+      const ctx = canvas.getContext('2d');
+
+      // FIXED: Always destroy old chart safely
+      if (window.salaryChart) {
+        try { window.salaryChart.destroy(); } catch(e) {}
+        window.salaryChart = null;
       }
 
-      // FIXED: No getChartType() — just try
       let chartType = 'boxplot';
       try {
         new Chart(ctx, { type: 'boxplot', data: { datasets: [] } });
@@ -216,7 +223,8 @@
 
       try {
         loadingEl.textContent = 'Fetching data...';
-        const res = await fetch(DATA_URL + '?t=' + Date.now());
+        const timestamp = new Date().getTime();
+        const res = await fetch(`${DATA_URL}?cachebust=${timestamp}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         loadingEl.textContent = 'Parsing JSON...';
@@ -224,7 +232,11 @@
         try {
           rawData = await res.json();
         } catch (e) {
-          throw new Error('Invalid JSON. Use array format.');
+          throw new Error('Invalid JSON. Must be valid array.');
+        }
+
+        if (!Array.isArray(rawData) || rawData.length === 0) {
+          throw new Error('JSON must be a non-empty array. Wrap objects in [ ].');
         }
 
         const insights = enhanceInsights(rawData);
@@ -239,7 +251,9 @@
         errorEl.innerHTML = `
           <strong>Data Error:</strong> ${err.message}<br><br>
           <small>
-            <strong>Your JSON must be an array:</strong><br>
+            <strong>Fix in GitHub:</strong><br>
+            1. Open <code>assets/data/salaries.json</code><br>
+            2. Ensure it's a <strong>valid array</strong>:<br>
             <pre style="background:#f3f4f6;padding:8px;border-radius:4px;margin:8px 0;">
 [
   {
@@ -247,7 +261,7 @@
     "submittedAt": "2025-11-01T12:00:00Z"
   }
 ]</pre>
-            Fix in GitHub → Commit → Wait 60s.
+            3. Commit → Wait 60s → Refresh.
           </small>
         `;
         errorEl.style.display = 'block';
