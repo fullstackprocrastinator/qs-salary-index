@@ -76,7 +76,7 @@
     </div>
   </footer>
 
-  <!-- WORKING BOXPLOT PLUGIN + CHART.JS -->
+  <!-- CHART.JS + BOXPLOT (WORKING) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@3.0.0/build/chartjs-chart-box-and-violin-plot.min.js"></script>
 
@@ -149,13 +149,16 @@
 
     function renderBoxPlot(insights) {
       const ctx = document.getElementById('salaryChart').getContext('2d');
-      if (window.salaryChart) window.salaryChart.destroy();
 
-      // Fallback to bar if boxplot fails
+      // FIXED: Only destroy if exists
+      if (window.salaryChart && typeof window.salaryChart.destroy === 'function') {
+        window.salaryChart.destroy();
+      }
+
       const chartType = Chart.registry.getChartType('boxplot') ? 'boxplot' : 'bar';
 
       if (chartType === 'bar') {
-        document.getElementById('chartNote').textContent = 'Boxplot unavailable — showing key stats as bar chart.';
+        document.getElementById('chartNote').textContent = 'Boxplot unavailable — showing key stats.';
       }
 
       window.salaryChart = new Chart(ctx, {
@@ -180,9 +183,7 @@
           }] : [{
             label: 'Key Stats',
             data: [insights.p10, insights.median, insights.p90],
-            backgroundColor: ['#1e40af', '#dc2626', '#1e40af'],
-            borderColor: '#1e40af',
-            borderWidth: 1
+            backgroundColor: ['#1e40af', '#dc2626', '#1e40af']
           }]
         },
         options: {
@@ -190,7 +191,7 @@
           plugins: {
             title: { 
               display: true, 
-              text: chartType === 'boxplot' ? 'Salary Distribution (Box Plot)' : 'Salary Key Stats (Fallback)',
+              text: chartType === 'boxplot' ? 'Salary Distribution (Box Plot)' : 'Salary Stats (Fallback)',
               font: { size: 16, weight: 'bold' } 
             },
             legend: { display: false }
@@ -216,7 +217,7 @@
         if (!Array.isArray(data) || data.length === 0) throw new Error('No submissions');
 
         const insights = enhanceInsights(data);
-        if (!insights) throw new Error('No valid salaries');
+        if (!insights) throw new Error('No valid salary data');
 
         document.getElementById('loading').style.display = 'none';
         renderDashboard(insights);
@@ -225,8 +226,8 @@
         document.getElementById('loading').style.display = 'none';
         const errEl = document.getElementById('error');
         errEl.innerHTML = `
-          <strong>Data error:</strong> ${err.message}<br>
-          <small>Fix: Upload <code>assets/data/salaries.json</code> with at least 1 entry.</small>
+          <strong>No live data yet.</strong><br>
+          <small>Upload <code>assets/data/salaries.json</code> to your repo to see stats.</small>
         `;
         errEl.style.display = 'block';
       }
