@@ -10,14 +10,14 @@
     .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
     .hero { text-align: center; padding: 3rem 0; }
     .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
-    .hero p { color: #4b5563; font-size: 1.1msrem; }
+    .hero p { color: #4b5563; font-size: 1.1rem; }
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
     .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; }
     .stat-label { font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem; font-weight: 600; }
     .stat-value { font-size: 1.5rem; font-weight: 700; color: #1e40af; }
     .outliers { font-size: 0.85rem; color: #dc2626; margin-top: 0.5rem; }
     .loading { text-align: center; padding: 3rem; color: #6b7280; }
-    .error { color: #dc2626; text-align: center; padding: 2rem; background: #fef2f2; border-radius: 8px; margin: 1rem 0; font-family: monospace; }
+    .error { color: #dc2626; text-align: center; padding: 2rem; background: #fef2f2; border-radius: 8px; margin: 1rem 0; }
     .chart-container { max-width: 800px; margin: 2rem auto; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
   </style>
 </head>
@@ -76,7 +76,7 @@
     </div>
   </footer>
 
-  <!-- CHART.JS + BOXPLOT -->
+  <!-- CHART.JS + BOXPLOT (FIXED) -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@3.0.0/build/chartjs-chart-box-and-violin-plot.min.js"></script>
 
@@ -89,8 +89,11 @@
       return nums.length === 2 ? (nums[0] + nums[1]) / 2 : (nums[0] || 0);
     }
 
-    function enhanceInsights(data) {
-      if (!Array.isArray(data) || data.length === 0) return null;
+    function enhanceInsights(rawData) {
+      // Accept array OR object with values
+      const data = Array.isArray(rawData) ? rawData : Object.values(rawData).filter(Boolean);
+      if (data.length === 0) return null;
+
       const salaries = data.map(s => parseSalary(s.salary)).filter(n => n > 0);
       if (salaries.length === 0) return null;
 
@@ -154,8 +157,12 @@
         window.salaryChart.destroy();
       }
 
-      const chartType = Chart.registry.getChartType('boxplot') ? 'boxplot' : 'bar';
-      if (chartType === 'bar') {
+      // FIXED: No getChartType() — just try
+      let chartType = 'boxplot';
+      try {
+        new Chart(ctx, { type: 'boxplot', data: { datasets: [] } });
+      } catch (e) {
+        chartType = 'bar';
         document.getElementById('chartNote').textContent = 'Boxplot unavailable — showing key stats.';
       }
 
@@ -210,33 +217,19 @@
       try {
         loadingEl.textContent = 'Fetching data...';
         const res = await fetch(DATA_URL + '?t=' + Date.now());
-        
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}: File not found or inaccessible`);
-        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         loadingEl.textContent = 'Parsing JSON...';
-        let data;
+        let rawData;
         try {
-          data = await res.json();
-        } catch (parseErr) {
-          throw new Error(`Invalid JSON: ${parseErr.message}`);
+          rawData = await res.json();
+        } catch (e) {
+          throw new Error('Invalid JSON. Use array format.');
         }
 
-        if (!Array.isArray(data)) {
-          throw new Error('Data is not an array. Check JSON format.');
-        }
-        if (data.length === 0) {
-          throw new Error('JSON is empty. Add at least one submission.');
-        }
+        const insights = enhanceInsights(rawData);
+        if (!insights) throw new Error('No valid salary data found.');
 
-        loadingEl.textContent = 'Analyzing salaries...';
-        const insights = enhanceInsights(data);
-        if (!insights) {
-          throw new Error('No valid salary entries found. Check "salary" field.');
-        }
-
-        // SUCCESS
         loadingEl.style.display = 'none';
         renderDashboard(insights);
         renderBoxPlot(insights);
@@ -246,17 +239,15 @@
         errorEl.innerHTML = `
           <strong>Data Error:</strong> ${err.message}<br><br>
           <small>
-            <strong>Fix:</strong><br>
-            1. Open <code>assets/data/salaries.json</code> in GitHub<br>
-            2. Ensure it's valid JSON and has this format:<br>
+            <strong>Your JSON must be an array:</strong><br>
             <pre style="background:#f3f4f6;padding:8px;border-radius:4px;margin:8px 0;">
 [
   {
     "salary": "£70,000 - £80,000",
-    "submittedAt": "2025-11-10T12:00:00Z"
+    "submittedAt": "2025-11-01T12:00:00Z"
   }
 ]</pre>
-            3. Commit and wait 60 seconds.
+            Fix in GitHub → Commit → Wait 60s.
           </small>
         `;
         errorEl.style.display = 'block';
@@ -264,7 +255,7 @@
     }
 
     function openEmail() {
-      window.location.href = 'mailto:theqssalaryindex@outlook.com?subject=Insights%20Data%20Error';
+      window.location.href = 'mailto:theqssalaryindex@outlook.com?subject=Insights%20Error';
     }
 
     loadData();
