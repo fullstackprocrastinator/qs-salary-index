@@ -18,6 +18,7 @@
     .outliers { font-size: 0.85rem; color: #dc2626; margin-top: 0.5rem; }
     .loading { text-align: center; padding: 3rem; color: #6b7280; }
     .error { color: #dc2626; text-align: center; padding: 2rem; }
+    .fallback-note { font-size: 0.9rem; color: #6b7280; text-align: center; margin-top: 1rem; }
   </style>
 </head>
 <body>
@@ -67,31 +68,27 @@
     </div>
   </footer>
 
-  <!-- PHASE 1: ENHANCED INSIGHTS -->
+  <!-- INSIGHTS SCRIPT -->
   <script>
-    const DATA_URL = 'https://github.com/fullstackprocrastinator/qs-salary-index/blob/main/assets/data/salaries.json';
+    const DATA_URL = 'assets/data/salaries.json'; // Local file
 
     function parseSalary(range) {
-      const match = range.match(/£([\d,]+)\+/) || range.match(/£([\d,]+) - £([\d,]+)/);
-      if (!match) return 0;
-      const nums = match.slice(1).map(s => parseInt(s.replace(/,/g, ''), 10)).filter(n => n);
-      return nums.length === 2 ? (nums[0] + nums[1]) / 2 : nums[0];
+      const nums = range.replace(/[^0-9-]/g, '').split('-').map(Number).filter(n => n);
+      return nums.length === 2 ? (nums[0] + nums[1]) / 2 : (nums[0] || 0);
     }
 
     function enhanceInsights(data) {
       if (!data || data.length === 0) return null;
-
       const salaries = data.map(s => parseSalary(s.salary)).filter(n => n > 0);
       if (salaries.length === 0) return null;
 
       const sorted = [...salaries].sort((a, b) => a - b);
       const n = sorted.length;
-
       const median = sorted[Math.floor(n * 0.5)];
       const p10 = sorted[Math.floor(n * 0.1)];
       const p90 = sorted[Math.floor(n * 0.9)];
 
-      // Recency: last 6 months x2 weight
+      // Recency weight
       const now = new Date();
       const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
       const recent = data.filter(s => new Date(s.submittedAt) > sixMonthsAgo);
@@ -100,7 +97,7 @@
       const weightedSum = salaries.reduce((a, b) => a + b, 0) + recentSalaries.reduce((a, b) => a + b, 0);
       const weightedAvg = totalWeight > 0 ? weightedSum / totalWeight : 0;
 
-      // Outliers (IQR)
+      // Outliers
       const q1 = sorted[Math.floor(n * 0.25)];
       const q3 = sorted[Math.floor(n * 0.75)];
       const iqr = q3 - q1;
@@ -133,7 +130,7 @@
             <div class="outliers">${insights.outliers} outlier${insights.outliers !== 1 ? 's' : ''} flagged</div>
           </div>
         </div>
-        <p style="text-align:center; color:#6b7280; font-size:0.9rem; margin-top:1.5rem;">
+        <p class="fallback-note" style="text-align:center; color:#6b7280; font-size:0.9rem; margin-top:1rem;">
           Data updated <span id="lastUpdate"></span> • <a href="submit.html">Submit yours</a>
         </p>
       `;
@@ -162,7 +159,6 @@
       window.location.href = 'mailto:theqssalaryindex@outlook.com?subject=QS%20Salary%20Index%20–%20Insights%20Issue';
     }
 
-    // Auto-load
     loadData();
   </script>
 </body>
