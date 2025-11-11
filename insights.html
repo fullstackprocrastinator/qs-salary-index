@@ -5,60 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Insights – The QS Salary Index</title>
   <link rel="stylesheet" href="assets/css/style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
   <style>
-    .dashboard { padding: 2rem 0; }
-    .stats-grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-      gap: 1.5rem; 
-      margin: 2rem 0; 
-    }
-    .stat-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      border: 1px solid #e2e8f0;
-    }
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #1e40af;
-      margin: 0.5rem 0;
-    }
-    .stat-label { color: #64748b; font-size: 0.95rem; }
-    .chart-container {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      margin: 2rem 0;
-    }
-    .loading {
-      text-align: center;
-      padding: 3rem;
-      color: #64748b;
-      font-style: italic;
-    }
-    .refresh-btn {
-      background: #1e40af;
-      color: white;
-      border: none;
-      padding: 0.75rem 1.5rem;
-      border-radius: 8px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .refresh-btn:hover { background: #1e3a8a; }
-    @media (max-width: 640px) {
-      .stat-value { font-size: 1.6rem; }
-    }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
+    .hero { text-align: center; padding: 3rem 0; }
+    .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    .hero p { color: #4b5563; font-size: 1.1rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; }
+    .stat-label { font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem; font-weight: 600; }
+    .stat-value { font-size: 1.5rem; font-weight: 700; color: #1e40af; }
+    .outliers { font-size: 0.85rem; color: #dc2626; margin-top: 0.5rem; }
+    .loading { text-align: center; padding: 3rem; color: #6b7280; }
+    .error { color: #dc2626; text-align: center; padding: 2rem; }
   </style>
 </head>
 <body>
-  <!-- HEADER (same as index.html) -->
+  <!-- HEADER -->
   <header>
     <div class="container header-flex">
       <a href="/" class="logo-link">
@@ -80,14 +43,19 @@
     </div>
   </header>
 
-  <div class="container dashboard">
-    <h1>QS Salary Insights Dashboard</h1>
-    <p>Real-time analysis of all verified submissions. Updated instantly.</p>
+  <!-- MAIN -->
+  <main class="container">
+    <section class="hero">
+      <h1>QS Salary Insights</h1>
+      <p>Real-time, verified, and statistically robust data from Quantity Surveyors worldwide.</p>
+    </section>
 
     <div id="loading" class="loading">Loading live data...</div>
+    <div id="error" class="error" style="display:none;"></div>
     <div id="dashboard" style="display:none;"></div>
-  </div>
+  </main>
 
+  <!-- FOOTER -->
   <footer>
     <div class="container">
       <p>
@@ -99,165 +67,103 @@
     </div>
   </footer>
 
+  <!-- PHASE 1: ENHANCED INSIGHTS -->
   <script>
-    // === REUSE openEmail() FROM index/submit ===
-    function openEmail() {
-      const email = 'theqssalaryindex@outlook.com';
-      const subject = encodeURIComponent('QS Salary Index – Insights Feedback');
-      const body = encodeURIComponent('Hi,\n\nI have feedback on the Insights Dashboard:\n\n[Your message]\n\nThanks!');
-      const mailto = `mailto:${email}?subject=${subject}&body=${body}`;
-      const a = document.createElement('a');
-      a.href = mailto; a.style.display = 'none';
-      document.body.appendChild(a); a.click(); document.body.removeChild(a);
-      setTimeout(() => window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${email}&su=${subject}&body=${body}`, '_blank'), 500);
+    const DATA_URL = 'https://raw.githubusercontent.com/your-repo/qs-salary-index/main/data/submissions.json';
+
+    function parseSalary(range) {
+      const match = range.match(/£([\d,]+)\+/) || range.match(/£([\d,]+) - £([\d,]+)/);
+      if (!match) return 0;
+      const nums = match.slice(1).map(s => parseInt(s.replace(/,/g, ''), 10)).filter(n => n);
+      return nums.length === 2 ? (nums[0] + nums[1]) / 2 : nums[0];
     }
 
-    // === DASHBOARD LOGIC ===
-    async function loadInsights() {
-      const loading = document.getElementById('loading');
-      const dashboard = document.getElementById('dashboard');
-      try {
-        const res = await fetch('assets/data/salaries.json?t=' + Date.now());
-        const data = await res.json();
-        if (!data || data.length === 0) throw new Error('No data');
+    function enhanceInsights(data) {
+      if (!data || data.length === 0) return null;
 
-        const insights = analyzeData(data);
-        renderDashboard(insights, data);
-        loading.style.display = 'none';
-        dashboard.style.display = 'block';
+      const salaries = data.map(s => parseSalary(s.salary)).filter(n => n > 0);
+      if (salaries.length === 0) return null;
+
+      const sorted = [...salaries].sort((a, b) => a - b);
+      const n = sorted.length;
+
+      const median = sorted[Math.floor(n * 0.5)];
+      const p10 = sorted[Math.floor(n * 0.1)];
+      const p90 = sorted[Math.floor(n * 0.9)];
+
+      // Recency: last 6 months x2 weight
+      const now = new Date();
+      const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
+      const recent = data.filter(s => new Date(s.submittedAt) > sixMonthsAgo);
+      const recentSalaries = recent.map(s => parseSalary(s.salary)).filter(n => n > 0);
+      const totalWeight = n + recentSalaries.length;
+      const weightedSum = salaries.reduce((a, b) => a + b, 0) + recentSalaries.reduce((a, b) => a + b, 0);
+      const weightedAvg = totalWeight > 0 ? weightedSum / totalWeight : 0;
+
+      // Outliers (IQR)
+      const q1 = sorted[Math.floor(n * 0.25)];
+      const q3 = sorted[Math.floor(n * 0.75)];
+      const iqr = q3 - q1;
+      const lower = q1 - 1.5 * iqr;
+      const upper = q3 + 1.5 * iqr;
+      const outliers = salaries.filter(s => s < lower || s > upper).length;
+
+      return { median, p10, p90, sampleSize: n, weightedAvg, outliers };
+    }
+
+    function renderDashboard(insights) {
+      const el = document.getElementById('dashboard');
+      el.innerHTML = `
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Median Salary</div>
+            <div class="stat-value">£${insights.median.toLocaleString()}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">10th–90th Percentile</div>
+            <div class="stat-value">£${insights.p10.toLocaleString()} – £${insights.p90.toLocaleString()}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Sample Size</div>
+            <div class="stat-value">${insights.sampleSize}</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Recency-Weighted Avg</div>
+            <div class="stat-value">£${Math.round(insights.weightedAvg).toLocaleString()}</div>
+            <div class="outliers">${insights.outliers} outlier${insights.outliers !== 1 ? 's' : ''} flagged</div>
+          </div>
+        </div>
+        <p style="text-align:center; color:#6b7280; font-size:0.9rem; margin-top:1.5rem;">
+          Data updated <span id="lastUpdate"></span> • <a href="submit.html">Submit yours</a>
+        </p>
+      `;
+      document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('en-GB');
+      el.style.display = 'block';
+    }
+
+    async function loadData() {
+      try {
+        const res = await fetch(DATA_URL + '?t=' + Date.now());
+        if (!res.ok) throw new Error('Failed to load data');
+        const data = await res.json();
+        const insights = enhanceInsights(data);
+        if (!insights) throw new Error('No valid salary data');
+        document.getElementById('loading').style.display = 'none';
+        renderDashboard(insights);
       } catch (err) {
-        loading.innerHTML = `<p style="color:#dc2626">Error loading data. <a href="/">Back to Index</a></p>`;
+        console.error(err);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('error').textContent = 'Failed to load data. Please try again later.';
+        document.getElementById('error').style.display = 'block';
       }
     }
 
-    function analyzeData(data) {
-      const total = data.length;
-      const salaries = data.map(s => parseSalary(s.salary));
-      const avgSalary = salaries.reduce((a,b) => a+b, 0) / total;
-      const countries = countBy(data, 'country');
-      const roles = countBy(data, 'qsType');
-      const benefits = data.flatMap(s => s.benefits.split(',').map(b => b.trim()).filter(b => b)).reduce((acc, b) => {
-        acc[b] = (acc[b] || 0) + 1; return acc;
-      }, {});
-      const topBenefit = Object.entries(benefits).sort((a,b) => b[1]-a[1])[0];
-
-      return {
-        total,
-        avgSalary: Math.round(avgSalary),
-        medianSalary: median(salaries),
-        topCountry: Object.entries(countries).sort((a,b) => b[1]-a[1])[0],
-        topRole: Object.entries(roles).sort((a,b) => b[1]-a[1])[0],
-        topBenefit: topBenefit ? { name: topBenefit[0], count: topBenefit[1] } : null,
-        londonCount: data.filter(s => s.city.toLowerCase().includes('london')).length,
-        londonAvg: avg(data.filter(s => s.city.toLowerCase().includes('london')).map(s => parseSalary(s.salary))),
-        regionalAvg: avg(data.filter(s => !s.city.toLowerCase().includes('london') && s.country === 'United Kingdom').map(s => parseSalary(s.salary))),
-        data
-      };
+    function openEmail() {
+      window.location.href = 'mailto:theqssalaryindex@outlook.com?subject=QS%20Salary%20Index%20–%20Insights%20Issue';
     }
 
-    function renderDashboard(insights, rawData) {
-      const { total, avgSalary, medianSalary, topCountry, topRole, topBenefit, londonCount, londonAvg, regionalAvg } = insights;
-      const londonPremium = londonAvg && regionalAvg ? Math.round((londonAvg - regionalAvg) / regionalAvg * 100) : 0;
-
-      document.getElementById('dashboard').innerHTML = `
-        <button class="refresh-btn" onclick="loadInsights()">Refresh Data</button>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">Total Submissions</div>
-            <div class="stat-value">${total.toLocaleString()}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Average Salary</div>
-            <div class="stat-value">£${avgSalary.toLocaleString()}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Median Salary</div>
-            <div class="stat-value">£${medianSalary.toLocaleString()}</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">London Premium</div>
-            <div class="stat-value">+${londonPremium}%</div>
-            <p style="margin:0;font-size:0.9rem;color:#64748b">${londonCount} London entries</p>
-          </div>
-        </div>
-
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">Top Country</div>
-            <div class="stat-value">${topCountry[0]}</div>
-            <p style="margin:0;font-size:0.9rem;color:#64748b">${topCountry[1]} entries</p>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Top QS Type</div>
-            <div class="stat-value">${topRole[0]}</div>
-            <p style="margin:0;font-size:0.9rem;color:#64748b">${topRole[1]} entries</p>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Top Benefit</div>
-            <div class="stat-value">${topBenefit?.name || 'N/A'}</div>
-            <p style="margin:0;font-size:0.9rem;color:#64748b">${topBenefit?.count || 0} mentions</p>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Last Updated</div>
-            <div class="stat-value">${new Date().toLocaleString('en-GB')}</div>
-          </div>
-        </div>
-
-        <div class="chart-container">
-          <canvas id="roleChart"></canvas>
-        </div>
-        <div class="chart-container">
-          <canvas id="countryChart"></canvas>
-        </div>
-      `;
-
-      // Charts
-      new Chart(document.getElementById('roleChart'), {
-        type: 'doughnut',
-        data: {
-          labels: Object.keys(countBy(rawData, 'qsType')),
-          datasets: [{
-            data: Object.values(countBy(rawData, 'qsType')),
-            backgroundColor: ['#1e40af', '#16a34a', '#ea580c', '#7c3aed', '#0891b2']
-          }]
-        },
-        options: { plugins: { title: { display: true, text: 'QS Roles Distribution' } } }
-      });
-
-      new Chart(document.getElementById('countryChart'), {
-        type: 'bar',
-        data: {
-          labels: Object.keys(countBy(rawData, 'country')),
-          datasets: [{
-            label: 'Entries',
-            data: Object.values(countBy(rawData, 'country')),
-            backgroundColor: '#1e40af'
-          }]
-        },
-        options: { plugins: { title: { display: true, text: 'Submissions by Country' } }, scales: { y: { beginAtZero: true } } }
-      });
-    }
-
-    // === HELPERS ===
-    function parseSalary(range) {
-      const nums = range.replace(/[^0-9-]/g, '').split('-').map(Number);
-      return nums.length === 2 ? (nums[0] + nums[1]) / 2 : nums[0] || 0;
-    }
-    function countBy(arr, key) {
-      return arr.reduce((acc, obj) => { acc[obj[key]] = (acc[obj[key]] || 0) + 1; return acc; }, {});
-    }
-    function avg(arr) {
-      return arr.length ? Math.round(arr.reduce((a,b) => a+b, 0) / arr.length) : 0;
-    }
-    function median(arr) {
-      const sorted = arr.slice().sort((a,b) => a-b);
-      const mid = Math.floor(sorted.length / 2);
-      return sorted.length % 2 ? sorted[mid] : (sorted[mid-1] + sorted[mid]) / 2;
-    }
-
-    // Load on start
-    document.addEventListener('DOMContentLoaded', loadInsights);
+    // Auto-load
+    loadData();
   </script>
 </body>
 </html>
