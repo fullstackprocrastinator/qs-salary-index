@@ -6,6 +6,8 @@
   <title>Insights – The QS Salary Index</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
     .hero { text-align: center; padding: 3rem 0; }
@@ -18,6 +20,7 @@
     .outliers { font-size: 0.85rem; color: #dc2626; margin-top: 0.5rem; }
     .loading { text-align: center; padding: 3rem; color: #6b7280; }
     .error { color: #dc2626; text-align: center; padding: 2rem; }
+    .chart-container { max-width: 800px; margin: 2rem auto; background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
     .fallback-note { font-size: 0.9rem; color: #6b7280; text-align: center; margin-top: 1rem; }
   </style>
 </head>
@@ -54,6 +57,14 @@
     <div id="loading" class="loading">Loading live data...</div>
     <div id="error" class="error" style="display:none;"></div>
     <div id="dashboard" style="display:none;"></div>
+
+    <!-- BOX-PLOT CHART -->
+    <div id="chartSection" class="chart-container" style="display:none;">
+      <canvas id="salaryBoxPlot"></canvas>
+      <p style="text-align:center; font-size:0.85rem; color:#6b7280; margin-top:1rem;">
+        Box = 25th–75th percentile | Whiskers = 1.5×IQR | Dots = Outliers
+      </p>
+    </div>
   </main>
 
   <!-- FOOTER -->
@@ -68,9 +79,9 @@
     </div>
   </footer>
 
-  <!-- INSIGHTS SCRIPT -->
+  <!-- INSIGHTS + BOX-PLOT SCRIPT -->
   <script>
-    const DATA_URL = 'assets/data/salaries.json'; // Local file
+    const DATA_URL = 'assets/data/salaries.json';
 
     function parseSalary(range) {
       const nums = range.replace(/[^0-9-]/g, '').split('-').map(Number).filter(n => n);
@@ -97,15 +108,15 @@
       const weightedSum = salaries.reduce((a, b) => a + b, 0) + recentSalaries.reduce((a, b) => a + b, 0);
       const weightedAvg = totalWeight > 0 ? weightedSum / totalWeight : 0;
 
-      // Outliers
+      // IQR & Outliers
       const q1 = sorted[Math.floor(n * 0.25)];
       const q3 = sorted[Math.floor(n * 0.75)];
       const iqr = q3 - q1;
       const lower = q1 - 1.5 * iqr;
       const upper = q3 + 1.5 * iqr;
-      const outliers = salaries.filter(s => s < lower || s > upper).length;
+      const outliers = salaries.filter(s => s < lower || s > upper);
 
-      return { median, p10, p90, sampleSize: n, weightedAvg, outliers };
+      return { median, p10, p90, sampleSize: n, weightedAvg, q1, q3, lower, upper, outliers, sorted };
     }
 
     function renderDashboard(insights) {
@@ -127,15 +138,78 @@
           <div class="stat-card">
             <div class="stat-label">Recency-Weighted Avg</div>
             <div class="stat-value">£${Math.round(insights.weightedAvg).toLocaleString()}</div>
-            <div class="outliers">${insights.outliers} outlier${insights.outliers !== 1 ? 's' : ''} flagged</div>
+            <div class="outliers">${insights.outliers.length} outlier${insights.outliers.length !== 1 ? 's' : ''} flagged</div>
           </div>
         </div>
-        <p class="fallback-note" style="text-align:center; color:#6b7280; font-size:0.9rem; margin-top:1rem;">
+        <p class="fallback-note">
           Data updated <span id="lastUpdate"></span> • <a href="submit.html">Submit yours</a>
         </p>
       `;
       document.getElementById('lastUpdate').textContent = new Date().toLocaleDateString('en-GB');
       el.style.display = 'block';
+    }
+
+    function renderBoxPlot(insights) {
+      const ctx = document.getElementById('salaryBoxPlot').getContext('2d');
+      const chartSection = document.getElementById('chartSection');
+      
+      // Destroy old chart if exists
+      if (window.boxPlotChart) window.boxPlotChart.destroy();
+
+      window.boxPlotChart = new Chart(ctx, {
+        type: 'boxplot',
+        data: {
+          labels: ['QS Salaries (GBP)'],
+          datasets: [{
+            label: 'Salary Distribution',
+            data: [{
+              min: insights.lower,
+              q1: insights.q1,
+              median: insights.median,
+              q3: insights.q3,
+              max: insights.upper,
+              outliers: insights.outliers
+            }],
+            backgroundColor: 'rgba(30, 64, 175, 0.1)',
+            borderColor: '#1e40af',
+            borderWidth: 2,
+            outlierColor: '#dc2626',
+            outlierRadius: 5,
+            padding: 10
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            title: {
+              display: true,
+              text: 'Salary Distribution Box Plot',
+              font: { size: 16, weight: 'bold' }
+            },
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const v = context.raw;
+                  if (Array.isArray(v.outliers)) {
+                    return `Outliers: ${v.outliers.map(o => '£' + o.toLocaleString()).join(', ')}`;
+                  }
+                  return `${context.label}: £${v.toLocaleString()}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: { display: false },
+            y: {
+              title: { display: true, text: 'Salary (GBP)' },
+              ticks: { callback: v => '£' + v.toLocaleString() }
+            }
+          }
+        }
+      });
+
+      chartSection.style.display = 'block';
     }
 
     async function loadData() {
@@ -145,13 +219,25 @@
         const data = await res.json();
         const insights = enhanceInsights(data);
         if (!insights) throw new Error('No valid salary data');
+        
         document.getElementById('loading').style.display = 'none';
         renderDashboard(insights);
+        renderBoxPlot(insights);
       } catch (err) {
         console.error(err);
         document.getElementById('loading').style.display = 'none';
-        document.getElementById('error').textContent = 'Failed to load data. Please try again later.';
+        document.getElementById('error').textContent = 'Failed to load data. Using sample data.';
         document.getElementById('error').style.display = 'block';
+
+        // Fallback sample data
+        const sample = [
+          { salary: "£70,000 - £80,000", submittedAt: "2025-11-01" },
+          { salary: "£40,000 - £50,000", submittedAt: "2025-11-02" },
+          { salary: "£90,000 - £100,000", submittedAt: "2025-11-03" }
+        ];
+        const insights = enhanceInsights(sample);
+        renderDashboard(insights);
+        renderBoxPlot(insights);
       }
     }
 
@@ -161,5 +247,8 @@
 
     loadData();
   </script>
+
+  <!-- Chart.js Boxplot Plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-boxplot"></script>
 </body>
 </html>
