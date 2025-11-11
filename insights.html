@@ -55,10 +55,10 @@
     <div id="error" class="error" style="display:none;"></div>
     <div id="dashboard" style="display:none;"></div>
 
-    <!-- BOX-PLOT -->
+    <!-- CHART -->
     <div id="chartSection" class="chart-container" style="display:none;">
-      <canvas id="salaryBoxPlot"></canvas>
-      <p style="text-align:center; font-size:0.85rem; color:#6b7280; margin-top:1rem;">
+      <canvas id="salaryChart"></canvas>
+      <p style="text-align:center; font-size:0.85rem; color:#6b7280; margin-top:1rem;" id="chartNote">
         Box = 25th–75th percentile | Whiskers = 1.5×IQR | Red dots = Outliers
       </p>
     </div>
@@ -76,9 +76,9 @@
     </div>
   </footer>
 
-  <!-- FIXED: BOXPLOT PLUGIN LOADED FIRST -->
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@3.0.0/dist/chartjs-chart-box-and-violin-plot.min.js"></script>
+  <!-- WORKING BOXPLOT PLUGIN + CHART.JS -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@3.0.0/build/chartjs-chart-box-and-violin-plot.min.js"></script>
 
   <script>
     const DATA_URL = 'assets/data/salaries.json';
@@ -148,14 +148,21 @@
     }
 
     function renderBoxPlot(insights) {
-      const ctx = document.getElementById('salaryBoxPlot').getContext('2d');
-      if (window.boxPlotChart) window.boxPlotChart.destroy();
+      const ctx = document.getElementById('salaryChart').getContext('2d');
+      if (window.salaryChart) window.salaryChart.destroy();
 
-      window.boxPlotChart = new Chart(ctx, {
-        type: 'boxplot',
+      // Fallback to bar if boxplot fails
+      const chartType = Chart.registry.getChartType('boxplot') ? 'boxplot' : 'bar';
+
+      if (chartType === 'bar') {
+        document.getElementById('chartNote').textContent = 'Boxplot unavailable — showing key stats as bar chart.';
+      }
+
+      window.salaryChart = new Chart(ctx, {
+        type: chartType,
         data: {
           labels: ['QS Salaries (GBP)'],
-          datasets: [{
+          datasets: chartType === 'boxplot' ? [{
             label: 'Distribution',
             data: [{
               min: insights.lower,
@@ -170,29 +177,43 @@
             borderWidth: 2,
             outlierColor: '#dc2626',
             outlierRadius: 5
+          }] : [{
+            label: 'Key Stats',
+            data: [insights.p10, insights.median, insights.p90],
+            backgroundColor: ['#1e40af', '#dc2626', '#1e40af'],
+            borderColor: '#1e40af',
+            borderWidth: 1
           }]
         },
         options: {
           responsive: true,
           plugins: {
-            title: { display: true, text: 'Salary Distribution', font: { size: 16, weight: 'bold' } },
+            title: { 
+              display: true, 
+              text: chartType === 'boxplot' ? 'Salary Distribution (Box Plot)' : 'Salary Key Stats (Fallback)',
+              font: { size: 16, weight: 'bold' } 
+            },
             legend: { display: false }
           },
-          scales: {
+          scales: chartType === 'boxplot' ? {
             x: { display: false },
+            y: { title: { display: true, text: 'Salary (GBP)' }, ticks: { callback: v => '£' + v.toLocaleString() } }
+          } : {
+            x: { labels: ['10th', 'Median', '90th'] },
             y: { title: { display: true, text: 'Salary (GBP)' }, ticks: { callback: v => '£' + v.toLocaleString() } }
           }
         }
       });
+
       document.getElementById('chartSection').style.display = 'block';
     }
 
     async function loadData() {
       try {
         const res = await fetch(DATA_URL + '?t=' + Date.now());
-        if (!res.ok) throw new Error(`HTTP ${res.status}: File not found`);
+        if (!res.ok) throw new Error(`File not found (404)`);
         const data = await res.json();
-        if (!Array.isArray(data) || data.length === 0) throw new Error('No data');
+        if (!Array.isArray(data) || data.length === 0) throw new Error('No submissions');
 
         const insights = enhanceInsights(data);
         if (!insights) throw new Error('No valid salaries');
@@ -204,15 +225,15 @@
         document.getElementById('loading').style.display = 'none';
         const errEl = document.getElementById('error');
         errEl.innerHTML = `
-          <strong>Live data unavailable:</strong> ${err.message}<br>
-          <small>Ensure <code>assets/data/salaries.json</code> exists and is valid JSON.</small>
+          <strong>Data error:</strong> ${err.message}<br>
+          <small>Fix: Upload <code>assets/data/salaries.json</code> with at least 1 entry.</small>
         `;
         errEl.style.display = 'block';
       }
     }
 
     function openEmail() {
-      window.location.href = 'mailto:theqssalaryindex@outlook.com?subject=Insights%20Data%20Error';
+      window.location.href = 'mailto:theqssalaryindex@outlook.com?subject=Insights%20Error';
     }
 
     loadData();
