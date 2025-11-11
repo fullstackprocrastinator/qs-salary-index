@@ -6,9 +6,6 @@
   <title>Insights – The QS Salary Index</title>
   <link rel="stylesheet" href="assets/css/style.css" />
   <link rel="icon" href="assets/img/favicon.ico" type="image/x-icon" />
-  <!-- Chart.js + Boxplot -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-boxplot"></script>
   <style>
     .container { max-width: 1200px; margin: 0 auto; padding: 0 1rem; }
     .hero { text-align: center; padding: 3rem 0; }
@@ -79,9 +76,12 @@
     </div>
   </footer>
 
-  <!-- LIVE DATA + BOX-PLOT -->
+  <!-- FIXED: BOXPLOT PLUGIN LOADED FIRST -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot@3.0.0/dist/chartjs-chart-box-and-violin-plot.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
   <script>
-    const DATA_URL = 'assets/data/salaries.json'; // Must exist!
+    const DATA_URL = 'assets/data/salaries.json';
 
     function parseSalary(range) {
       const nums = range.replace(/[^0-9-]/g, '').split('-').map(Number).filter(n => n);
@@ -99,7 +99,6 @@
       const p10 = sorted[Math.floor(n * 0.1)];
       const p90 = sorted[Math.floor(n * 0.9)];
 
-      // Recency weight
       const now = new Date();
       const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
       const recent = data.filter(s => new Date(s.submittedAt) > sixMonthsAgo);
@@ -108,7 +107,6 @@
       const weightedSum = salaries.reduce((a, b) => a + b, 0) + recentSalaries.reduce((a, b) => a + b, 0);
       const weightedAvg = totalWeight > 0 ? weightedSum / totalWeight : 0;
 
-      // IQR
       const q1 = sorted[Math.floor(n * 0.25)];
       const q3 = sorted[Math.floor(n * 0.75)];
       const iqr = q3 - q1;
@@ -192,9 +190,9 @@
     async function loadData() {
       try {
         const res = await fetch(DATA_URL + '?t=' + Date.now());
-        if (!res.ok) throw new Error(`HTTP ${res.status}: File not found or inaccessible`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}: File not found`);
         const data = await res.json();
-        if (!Array.isArray(data) || data.length === 0) throw new Error('Empty data');
+        if (!Array.isArray(data) || data.length === 0) throw new Error('No data');
 
         const insights = enhanceInsights(data);
         if (!insights) throw new Error('No valid salaries');
@@ -207,7 +205,7 @@
         const errEl = document.getElementById('error');
         errEl.innerHTML = `
           <strong>Live data unavailable:</strong> ${err.message}<br>
-          <small>Check: <code>assets/data/salaries.json</code> exists and is valid JSON.</small>
+          <small>Ensure <code>assets/data/salaries.json</code> exists and is valid JSON.</small>
         `;
         errEl.style.display = 'block';
       }
