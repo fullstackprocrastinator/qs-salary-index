@@ -1888,5 +1888,37 @@
 "certification": "",
 "benefits": "Car Allowance, annual bonus, private health, discount/cashback scheme",
 "submittedAt": "2025-11-12T15:10:34.809Z"
+},
+  {
+"title": "Assistant QS",
+"qsType": "Subcontractor",
+"country": "United Kingdom",
+"region": "Cornwall",
+"city": "Truro",
+"salary": "£30,000 - £40,000",
+"timeInRole": "2.5",
+"education": "HNC/HND",
+"sector": "Infrastructure",
+"companySize": "11-50",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "3% employer pension contributions, company van and fuel card",
+"submittedAt": "2025-11-11T18:32:51.323Z"
+},
+  {
+"title": "Assistant QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "",
+"city": "Manchester",
+"salary": "£30,000 - £40,000",
+"timeInRole": "1",
+"education": "None",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "MRCIS",
+"benefits": "Pension",
+"submittedAt": "2025-11-12T10:14:52.897Z"
 }
 ]
