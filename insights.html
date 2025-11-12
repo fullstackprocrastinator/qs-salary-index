@@ -35,9 +35,9 @@
           Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
         </p>
         <nav>
-          <a href="/">Index</a> |
-          <a href="submit.html">Submit</a> |
-          <a href="insights.html">Insights</a> |
+          <a href="/">Index</a> | 
+          <a href="submit.html">Submit</a> | 
+          <a href="insights.html">Insights</a> | 
           <a href="#" onclick="openEmail()">Contact</a>
         </nav>
       </div>
@@ -84,20 +84,12 @@
     const DATA_URL = 'assets/data/salaries.json';
 
     function parseSalary(range) {
-      if (!range) return 0;
       const nums = range.replace(/[^0-9-]/g, '').split('-').map(Number).filter(n => n);
       return nums.length === 2 ? (nums[0] + nums[1]) / 2 : (nums[0] || 0);
     }
 
-    function enhanceInsights(rawData) {
-      let data = [];
-      if (Array.isArray(rawData)) {
-        data = rawData;
-      } else if (rawData && typeof rawData === 'object') {
-        data = Object.values(rawData).filter(Boolean);
-      }
-      if (data.length === 0) return null;
-
+    function enhanceInsights(data) {
+      if (!data || data.length === 0) return null;
       const salaries = data.map(s => parseSalary(s.salary)).filter(n => n > 0);
       if (salaries.length === 0) return null;
 
@@ -109,7 +101,7 @@
 
       const now = new Date();
       const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
-      const recent = data.filter(s => s.submittedAt && new Date(s.submittedAt) > sixMonthsAgo);
+      const recent = data.filter(s => new Date(s.submittedAt) > sixMonthsAgo);
       const recentSalaries = recent.map(s => parseSalary(s.salary)).filter(n => n > 0);
       const totalWeight = n + recentSalaries.length;
       const weightedSum = salaries.reduce((a, b) => a + b, 0) + recentSalaries.reduce((a, b) => a + b, 0);
@@ -159,25 +151,16 @@
       const canvas = document.getElementById('salaryChart');
       const ctx = canvas.getContext('2d');
 
-      // FIXED: Always destroy old chart safely
+      // FIXED: Safe destroy
       if (window.salaryChart) {
-        try { window.salaryChart.destroy(); } catch(e) {}
-        window.salaryChart = null;
-      }
-
-      let chartType = 'boxplot';
-      try {
-        new Chart(ctx, { type: 'boxplot', data: { datasets: [] } });
-      } catch (e) {
-        chartType = 'bar';
-        document.getElementById('chartNote').textContent = 'Boxplot unavailable — showing key stats.';
+        window.salaryChart.destroy();
       }
 
       window.salaryChart = new Chart(ctx, {
-        type: chartType,
+        type: 'boxplot',
         data: {
           labels: ['QS Salaries (GBP)'],
-          datasets: chartType === 'boxplot' ? [{
+          datasets: [{
             label: 'Distribution',
             data: [{
               min: insights.lower,
@@ -192,23 +175,16 @@
             borderWidth: 2,
             outlierColor: '#dc2626',
             outlierRadius: 5
-          }] : [{
-            label: 'Key Stats',
-            data: [insights.p10, insights.median, insights.p90],
-            backgroundColor: ['#1e40af', '#dc2626', '#1e40af']
           }]
         },
         options: {
           responsive: true,
           plugins: {
-            title: { display: true, text: chartType === 'boxplot' ? 'Salary Distribution' : 'Salary Stats', font: { size: 16, weight: 'bold' } },
+            title: { display: true, text: 'Salary Distribution', font: { size: 16, weight: 'bold' } },
             legend: { display: false }
           },
-          scales: chartType === 'boxplot' ? {
+          scales: {
             x: { display: false },
-            y: { title: { display: true, text: 'Salary (GBP)' }, ticks: { callback: v => '£' + v.toLocaleString() } }
-          } : {
-            x: { labels: ['10th', 'Median', '90th'] },
             y: { title: { display: true, text: 'Salary (GBP)' }, ticks: { callback: v => '£' + v.toLocaleString() } }
           }
         }
@@ -228,19 +204,19 @@
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         loadingEl.textContent = 'Parsing JSON...';
-        let rawData;
-        try {
-          rawData = await res.json();
-        } catch (e) {
-          throw new Error('Invalid JSON. Must be valid array.');
+        let data = await res.json();
+        if (!Array.isArray(data)) {
+          if (typeof data === 'object') {
+            data = Object.values(data); // Auto-fix
+          } else {
+            throw new Error('Invalid format. Must be array.');
+          }
         }
+        if (data.length === 0) throw new Error('No entries');
 
-        if (!Array.isArray(rawData) || rawData.length === 0) {
-          throw new Error('JSON must be a non-empty array. Wrap objects in [ ].');
-        }
-
-        const insights = enhanceInsights(rawData);
-        if (!insights) throw new Error('No valid salary data found.');
+        loadingEl.textContent = 'Analyzing salaries...';
+        const insights = enhanceInsights(data);
+        if (!insights) throw new Error('No valid "salary" fields');
 
         loadingEl.style.display = 'none';
         renderDashboard(insights);
@@ -249,20 +225,8 @@
       } catch (err) {
         loadingEl.style.display = 'none';
         errorEl.innerHTML = `
-          <strong>Data Error:</strong> ${err.message}<br><br>
-          <small>
-            <strong>Fix in GitHub:</strong><br>
-            1. Open <code>assets/data/salaries.json</code><br>
-            2. Ensure it's a <strong>valid array</strong>:<br>
-            <pre style="background:#f3f4f6;padding:8px;border-radius:4px;margin:8px 0;">
-[
-  {
-    "salary": "£70,000 - £80,000",
-    "submittedAt": "2025-11-01T12:00:00Z"
-  }
-]</pre>
-            3. Commit → Wait 60s → Refresh.
-          </small>
+          <strong>Live data unavailable:</strong> ${err.message}<br>
+          <small>Fix in GitHub: Ensure <code>assets/data/salaries.json</code> is valid JSON array with "salary" fields.</small>
         `;
         errorEl.style.display = 'block';
       }
