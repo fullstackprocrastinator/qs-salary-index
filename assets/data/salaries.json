@@ -2000,5 +2000,21 @@
 "certification": "LLM MCIARB",
 "benefits": "5% pension",
 "submittedAt": "2025-11-12T21:25:08.414Z"
+},
+  {
+"title": "Senior QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "West Midlands",
+"city": "Birmingham",
+"salary": "£60,000 - £70,000",
+"timeInRole": "8",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "MRICS",
+"benefits": "",
+"submittedAt": "2025-11-12T21:30:25.258Z"
 }
 ]
