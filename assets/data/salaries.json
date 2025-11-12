@@ -1824,5 +1824,21 @@
 "certification": "",
 "benefits": "Car allowance £5,000",
 "submittedAt": "2025-11-12T00:26:40.155Z"
+},
+  {
+"title": "QS",
+"qsType": "Subcontractor",
+"country": "United Kingdom",
+"region": "Lancashire",
+"city": "Warrington",
+"salary": "£50,000 - £60,000",
+"timeInRole": "6",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "51-200",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-11-12T09:31:30.422Z"
 }
 ]
