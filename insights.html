@@ -11,7 +11,7 @@
     .hero { text-align: center; padding: 3rem 0; }
     .hero h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
     .hero p { color: #4b5563; font-size: 1.1rem; }
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+    .stats-grid { display: grid; grid-template-columns: repeat/auto-fit, minmax(200px, 1fr); gap: 1.5rem; margin: 2rem 0; }
     .stat-card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; }
     .stat-label { font-size: 0.9rem; color: #6b7280; margin-bottom: 0.5rem; font-weight: 600; }
     .stat-value { font-size: 1.5rem; font-weight: 700; color: #1e40af; }
@@ -35,9 +35,9 @@
           Part of <a href="https://www.theqscollection.com" target="_blank" rel="noopener">The QS Collection</a>
         </p>
         <nav>
-          <a href="/">Index</a> | 
-          <a href="submit.html">Submit</a> | 
-          <a href="insights.html">Insights</a> | 
+          <a href="/">Index</a> |
+          <a href="submit.html">Submit</a> |
+          <a href="insights.html">Insights</a> |
           <a href="#" onclick="openEmail()">Contact</a>
         </nav>
       </div>
@@ -84,6 +84,7 @@
     const DATA_URL = 'assets/data/salaries.json';
 
     function parseSalary(range) {
+      if (!range) return 0;
       const nums = range.replace(/[^0-9-]/g, '').split('-').map(Number).filter(n => n);
       return nums.length === 2 ? (nums[0] + nums[1]) / 2 : (nums[0] || 0);
     }
@@ -101,7 +102,7 @@
 
       const now = new Date();
       const sixMonthsAgo = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
-      const recent = data.filter(s => new Date(s.submittedAt) > sixMonthsAgo);
+      const recent = data.filter(s => s.submittedAt && new Date(s.submittedAt) > sixMonthsAgo);
       const recentSalaries = recent.map(s => parseSalary(s.salary)).filter(n => n > 0);
       const totalWeight = n + recentSalaries.length;
       const weightedSum = salaries.reduce((a, b) => a + b, 0) + recentSalaries.reduce((a, b) => a + b, 0);
@@ -151,46 +152,51 @@
       const canvas = document.getElementById('salaryChart');
       const ctx = canvas.getContext('2d');
 
-      // FIXED: Safe destroy
-      if (window.salaryChart) {
+      // FIXED: Only destroy if valid Chart instance
+      if (window.salaryChart && typeof window.salaryChart.destroy === 'function') {
         window.salaryChart.destroy();
       }
+      window.salaryChart = null; // Reset
 
-      window.salaryChart = new Chart(ctx, {
-        type: 'boxplot',
-        data: {
-          labels: ['QS Salaries (GBP)'],
-          datasets: [{
-            label: 'Distribution',
-            data: [{
-              min: insights.lower,
-              q1: insights.q1,
-              median: insights.median,
-              q3: insights.q3,
-              max: insights.upper,
-              outliers: insights.outliers
-            }],
-            backgroundColor: 'rgba(30, 64, 175, 0.1)',
-            borderColor: '#1e40af',
-            borderWidth: 2,
-            outlierColor: '#dc2626',
-            outlierRadius: 5
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            title: { display: true, text: 'Salary Distribution', font: { size: 16, weight: 'bold' } },
-            legend: { display: false }
+      try {
+        window.salaryChart = new Chart(ctx, {
+          type: 'boxplot',
+          data: {
+            labels: ['QS Salaries (GBP)'],
+            datasets: [{
+              label: 'Distribution',
+              data: [{
+                min: insights.lower,
+                q1: insights.q1,
+                median: insights.median,
+                q3: insights.q3,
+                max: insights.upper,
+                outliers: insights.outliers
+              }],
+              backgroundColor: 'rgba(30, 64, 175, 0.1)',
+              borderColor: '#1e40af',
+              borderWidth: 2,
+              outlierColor: '#dc2626',
+              outlierRadius: 5
+            }]
           },
-          scales: {
-            x: { display: false },
-            y: { title: { display: true, text: 'Salary (GBP)' }, ticks: { callback: v => '£' + v.toLocaleString() } }
+          options: {
+            responsive: true,
+            plugins: {
+              title: { display: true, text: 'Salary Distribution', font: { size: 16, weight: 'bold' } },
+              legend: { display: false }
+            },
+            scales: {
+              x: { display: false },
+              y: { title: { display: true, text: 'Salary (GBP)' }, ticks: { callback: v => '£' + v.toLocaleString() } }
+            }
           }
-        }
-      });
-
-      document.getElementById('chartSection').style.display = 'block';
+        });
+        document.getElementById('chartSection').style.display = 'block';
+      } catch (e) {
+        console.error("Boxplot failed:", e);
+        document.getElementById('chartNote').textContent = 'Boxplot failed — check console.';
+      }
     }
 
     async function loadData() {
@@ -199,24 +205,19 @@
 
       try {
         loadingEl.textContent = 'Fetching data...';
-        const timestamp = new Date().getTime();
-        const res = await fetch(`${DATA_URL}?cachebust=${timestamp}`);
+        const res = await fetch(`${DATA_URL}?t=${Date.now()}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         loadingEl.textContent = 'Parsing JSON...';
         let data = await res.json();
         if (!Array.isArray(data)) {
-          if (typeof data === 'object') {
-            data = Object.values(data); // Auto-fix
-          } else {
-            throw new Error('Invalid format. Must be array.');
-          }
+          if (typeof data === 'object') data = Object.values(data);
+          else throw new Error('Invalid format');
         }
         if (data.length === 0) throw new Error('No entries');
 
-        loadingEl.textContent = 'Analyzing salaries...';
         const insights = enhanceInsights(data);
-        if (!insights) throw new Error('No valid "salary" fields');
+        if (!insights) throw new Error('No valid salary data');
 
         loadingEl.style.display = 'none';
         renderDashboard(insights);
@@ -226,7 +227,7 @@
         loadingEl.style.display = 'none';
         errorEl.innerHTML = `
           <strong>Live data unavailable:</strong> ${err.message}<br>
-          <small>Fix in GitHub: Ensure <code>assets/data/salaries.json</code> is valid JSON array with "salary" fields.</small>
+          <small>Ensure <code>assets/data/salaries.json</code> is valid JSON array with "salary" fields.</small>
         `;
         errorEl.style.display = 'block';
       }
@@ -237,6 +238,7 @@
     }
 
     loadData();
+    setInterval(loadData, 60000);
   </script>
 </body>
 </html>
