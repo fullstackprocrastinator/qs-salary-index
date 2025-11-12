@@ -1840,5 +1840,53 @@
 "certification": "",
 "benefits": "",
 "submittedAt": "2025-11-12T09:31:30.422Z"
+},
+  {
+"title": "Senior QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Surrey",
+"city": "London",
+"salary": "£100,000 - £120,000",
+"timeInRole": "9",
+"education": "HNC/HND",
+"sector": "Infrastructure",
+"companySize": "51-200",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "-",
+"submittedAt": "2025-11-12T14:48:22.622Z"
+},
+  {
+"title": "Assistant QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "",
+"city": "Birmingham",
+"salary": "£30,000 - £40,000",
+"timeInRole": "1",
+"education": "None",
+"sector": "Infrastructure",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "Qualifications paid for, 28 days holiday + bank holidays, healthcare plan, discounted dental + shopping perks, salary sacrifice schemes",
+"submittedAt": "2025-11-12T15:03:30.260Z"
+},
+  {
+"title": "Senior QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Merseyside",
+"city": "Liverpool",
+"salary": "£50,000 - £60,000",
+"timeInRole": "3",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "Car Allowance, annual bonus, private health, discount/cashback scheme",
+"submittedAt": "2025-11-12T15:10:34.809Z"
 }
 ]
