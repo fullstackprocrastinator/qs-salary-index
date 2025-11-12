@@ -1984,5 +1984,21 @@
 "certification": "",
 "benefits": "Company car + fuel card, pension",
 "submittedAt": "2025-11-12T19:16:23.305Z"
+},
+  {
+"title": "Commercial Manager",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "South Lanarkshire",
+"city": "Hamilton",
+"salary": "£80,000 - £90,000",
+"timeInRole": "1",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "11-50",
+"workArrangement": "Hybrid",
+"certification": "LLM MCIARB",
+"benefits": "5% pension",
+"submittedAt": "2025-11-12T21:25:08.414Z"
 }
 ]
