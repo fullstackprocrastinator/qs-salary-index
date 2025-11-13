@@ -2208,5 +2208,21 @@
 "certification": "",
 "benefits": "Car allowance",
 "submittedAt": "2025-11-13T13:21:17.419Z"
+},
+  {
+"title": "Assistant QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "",
+"city": "London",
+"salary": "£40,000 - £50,000",
+"timeInRole": "3",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "51-200",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "Bonus",
+"submittedAt": "2025-11-13T19:49:02.983Z"
 }
 ]
