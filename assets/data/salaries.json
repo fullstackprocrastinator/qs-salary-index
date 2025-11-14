@@ -2240,5 +2240,37 @@
 "certification": "",
 "benefits": "DB Pension",
 "submittedAt": "2025-11-13T19:51:30.549Z"
+},
+  {
+"title": "QS",
+"qsType": "Subcontractor",
+"country": "United Kingdom",
+"region": "",
+"city": "Birmingham",
+"salary": "£50,000 - £60,000",
+"timeInRole": "4.5",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "11-50",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "Company Car",
+"submittedAt": "2025-11-14T06:53:37.402Z"
+},
+  {
+"title": "Assistant QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Derbyshire",
+"city": "Derby",
+"salary": "£30,000 - £40,000",
+"timeInRole": "1",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "51-200",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "Car allowance",
+"submittedAt": "2025-11-14T06:53:43.315Z"
 }
 ]
