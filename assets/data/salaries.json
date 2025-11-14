@@ -2288,5 +2288,21 @@
 "certification": "",
 "benefits": "Car allowance",
 "submittedAt": "2025-11-14T16:00:34.973Z"
+},
+  {
+"title": "QS",
+"qsType": "Subcontractor",
+"country": "United Kingdom",
+"region": "Lincolnshire",
+"city": "Lincoln",
+"salary": "£50,000 - £60,000",
+"timeInRole": "5",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "11-50",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "Car allowance + fuel",
+"submittedAt": "2025-11-14T21:55:19.388Z"
 }
 ]
