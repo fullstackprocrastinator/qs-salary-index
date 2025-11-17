@@ -2400,5 +2400,37 @@
 "certification": "",
 "benefits": "",
 "submittedAt": "2025-11-17T16:35:24.491Z"
+},
+  {
+"title": "Assistant QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Greater London",
+"city": "London",
+"salary": "£40,000 - £50,000",
+"timeInRole": "2.5",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "Car allowance + 26 days annual leave + BHs",
+"submittedAt": "2025-11-17T17:22:55.525Z"
+},
+  {
+"title": "Senior QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Surrey",
+"city": "London",
+"salary": "£60,000 - £70,000",
+"timeInRole": "11",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-11-17T21:59:25.412Z"
 }
 ]
