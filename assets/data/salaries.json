@@ -2512,5 +2512,37 @@
 "certification": "",
 "benefits": "4% bonus, car allowance, health care, share scheme",
 "submittedAt": "2025-11-21T16:01:45.108Z"
+},
+  {
+"title": "Trainee QS",
+"qsType": "Consultant",
+"country": "Other",
+"region": "",
+"city": "Batticaloa, Srilanka",
+"salary": "£30,000 - £40,000",
+"timeInRole": "1",
+"education": "HNC/HND",
+"sector": "Construction",
+"companySize": "1-10",
+"workArrangement": "On-site",
+"certification": "nqual",
+"benefits": "",
+"submittedAt": "2025-11-22T06:31:29.100Z"
+},
+  {
+"title": "QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "",
+"city": "London",
+"salary": "£50,000 - £60,000",
+"timeInRole": "1",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "None",
+"benefits": "Pension and phone allowance",
+"submittedAt": "2025-11-22T08:00:37.876Z"
 }
 ]
