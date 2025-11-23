@@ -2544,5 +2544,21 @@
 "certification": "None",
 "benefits": "Pension and phone allowance",
 "submittedAt": "2025-11-22T08:00:37.876Z"
+},
+  {
+"title": "QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Glasgow City",
+"city": "Glasgow",
+"salary": "£40,000 - £50,000",
+"timeInRole": "5",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "Car allowance and bonus",
+"submittedAt": "2025-11-22T23:39:54.605Z"
 }
 ]
