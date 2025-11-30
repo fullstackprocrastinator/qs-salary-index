@@ -2656,5 +2656,37 @@
 "certification": "",
 "benefits": "Health insurance, bonus scheme",
 "submittedAt": "2025-11-30T12:18:55.333Z"
+},
+  {
+"title": "QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Cumbria",
+"city": "Lancaster",
+"salary": "£30,000 - £40,000",
+"timeInRole": "1",
+"education": "BSc",
+"sector": "Oil & Gas",
+"companySize": "51-200",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "Car allowance, pension",
+"submittedAt": "2025-11-30T15:52:54.148Z"
+},
+  {
+"title": "Senior QS",
+"qsType": "Subcontractor",
+"country": "United Kingdom",
+"region": "",
+"city": "Glasgow",
+"salary": "£70,000 - £80,000",
+"timeInRole": "15",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "51-200",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-11-30T16:45:55.017Z"
 }
 ]
