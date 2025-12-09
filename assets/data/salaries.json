@@ -2848,5 +2848,37 @@
 "certification": "None",
 "benefits": "2k bonus",
 "submittedAt": "2025-12-09T00:11:05.823Z"
+},
+  {
+"title": "Assistant QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "West Midlands",
+"city": "Birmingham",
+"salary": "£30,000 - £40,000",
+"timeInRole": "1.5",
+"education": "None",
+"sector": "Infrastructure",
+"companySize": "51-200",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-12-09T13:22:06.066Z"
+},
+  {
+"title": "QS",
+"qsType": "Subcontractor",
+"country": "United Kingdom",
+"region": "",
+"city": "Glasgow",
+"salary": "£30,000 - £40,000",
+"timeInRole": "1",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "1-10",
+"workArrangement": "Remote",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-12-09T14:39:03.021Z"
 }
 ]
