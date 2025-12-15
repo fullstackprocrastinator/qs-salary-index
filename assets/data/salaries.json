@@ -2896,5 +2896,37 @@
 "certification": "",
 "benefits": "Pension matched 6%",
 "submittedAt": "2025-12-09T18:05:56.883Z"
+},
+  {
+"title": "Assistant QS",
+"qsType": "Subcontractor",
+"country": "United Kingdom",
+"region": "Nottinghamshire",
+"city": "Mansfield",
+"salary": "£30,000 - £40,000",
+"timeInRole": "2.5",
+"education": "HNC/HND",
+"sector": "Other",
+"companySize": "500+",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "Pension",
+"submittedAt": "2025-12-15T10:38:50.372Z"
+},
+  {
+"title": "QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Cambridgeshire",
+"city": "Cambridge",
+"salary": "£50,000 - £60,000",
+"timeInRole": "4",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "51-200",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "£4k car allowance, paid mileage, 6% company pension contribution",
+"submittedAt": "2025-12-15T12:21:11.561Z"
 }
 ]
