@@ -2928,5 +2928,53 @@
 "certification": "",
 "benefits": "£4k car allowance, paid mileage, 6% company pension contribution",
 "submittedAt": "2025-12-15T12:21:11.561Z"
+},
+  {
+"title": "Senior QS",
+"qsType": "Consultant",
+"country": "Other",
+"region": "",
+"city": "Bridgetown",
+"salary": "£30,000 - £40,000",
+"timeInRole": "15",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "11-50",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "Vehicle, bonus, health insurance",
+"submittedAt": "2025-12-17T23:30:10.806Z"
+},
+  {
+"title": "Commercial Manager",
+"qsType": "Subcontractor",
+"country": "United Kingdom",
+"region": "Greater London",
+"city": "London",
+"salary": "£120,000+",
+"timeInRole": "10",
+"education": "None",
+"sector": "Infrastructure",
+"companySize": "51-200",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-12-18T07:28:23.743Z"
+},
+  {
+"title": "Managing QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "West Yorkshire",
+"city": "Leeds",
+"salary": "£60,000 - £70,000",
+"timeInRole": "8",
+"education": "MSc",
+"sector": "Infrastructure",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "McInstCES",
+"benefits": "Car allowance, bonus, pension",
+"submittedAt": "2025-12-18T08:29:11.854Z"
 }
 ]
