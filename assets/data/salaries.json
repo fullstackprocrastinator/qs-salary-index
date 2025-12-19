@@ -2976,5 +2976,53 @@
 "certification": "McInstCES",
 "benefits": "Car allowance, bonus, pension",
 "submittedAt": "2025-12-18T08:29:11.854Z"
+},
+  {
+"title": "Assistant QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Surrey",
+"city": "Surrey",
+"salary": "£40,000 - £50,000",
+"timeInRole": "7",
+"education": "None",
+"sector": "Construction",
+"companySize": "201-500",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "Performance bonus, Private healthcare, Salary sacrifice",
+"submittedAt": "2025-12-19T10:12:39.895Z"
+},
+  {
+"title": "Trainee QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Cheshire",
+"city": "Manchester",
+"salary": "£30,000 - £40,000",
+"timeInRole": "1",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "11-50",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-12-19T10:15:14.494Z"
+},
+  {
+"title": "Managing QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Tyne and Wear",
+"city": "Newcastlw",
+"salary": "£90,000 - £100,000",
+"timeInRole": "1",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-12-19T11:30:56.592Z"
 }
 ]
