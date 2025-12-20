@@ -3040,5 +3040,53 @@
 "certification": "Ciob",
 "benefits": "",
 "submittedAt": "2025-12-19T13:25:18.972Z"
+},
+  {
+"title": "Senior QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "",
+"city": "Hull",
+"salary": "£60,000 - £70,000",
+"timeInRole": "4",
+"education": "MSc",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "Pension match, 25 days annual leave, no car allowance",
+"submittedAt": "2025-12-19T21:25:58.073Z"
+},
+  {
+"title": "QS",
+"qsType": "Main Contractor",
+"country": "United Kingdom",
+"region": "Lancashire",
+"city": "Preston",
+"salary": "£40,000 - £50,000",
+"timeInRole": "7",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "11-50",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "Discretionary bonus of £5-£10k.",
+"submittedAt": "2025-12-19T23:02:14.313Z"
+},
+  {
+"title": "Cost Manager",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "",
+"city": "Manchester",
+"salary": "£50,000 - £60,000",
+"timeInRole": "7",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "1-10",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "",
+"submittedAt": "2025-12-19T23:43:10.679Z"
 }
 ]
