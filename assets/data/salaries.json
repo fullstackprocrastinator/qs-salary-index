@@ -3120,5 +3120,53 @@
 "certification": "",
 "benefits": "Company Car",
 "submittedAt": "2025-12-23T01:47:33.160Z"
+},
+  {
+"title": "QS",
+"qsType": "Client / Developer",
+"country": "United Kingdom",
+"region": "Tyne and Wear",
+"city": "Gateshead",
+"salary": "£40,000 - £50,000",
+"timeInRole": "6.5",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "",
+"benefits": "Company Car, Death in Service",
+"submittedAt": "2025-12-27T21:07:16.717Z"
+},
+  {
+"title": "Assistant QS",
+"qsType": "Client / Developer",
+"country": "United Kingdom",
+"region": "Buckinghamshire",
+"city": "Mk",
+"salary": "£30,000 - £40,000",
+"timeInRole": "2",
+"education": "HNC/HND",
+"sector": "Construction",
+"companySize": "51-200",
+"workArrangement": "On-site",
+"certification": "",
+"benefits": "Car allowance, pension, bonus",
+"submittedAt": "2025-12-27T21:12:55.482Z"
+},
+  {
+"title": "QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Greater London",
+"city": "London",
+"salary": "£50,000 - £60,000",
+"timeInRole": "4.5",
+"education": "MSc",
+"sector": "Infrastructure",
+"companySize": "500+",
+"workArrangement": "Hybrid",
+"certification": "MRICS",
+"benefits": "£3k car allowance",
+"submittedAt": "2025-12-28T06:21:41.682Z"
 }
 ]
