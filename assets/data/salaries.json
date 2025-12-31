@@ -3168,5 +3168,37 @@
 "certification": "MRICS",
 "benefits": "£3k car allowance",
 "submittedAt": "2025-12-28T06:21:41.682Z"
+},
+  {
+"title": "Principal QS",
+"qsType": "Consultant",
+"country": "United Kingdom",
+"region": "Cambridgeshire",
+"city": "Cambridge",
+"salary": "£70,000 - £80,000",
+"timeInRole": "7",
+"education": "BSc",
+"sector": "Construction",
+"companySize": "1-10",
+"workArrangement": "Hybrid",
+"certification": "MRICS",
+"benefits": "Min £10k per annum, sipp salary sacrifice pension",
+"submittedAt": "2025-12-31T19:52:33.041Z"
+},
+  {
+"title": "Senior QS",
+"qsType": "Subcontractor",
+"country": "United Kingdom",
+"region": "Greater London",
+"city": "London",
+"salary": "£70,000 - £80,000",
+"timeInRole": "2",
+"education": "None",
+"sector": "Construction",
+"companySize": "201-500",
+"workArrangement": "Hybrid",
+"certification": "CICES",
+"benefits": "",
+"submittedAt": "2025-12-31T20:10:07.423Z"
 }
 ]
